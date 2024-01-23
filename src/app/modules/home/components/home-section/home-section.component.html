@@ -1,0 +1,66 @@
+<div class="header-container">
+  <div>
+    <h2 class="title">{{ sectionTitle }}</h2>
+    <div class="subtitle">
+      <ng-container [ngSwitch]="section">
+        <ng-container *ngSwitchCase="HomeSection.ASSIGNMENTS"
+          >You have {{ items?.length }} Assignments</ng-container
+        >
+        <ng-container *ngSwitchCase="HomeSection.LIBRARIES"
+          >Explore your libraries</ng-container
+        >
+      </ng-container>
+    </div>
+  </div>
+
+  <button
+    *ngIf="items?.length > numVisible"
+    ep-button
+    buttonShape="pill"
+    [routerLink]="link"
+  >
+    View All
+  </button>
+</div>
+
+<div class="library-carousel-content-container">
+  <ng-container *ngIf="items?.length; else noData">
+    <p-carousel
+      [value]="items?.slice(0, MAX_ITEMS)"
+      [numVisible]="numVisible"
+      [numScroll]="numScroll"
+    >
+      <ng-template let-item pTemplate="item">
+        <ng-container [ngSwitch]="section">
+          <ep-library-card
+            *ngSwitchCase="HomeSection.LIBRARIES"
+            [library]="item"
+          ></ep-library-card>
+          <ep-assignment-card
+            *ngSwitchCase="HomeSection.ASSIGNMENTS"
+            [assignment]="item"
+          ></ep-assignment-card>
+        </ng-container>
+      </ng-template>
+    </p-carousel>
+  </ng-container>
+</div>
+
+<ng-template #noData>
+  <div *ngIf="section === HomeSection.LIBRARIES" class="no-results">
+    <span class="no-results-title">Uh-oh, No Libraries In Sight!</span>
+    <span class="no-results-subtitle">
+      If the shelves are bare, reach out to our support team or your system
+      admin for help.
+    </span>
+    <button
+      ep-button
+      buttonShape="pill"
+      style="margin-top: 1.5rem; width: fit-content"
+      (click)="onContactSupport()"
+    >
+      <img src="assets/images/question.svg" style="margin-right: 0.5rem" />
+      Contact Support
+    </button>
+  </div>
+</ng-template>

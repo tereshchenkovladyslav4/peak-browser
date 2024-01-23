@@ -1,0 +1,21 @@
+<ep-dialog-base class="dialog-padding">
+  <ng-container title>
+    <div class="header">
+      <span></span>
+      {{'user-profile.edit-username' | Translate}}
+      <img class="close-img" (click)="close()" src="assets/images/close.svg" />
+    </div>
+  </ng-container>
+  <div content>
+    <div class="input-div">
+      <span class="input-label">{{'user-profile.username' | Translate}}</span>
+      <input #displayName (input)="checkDisplayNameValidity(displayName.value)" maxlength="100" [value]="updatedDisplayName"/>
+    </div>
+  </div>
+  <ng-container actions>
+    <div class="button-container">
+      <button ep-button (click)="close()">{{'common.cancel' | Translate}}</button>
+      <button ep-button buttonType="green" [disabled]="!isValidDisplayName" (click)="updateDisplayName()">{{'common.save' | Translate}}</button>
+    </div>
+  </ng-container>
+</ep-dialog-base>

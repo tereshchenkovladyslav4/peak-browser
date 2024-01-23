@@ -1,0 +1,41 @@
+.percentage-input-footer-container {
+    border-left: 1px solid #D7DADF;
+    width: 28px;
+    height: 57px;
+    position: absolute;
+    right: 25px;
+    bottom: 0px;
+}
+
+.percentage-input-footer-container label {
+    top: 15px;
+    left: 17px;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+img.floating-lock-image {
+    position: absolute;
+    right: 4rem;
+    top: -6px;
+    pointer-events: none;
+    height: 20px;
+    width: 20px;
+}
+
+.floating-form {
+    height: 57px;
+    padding-top: 24px;
+}
+
+.floating-input {
+    padding: 0px 14px 10px;
+}
+
+    .floating-input:focus ~ label,
+    .floating-input:not(:placeholder-shown) ~ label {
+        left: 12px;
+        top: -16px;
+        font-size: 10px;
+        color: #afb6bf;
+    }

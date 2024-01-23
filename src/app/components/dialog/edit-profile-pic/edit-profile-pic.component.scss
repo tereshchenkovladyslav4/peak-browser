@@ -1,0 +1,52 @@
+.dialog-padding {
+  display: flex !important;
+  width: 100%;
+  padding: 28px 10px 10px 10px;
+}
+
+.header {
+  color: #1F283A;
+  font-family: Roboto;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-img {
+  cursor: pointer;
+}
+
+.image-container {
+    display: flex;
+    justify-content:center;
+    padding-top:32px;
+    height: 100%;
+}
+
+.img-btn-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+.user-profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 150px;
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+  padding-top: 30px;
+  border-top: 1px solid #D7DADF;
+}

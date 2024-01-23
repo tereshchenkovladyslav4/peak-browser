@@ -1,0 +1,76 @@
+<div class="outer-container">
+  <div class="built-in-search-container" *ngIf="isBuiltInSearchBarVisible">
+    <div class="built-in-search-title">{{builtInSearchBarTitle}}</div>
+    <form [formGroup]="searchForm">
+      <div class="global-search-container">
+        <img class="search-icon" style="cursor: initial" src="assets/images/search-results/search.svg" alt="search"/>
+        <input formControlName="filter"
+               type="text"
+               class="global-search-field"
+               placeholder="Search"/>
+      </div>
+    </form>
+  </div>
+
+  <div class="title-container">
+    <div class="title">Filters</div>
+    <div class="clear-all cursor-pointer" (click)="clearFilters()" [ngClass]="{'active-filters': (activeFilters$ | async).length}">Clear All</div>
+  </div>
+
+  <div class="active-filters" *ngIf="activeFilters$ | async; let activeFilters">
+    <ep-active-filters [filters]="activeFilters" (removeFilter)="onRemoveFilter($event)"></ep-active-filters>
+  </div>
+
+  <div class="filter-container" *ngFor="let filter of filters">
+    <div (click)="onFilterPanelClick(filter)" class="filter-title-container cursor-pointer">
+      <div>{{filter.title}}</div>
+      <img class="setting-arrow" [ngClass]="{'expanded': filter.isExpanded, 'is-collapsed': !filter.isExpanded}"
+           src="assets/images/droparrow-black.svg">
+    </div>
+
+    <div class="filter" *ngIf="filter?.isExpanded">
+      <ng-container
+        *ngTemplateOutlet="openFilter; context: { filter: filter}"></ng-container>
+    </div>
+  </div>
+  <div class="extended-search-container" *ngIf="isExtendedSearchAllowed && (noResults$ | async)">
+    <span class="extended-search-instructions">
+      Continue Search in Intranet
+    </span>
+    <button ep-button buttonShape="pill" buttonType="secondary" class="extended-search-button" (click)="onExtendedSearch()">
+      Extended Search
+    </button>
+  </div>
+</div>
+
+<ng-template #openFilter let-filter="filter">
+  <ng-container [ngSwitch]="filter.filterType">
+    <ep-publisher-filter *ngSwitchCase="filterType.PUBLISHER"
+                         [data$]="data$"
+                         [currentValues]="publisherValues$ | async"
+                         (filterValues)="onFilter($event, filterType.PUBLISHER)"></ep-publisher-filter>
+    <ep-topics-filter *ngSwitchCase="filterType.TOPICS"
+                      [data$]="data$"
+                      [currentValues]="(topicsValues$ | async)"
+                      [currentSearchFilterValue]="(topicsSearchFilterValue$ | async)"
+                      (searchFilterValue)="onSearch($event, filterType.TOPICS)"
+                      (filterValues)="onFilter($event, filterType.TOPICS)"></ep-topics-filter>
+    <ep-content-type-filter *ngSwitchCase="filterType.CONTENT_TYPE"
+                            [data$]="data$"
+                            [currentValues]="(contentTypeValues$ | async)"
+                            (filterValues)="onFilter($event, filterType.CONTENT_TYPE)"></ep-content-type-filter>
+    <ep-duration-filter *ngSwitchCase="filterType.DURATION"
+                        [currentValues]="(durationValues$ | async)"
+                        (filterValues)="onFilter($event, filterType.DURATION)"></ep-duration-filter>
+    <ep-difficulty-filter *ngSwitchCase="filterType.DIFFICULTY"
+                          [data$]="data$"
+                          [currentValues]="(difficultyValues$ | async)"
+                          (filterValues)="onFilter($event, filterType.DIFFICULTY)"></ep-difficulty-filter>
+    <ep-keywords-filter *ngSwitchCase="filterType.KEYWORDS"
+                        [data$]="data$"
+                        [currentValues]="(keywordsValues$ | async)"
+                        [currentSearchFilterValue]="(keywordsSearchFilterValue$ | async)"
+                        (searchFilterValue)="onSearch($event, filterType.KEYWORDS)"
+                        (filterValues)="onFilter($event, filterType.KEYWORDS)"></ep-keywords-filter>
+  </ng-container>
+</ng-template>

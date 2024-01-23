@@ -1,0 +1,1 @@
+export type RightButtonText = 'Next' | 'Submit Quiz' | 'Finish Course' | 'Retake Quiz' | 'Continue' | 'Drop Course' | 'Start Next Course';

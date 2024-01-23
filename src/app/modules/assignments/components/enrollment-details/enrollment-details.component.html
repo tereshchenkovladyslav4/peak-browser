@@ -1,0 +1,92 @@
+<ep-loading [isLoaded]="isLoaded$ | async">
+  <ep-dialog-base>
+    <ng-container title>
+      <div class="title">{{ 'assignments.enrollment-details' | Translate }}</div>
+      <div class="close-button" (click)="close(false)">
+        <img class="dropdown cursor-pointer close-icon" src="assets/images/close.svg" alt="close" />
+      </div>
+    </ng-container>
+
+    <ng-container content>
+      <div class="enrollment-details">
+        <div class="row">
+          <div>
+            <div class="learning-path-name">
+              {{ data.assignmentHistory?.learningPathName }}
+              <ep-assignment-bookmark [learningPathId]="data.assignmentHistory?.learningPathId" [isWhite]="false"/>
+            </div>
+            <div class="course-name">
+              {{ data.assignmentHistory?.name }}
+            </div>
+          </div>
+          <div [ngStyle]="data.assignmentHistory?.statusStyles" class="status-chip">
+            <img [src]="data.assignmentHistory?.statusIcon" />
+            {{ data.assignmentHistory?.statusLabel }}
+          </div>
+        </div>
+        <div class="row">
+          <div>{{ 'assignments.assigned-by' | Translate }} : {{ data.assignmentHistory?.assignedBy || 'N/A' }}</div>
+          <div>{{ 'assignments.percent-reviewed' | Translate }}: {{ data.assignmentHistory?.progress }}%</div>
+        </div>
+        <div class="row">
+          <div>
+            {{ 'assignments.certificate-status' | Translate }}:
+            {{ certificateUnavailableReason | Translate }}
+          </div>
+          <div>{{ 'assignments.view-time' | Translate }}: {{ data.assignmentHistory?.duration }}</div>
+        </div>
+      </div>
+
+      <div class="quiz-overview">
+        <div class="title">{{ 'assignments.quiz-overview' | Translate }}</div>
+
+        <p-table *ngIf="quizzes?.length else noQuiz" [value]="quizzes" [scrollable]="true" scrollHeight="250px" class="quiz-table">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'assignments.name' | Translate }}</th>
+              <th>{{ 'assignments.attempts' | Translate }}</th>
+              <th>{{ 'assignments.highest-score' | Translate }}</th>
+              <th>{{ 'assignments.most-recent-completion' | Translate }}</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-quiz>
+            <tr>
+              <td>{{ quiz.name }}</td>
+              <td>{{ quiz.attempts }}</td>
+              <td>
+                {{ quiz.quizAnswersCorrect }}/{{ quiz.quizAnswersPossible }}({{
+                  (quiz.quizAnswersCorrect / quiz.quizAnswersPossible) * 100 | number: '1.0'
+                }}%)
+              </td>
+              <td>{{ (quiz.lastCompletionDate | epDate) || 'N/A' }}</td>
+              <td>
+                <div class="actions-wrap">
+                  <ep-quiz-menu [quizSummary]="quiz" [enrollId]="data.enrollId" [courseId]="data.courseId" />
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <ng-template #noQuiz>
+          <div class="no-quizzes"><div>{{ 'assignments.no-quizzes' | Translate }}</div></div>
+        </ng-template>
+      </div>
+    </ng-container>
+
+    <ng-container actions>
+      <div class="button-container">
+        <button ep-button (click)="close()">{{ 'common.close' | Translate }}</button>
+        <button
+          ep-button
+          buttonType="primary"
+          [disabled]="!certificate?.useAsDefault"
+          (click)="downloadCertificate(certificate?.docUrl)"
+        >
+          {{ 'assignments.download-certificate' | Translate }}
+        </button>
+      </div>
+    </ng-container>
+  </ep-dialog-base>
+</ep-loading>

@@ -1,0 +1,7 @@
+<div class="truncate-container">
+  <span class="truncate-content" [style.-webkit-line-clamp]="rows" [style.line-clamp]="rows" #contentDom>
+    {{ content }}
+  </span>
+
+  <div *ngIf="isOverflow" class="full-text-card" (click)="$event.stopPropagation()">{{ content }}</div>
+</div>

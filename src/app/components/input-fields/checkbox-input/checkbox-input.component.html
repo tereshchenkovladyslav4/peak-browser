@@ -1,0 +1,6 @@
+﻿<div class="d-flex align-items-center">
+    <div class="ep-checkbox" (click)="clickedBox()"
+         [ngClass]="{ 'ep-checkbox-disabled' : disabled }">
+        <img *ngIf="selected" src="assets/images/check.svg" alt="" draggable="false">
+    </div>
+</div>

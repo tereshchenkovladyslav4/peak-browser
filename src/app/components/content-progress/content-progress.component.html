@@ -1,0 +1,12 @@
+<div [ngClass]="containerBgClass"
+    class="flex-center rounded-2xl"
+    style="height: 30px; padding: 10px 14px; width: fit-content;">
+    <img *ngIf="statusIconUrl?.length" 
+        id="completion-status-icon" 
+        class="img-sm"
+        style="margin-right: 5px;"
+        [src]="statusIconUrl"/>
+    <span class="text-base font-bold"
+        [ngClass]="textColorClass"
+        style="white-space: nowrap;">{{statusText}}</span>
+</div>

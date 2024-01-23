@@ -1,0 +1,5 @@
+<!-- LP overview -->
+<ep-learning-path-view *ngIf="!(isFullScreen$ | async)" [content]="content"></ep-learning-path-view>
+
+<!-- LP consumption -->
+<ep-lp-course-content *ngIf="isFullScreen$ | async"></ep-lp-course-content>

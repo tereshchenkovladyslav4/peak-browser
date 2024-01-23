@@ -1,0 +1,23 @@
+.action-button {
+  flex-grow: 1;
+}
+
+.content-body {
+  padding: 0 0 1rem 0;
+  text-align: center;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.left-header {
+  align-items: center;
+}
+
+.right-header {
+  align-items: center;
+}

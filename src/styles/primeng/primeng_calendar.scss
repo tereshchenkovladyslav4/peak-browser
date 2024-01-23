@@ -1,0 +1,64 @@
+.p-calendar {
+  border: 1px solid var(--color-1-grey-4);
+  border-radius: 10px;
+  background: white;
+  width: 100%;
+  &:not(.p-calendar-disabled) {
+    &.p-focus,
+    &.highlight {
+      border-color: var(--color-1-highlight-border);
+    }
+  }
+  &.p-calendar-disabled {
+    background: #F9F9F9;
+    .p-component:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+.p-calendar {
+  .p-inputtext {
+    border: none;
+    background: none;
+  }
+  .p-button.p-button-text {
+    &,
+    &:enabled:hover {
+      color: var(--color-1-royal-1);
+      background: transparent;
+    }
+  }
+  .p-datepicker-trigger {
+    &,
+    &:enabled:hover {
+      color: var(--color-1-grey-2);
+      background-color: transparent;
+      border: none;
+      background-image: url("../../assets/images/calendar-dark.svg");
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 20px;
+    }
+    .p-icon-wrapper {
+      display: none;
+    }
+  }
+  .p-button-icon {
+    font-size: 14px;
+  }
+}
+.p-calendar-w-btn .p-inputtext {
+  padding-right: 0;
+}
+
+.p-datepicker table td {
+  padding: 0.1rem;
+  & span {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    &.p-highlight {
+      background: var(--color-1-royal-1);
+    }
+  }
+}

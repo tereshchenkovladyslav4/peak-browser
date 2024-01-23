@@ -1,0 +1,7 @@
+<div class="container">
+  <svg class="wrapper" [ngStyle]="wrapperStyles">
+    <circle class="track" [ngStyle]="trackStyles" />
+    <circle class="progress" [ngStyle]="progressStyles" />
+  </svg>
+  <span *ngIf="showPercentage" class="progress-text" [style.fontSize]="fontSize">{{progress}}%</span>
+</div>

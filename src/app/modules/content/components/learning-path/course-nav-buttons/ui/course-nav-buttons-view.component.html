@@ -1,0 +1,10 @@
+<button *ngFor="let buttonOptions of buttonOptionsList"
+  ep-button
+  [buttonType]="buttonOptions?.type"
+  [buttonShape]="buttonOptions?.shape"
+  [iconUri]="buttonOptions?.iconUri"
+  [iconPosition]="buttonOptions?.iconPosition"
+  [disabled]="!!buttonOptions?.disabled"
+  (click)="buttonClick(buttonOptions)">
+{{ buttonOptions?.label }}
+</button>

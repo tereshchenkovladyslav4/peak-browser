@@ -1,0 +1,28 @@
+<div class="floating-form mt-3">
+    <div class="floating-label ff">
+        <input class="floating-input"
+               style="width: 88%;"
+               [min]="min"
+               [max]="max"
+               type="number"
+               [(ngModel)]="value"
+               (keydown)="validatePercentageInput($event)"
+               (paste)="onPaste($event)"
+               [disabled]="disabled"
+               placeholder=" ">
+
+        <span class="highlight" style="width: 88%;"></span>
+
+        <label class="input-label-color long-placeholder">
+            {{placeholder}}
+        </label>
+
+        <img *ngIf="disabled" src="assets/images/Lock.svg" alt="" class="floating-lock-image" />
+    </div>
+
+    <div class="percentage-input-footer-container">
+        <label>
+            %
+        </label>
+    </div>
+</div>

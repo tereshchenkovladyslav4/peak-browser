@@ -1,0 +1,79 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  user-select: none;
+}
+
+.tree-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 36px 50px 0 50px;
+  height: 100%;
+  box-shadow: 4px 0px 6px 0px rgba(0, 0, 0, 0.08);
+  border-right: 1px solid #D7DADF;
+  background-color: white;
+  overflow-y: auto;
+  z-index: 1;
+  width: calc(330px * 1.149); /* counter global zoom */
+}
+
+.process-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.process {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.p-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.p-header img {
+  transform: rotate(-90deg);
+  transition: transform 400ms
+}
+
+.process .p-header img.active {
+  transform: rotate(0deg);
+}
+
+.process.active .p-header span {
+  font-weight: 700;
+}
+
+.task-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  gap: 10px;
+  /* max-height: 300px; */
+  overflow: hidden;
+}
+
+/* ONLY need this if max-height above is used */
+/* .process.active .task-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+} */
+
+.task {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.process.active .task.active {
+  font-weight: 700;
+}

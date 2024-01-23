@@ -1,0 +1,1 @@
+export type LeftButtonText = '' | 'Previous' | 'Skip' | 'Retake Quiz';

@@ -1,0 +1,110 @@
+/* All styles borrowed from Admin - all suffixed with !important to ensure overriding default toastr styles */
+
+.toast-top-right {
+  top: 25px !important;
+  right: 40% !important;
+}
+
+.toast-success {
+  background-color: #1d1d1d !important;
+}
+
+.toast-header {
+  padding: 14px 14px 14px 20px !important;
+  width: 312.53px !important;
+  height: 52px !important;
+  background: #2b3242 !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+}
+
+/*background-position keeps the icon aligned at top with the vertical bar and "X" button*/
+.toast-container .ngx-toastr {
+  position: relative !important;
+  overflow: hidden !important;
+  margin: 0 auto 6px !important;
+  padding: 14px 16px 14px 50px !important;
+  width: 350px !important;
+  border-radius: 10px !important;
+  background-position: 25px 15px !important;
+  background-repeat: no-repeat !important;
+  background-size: 20px !important;
+  box-shadow: 0 0 12px #999999 !important;
+  color: #FFFFFF !important;
+  font-size: 16px !important;
+}
+
+/*Titles are not currently used, but left this style in here in case this would change.*/
+.toast-title {
+  font-family: "Roboto", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 16px !important;
+}
+
+.toast-success {
+  background-color: #2b3242 !important;
+  background-image: url("../assets/images/toast/toast-circle-check.svg") !important;
+}
+
+.toast-error {
+  background-color: #F86161 !important;
+  background-image: url("../assets/images/toast/toast-circle-x.svg") !important;
+}
+
+.toast-warning {
+  background-color: #f89406 !important;
+  background-image: url("../assets/images/toast/toast-circle-info.svg") !important;
+}
+
+/*Informational toasts are not currently used in the Admin Portal. Added this code in case we add them down the road and we would need the background color and the url for the image.*/
+.toast-info {
+  background-color: #2b3242 !important;
+  background-image: url("../assets/images/toast/toast-circle-check.svg") !important;
+}
+
+/*The before logic will set up the vertical bar on right side of toast before the "X" button*/
+.toast-success::before,
+.toast-error::before,
+.toast-warning::before,
+.toast-info::before {
+  content: " " !important;
+  display: block !important;
+  height: 24px !important;
+  position: absolute !important;
+  opacity: .5 !important;
+  right: 23px !important;
+  top: 13px !important;
+  width: 25px !important;
+  font-size: 24px !important;
+  border-left: 1px solid #FFFFFF !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+/*This will show our version of the "X" button on right side of toast. It overrides the version from toastr.css*/
+.toast-success::after,
+.toast-error::after,
+.toast-warning::after,
+.toast-info::after {
+  content: "" !important;
+  display: block !important;
+  height: 30px !important;
+  position: absolute !important;
+  right: 11px !important;
+  top: 15px !important;
+  width: 25px !important;
+  background-image: url("../assets/images/toast/toast-close.svg") !important;
+  background-repeat: no-repeat !important;
+}
+
+/*To override the toastr.css and not display standard "X" button but display our version instead.*/
+.toast-close-button span {
+  display: none !important;
+}
+
+/*To limit the toast message from going into the vertical bar and X button on right. Padding left sets distance from icon to start of text.*/
+.toast-message {
+  width: 245px !important;
+  padding-left: 10px !important;
+}

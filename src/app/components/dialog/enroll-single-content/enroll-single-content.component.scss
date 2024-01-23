@@ -1,0 +1,48 @@
+:host {
+  padding: 28px 12px 12px;
+  max-width: 520px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background: var(--color-1-grey-4);
+}
+
+.title {
+  font-size: 24px;
+  padding: 0 20px;
+}
+
+.subtitle {
+  color: var(--color-1-grey-2);
+  text-align: center;
+  margin-top: 16px;
+}
+
+.personalize-desc {
+  margin-left: 32px;
+  font-size: 12px;
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  align-items: center;
+  border-top: 1px solid rgb(215, 218, 223);
+  padding-top: 20px;
+}

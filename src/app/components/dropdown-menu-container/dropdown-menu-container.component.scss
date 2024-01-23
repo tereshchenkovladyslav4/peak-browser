@@ -1,0 +1,11 @@
+.dropdown-container {
+  display: flex;
+  border-radius: 50%;
+  padding: 5px;
+  position: relative;
+
+  &.transparent {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}

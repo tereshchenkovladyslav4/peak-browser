@@ -1,0 +1,47 @@
+<ep-dialog-base>
+  <ng-container title>
+    <div class="title">Enroll in {{ contentName }}</div>
+    <div class="close-button" (click)="close(false)">
+      <img
+        class="dropdown cursor-pointer close-icon"
+        src="assets/images/close.svg"
+        alt="close"
+      />
+    </div>
+  </ng-container>
+
+  <ng-container content>
+    <div class="subtitle">
+      You are about to enroll in {{ contentName }}. You can optionally set a due date for completing this course.
+    </div>
+
+    <div class="ep-mt-5">
+      <p-checkbox
+        [(ngModel)]="isAssignDueDate"
+        [binary]="true"
+        label="Assign a due date for completion"
+      ></p-checkbox>
+      <div class="ep-mt-2">
+        <span class="p-float-label">
+          <p-calendar
+            id="dueDate"
+            [(ngModel)]="dueDate"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            [disabled]="!isAssignDueDate"
+          ></p-calendar>
+          <label for="dueDate">Due Date</label>
+        </span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <div class="button-container ep-mt-5">
+      <button ep-button (click)="close()">Cancel</button>
+      <button ep-button buttonType="green" (click)="enroll()">
+        Enroll
+      </button>
+    </div>
+  </ng-container>
+</ep-dialog-base>

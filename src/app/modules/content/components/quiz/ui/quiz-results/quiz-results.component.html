@@ -1,0 +1,135 @@
+<div class="container">
+  <!-- RESULTS HEADER -->
+  <div class="results-header">
+    <ep-circle-progress [size]="160" 
+        [strokeWidth]="10" 
+        [progress]="quizResults?.percentage" 
+        [trackStroke]="quizResults?.isPassFail && !quizResults?.passed ? '#f9d0d0' : '#beeed5'" 
+        [progressStroke]="quizResults?.isPassFail && !quizResults?.passed ? '#ED7676': '#41CC84'"
+        [showPercentage]="true"></ep-circle-progress>
+    <div class="results-text">
+      <span>
+        Quiz Result<span *ngIf="quizResults?.isPassFail">: {{ quizResults?.passed ? 'You Passed!' : 'You Failed'}}</span>
+      </span>
+      <span>Now it's time to see how you scored and what you learned. Our results page provides a comprehensive overview of your performance, including your total score, correct answers, and areas where you can improve.</span>
+    </div>
+  </div>
+  <div class="questions">
+    <div class="question" *ngFor="let question of quizResults?.questions; index as questionIndex">
+      <!-- QUESTION HEADER -->
+      <div class="question-header">
+        <span>{{questionIndex + 1}}. {{question?.text}}</span>
+        <ng-container *ngIf="question?.userAnsweredCorrectly; else incorrect">
+          <div class="result-pill pill-green">
+            <img src="assets/images/check.svg" />
+            <span>Correct</span>
+          </div>
+        </ng-container>
+        <ng-template #incorrect>
+          <div class="result-pill pill-red">
+            <img src="assets/images/close-circle.svg" />
+            <span>Incorrect</span>
+          </div>
+        </ng-template>
+      </div>
+      <!-- QUESTION IMAGE -->
+      <ep-quiz-image *ngIf="question?.imageUrl" [imageUrl]="question?.imageUrl" />
+      <!-- ANSWERS OUTLET -->
+      <ng-container *ngTemplateOutlet="questionAnswers; context: {$implicit: question}"></ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- ANSWERS OUTLET -->
+<ng-template #questionAnswers let-question>
+  <ng-container [ngSwitch]="question?.type">
+    <!-- CHOOSE SINGLE ANSWER -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.ChooseSingleAnswer">
+      <div *ngFor="let answer of question?.answers"
+        class="answer"
+        [ngClass]="{ 'selected-correct': answer?.selectedByUser && answer?.isCorrect, 'selected-incorrect': answer?.selectedByUser && !answer?.isCorrect}">
+        <span class="row-id selected-text">{{answer?.rowId}}</span>
+        <ng-container *ngIf="answer?.answerImgUrl; else answerText">
+          <ep-quiz-image [imageUrl]="answer?.answerImgUrl"/>
+        </ng-container>
+        <ng-template #answerText>
+          <span class="selected-text" 
+            [class.text-correct-answer]="!answer?.selectedByUser && answer?.isCorrect">
+            {{answer?.answerText}}
+          </span>
+        </ng-template>
+        <span *ngIf="!answer?.selectedByUser && answer?.isCorrect" 
+          class="text-correct-answer"
+          style="margin-left: 10px;">
+          ( <img src="assets/images/check.svg" /> Correct Answer)
+        </span>
+        <span *ngIf="answer?.selectedByUser" 
+          class="selected-text"
+          style="margin-left: 10px;">(Your Answer)</span>
+      </div>
+    </div>
+    <!-- CHOOSE MULTIPLE ANSWER -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.ChooseMultipleAnswers">
+      <div *ngFor="let answer of question?.answers"
+        class="answer"
+        [ngClass]="{ 'selected-correct': answer?.selectedByUser && answer?.isCorrect, 'selected-incorrect': answer?.selectedByUser && !answer?.isCorrect}">
+        <span class="row-id selected-text">{{answer?.rowId}}</span>
+        <ng-container *ngIf="answer?.answerImgUrl; else answerText">
+          <ep-quiz-image [imageUrl]="answer?.answerImgUrl"/>
+        </ng-container>
+        <ng-template #answerText>
+          <span class="selected-text" 
+            [class.text-correct-answer]="!answer?.selectedByUser && answer?.isCorrect">
+            {{answer?.answerText}}
+          </span>
+        </ng-template>
+        <span *ngIf="!answer?.selectedByUser && answer?.isCorrect" 
+          class="text-correct-answer"
+          style="margin-left: 10px;">
+          ( <img src="assets/images/check.svg" /> Correct Answer)
+        </span>
+        <span *ngIf="answer?.selectedByUser" 
+          class="selected-text"
+          style="margin-left: 10px;">(Your Answer)</span>
+      </div>
+    </div>
+    <!-- FILL IN TEXT -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.FillInText">
+      <div class="answer fill-text-acceptable">
+        <span>Acceptable Answers:</span>
+        <div>
+          <span *ngFor="let answer of question?.answers; index as answerIndex">{{(answerIndex === 0 ? '' : ', ') + answer?.answerText}}</span>
+        </div>
+      </div>
+      <div class="answer fill-text-given-answer"
+        [ngClass]="{ 'selected-correct': question?.userAnsweredCorrectly, 'selected-incorrect': !question?.userAnsweredCorrectly}">
+        <span class="selected-text">Your Answer:</span>
+        <span class="selected-text">{{question?.givenAnswer}}</span>
+      </div>
+    </div>
+    <!-- TRUE / FALSE -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.TrueFalse">
+      <div *ngFor="let answer of question?.answers"
+        class="answer"
+        [ngClass]="{ 'selected-correct': answer?.selectedByUser && answer?.isCorrect, 'selected-incorrect': answer?.selectedByUser && !answer?.isCorrect}">
+        <ng-container *ngIf="answer?.answerImgUrl; else answerText">
+          <ep-quiz-image [imageUrl]="answer?.answerImgUrl"/>
+        </ng-container>
+        <ng-template #answerText>
+          <span class="selected-text" 
+            [class.text-correct-answer]="!answer?.selectedByUser && answer?.isCorrect">
+            {{answer?.answerText}}
+          </span>
+        </ng-template>
+        <span *ngIf="!answer?.selectedByUser && answer?.isCorrect" 
+          class="text-correct-answer"
+          style="margin-left: 10px;">
+          ( <img src="assets/images/check.svg" /> Correct Answer)
+        </span>
+        <span *ngIf="answer?.selectedByUser" 
+          class="selected-text"
+          style="margin-left: 10px;">(Your Answer)</span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

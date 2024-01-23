@@ -1,0 +1,9 @@
+<ep-dialog-base>
+  <ng-container title><div class="title">{{data?.config?.title}}</div></ng-container>
+  <div class="flex-center h-full content" content>{{data?.config?.content}}</div>
+  <ng-container actions>
+    <button ep-button (click)="close(false)">{{data?.config?.negativeButton}}</button>
+    <button ep-button [buttonType]="data?.config?.buttonType" (click)="close(true)">{{data?.config?.positiveButton}}</button>
+  </ng-container>
+</ep-dialog-base>
+

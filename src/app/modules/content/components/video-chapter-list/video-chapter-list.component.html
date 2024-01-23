@@ -1,0 +1,26 @@
+<div>
+
+  <div >
+
+    <div class="justify-content-start chapters-list">
+      <div *ngFor="let chapter of chapters; let i = index">
+        <div [ngClass]="i==selChapterIndex ? 'chapter chapter-selected justify-content-between':'chapter justify-content-between'" (click)="onSelChapter(i)">
+          <div class="chapter-option d-flex">
+            <img src="assets/images/content/video/chapter-bullet.svg" 
+              style="margin-right:10px;" 
+              [style.opacity]="i === selChapterIndex ? '1' : '0.5'"
+              width="16">
+            <span class="chp-no">{{ i + 1 }}</span>
+            <span class="chp-time">{{chapter.position | epNumberToTimestamp}}</span>
+            <span class="chapter-title ep-overflow-ellipsis" epTooltip>{{chapter.name}}</span>
+            <!--<input type="text" name="text" [value]="video.name" placeholder="">-->
+          </div>
+        </div>
+        <!--<img src="assets/images/Trash.svg" class="pointer" alt="" width="16"
+        (click)="handleDeleteVideo(video)" srcset="">-->
+      </div>
+    </div>
+
+  </div>
+</div>
+

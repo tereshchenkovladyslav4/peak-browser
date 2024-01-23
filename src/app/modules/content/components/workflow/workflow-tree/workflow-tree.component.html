@@ -1,0 +1,35 @@
+<div class="tree-panel">
+  <ep-workflow-view-selector></ep-workflow-view-selector>
+  <div class="process-container">
+    <ng-container *ngIf="workflowTreeData$ | async as workflowHierarchy; else loadingTree">
+      <ng-container *ngIf="workflowHierarchy?.Children?.length">
+        <div *ngFor="let process of workflowHierarchy?.Children; index as processIndex" 
+          class="process"
+          [class.active]="(openProcessIndex$ | async) === processIndex">
+          <div class="p-header" >
+            <img *ngIf="process?.Children?.length > 0"
+              [class.active]="expandedProcessIndex === processIndex && isExpandedProcessOpen" 
+              src="assets/images/down-caret-dark.svg"
+              (click)="toggleProcess(processIndex)"/>
+            <span class="one-line-text-overflow" epTooltip (click)="openProcess(processIndex)">{{(processIndex + 1) + '.0 ' + process?.Name}}</span>
+          </div>
+          <div class="task-container ep-slider"
+            [class.closed]="expandedProcessIndex !== processIndex || !isExpandedProcessOpen || !process?.Children?.length"
+            [style.margin-bottom.px]="expandedProcessIndex === processIndex && isExpandedProcessOpen && process?.Children?.length ? 10 : 0">
+            <ng-container *ngIf="processDiagrams$ | async as processDiagram">
+              <span *ngFor="let task of processDiagram[processIndex]?.objects; index as taskIndex"
+                  class="task one-line-text-overflow"
+                  [class.active]="(activeTaskIndex$ | async) === taskIndex"
+                  epTooltip
+                  (click)="openTask(processIndex, taskIndex)">{{(processIndex + 1) + '.' + (taskIndex + 1) + ' ' + task?.name}}</span>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #loadingTree>
+      <!-- TEMPORARY IMAGE -->
+      <ep-spinner></ep-spinner>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<div class="related-content-container">
+  <ng-container *ngFor="let relatedContent of cardData">
+    <ep-card-view class="related-content-card" [content]="relatedContent" (click)="onCardClick(relatedContent)"></ep-card-view>
+  </ng-container>
+</div>

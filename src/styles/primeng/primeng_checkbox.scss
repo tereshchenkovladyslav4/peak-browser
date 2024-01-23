@@ -1,0 +1,30 @@
+.p-checkbox {
+  width: 20px;
+  height: 20px;
+}
+.p-checkbox .p-checkbox-box {
+  width: 20px;
+  height: 20px;
+  border: solid 1px #AFB6BF;
+}
+.p-checkbox .p-checkbox-box .p-checkbox-icon {
+  font-size: 12px;
+  color: var(--color-1-mint-1);
+}
+.p-checkbox .p-checkbox-box.p-highlight,
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+  border-color: #AFB6BF;
+  background: #fff;
+}
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  border-color: #AFB6BF;
+}
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+  box-shadow: none;
+  border-color: #AFB6BF;
+}
+.p-checkbox-label {
+  margin-bottom: 0;
+  margin-left: 12px;
+  color: var(--color-1-blue-2);
+}

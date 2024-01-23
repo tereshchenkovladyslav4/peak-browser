@@ -1,0 +1,13 @@
+<ep-courses-list-view [style.position]="!!(responsiveMode$ | async) ? 'absolute' : 'relative'"
+  [activeCourseName]="activeCourseName$ | async"
+  [activeCourseProgress]="activeCourseProgress$ | async"
+  [enrolledCourses]="enrolledCourses$ | async"
+  [activeCourseIndex]="activeCourseIndex$ | async"
+  [activeContentIndex]="activeContentIndex$ | async"
+  [isCourseSummaryOpen]="isCourseSummaryOpen$ | async"
+  [activeCourseDisabledContent]="activeCourseDisabledContent$ | async"
+  [responsiveMode]="responsiveMode$ | async"
+  (onToggleCourse)="toggleCourse($event)"
+  (onOpenCourseDescModal)="openCourseDescModal($event)"
+  (onOpenCourseContent)="openCourseContent($event)"
+  (onOpenFinishCourse)="openFinishCourse()"></ep-courses-list-view>

@@ -1,0 +1,8 @@
+<div class="type-selector" (click)="toggleSelectorDropdown()">
+  <span class="text-xl font-bold" style="line-height: 28px;">{{viewState$ | async}}</span>
+  <img src="assets/images/down-caret-dark.svg"/>
+</div>
+<ep-dropdown-menu *ngIf="isSelectorDropdownOpen"
+  [dropdownItems]="dropdownItems"
+  style="top: 35px;"
+  (onClickedOut)="closeDropdownMenu()"></ep-dropdown-menu>

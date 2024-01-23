@@ -1,0 +1,14 @@
+<div class="dialog-container" [ngStyle]="data.config.containerStyles">
+  <div class="title"  [ngStyle]="data.config.titleStyles">
+    <ng-content select="[title]"></ng-content>
+  </div>
+  <div class="content" [ngStyle]="data.config.contentStyles">
+    <ng-content select="[content]"></ng-content>
+  </div>
+  <div class="actions" [ngStyle]="data.config.actionsStyles">
+    <ng-content select="[actions]"></ng-content>
+  </div>
+</div>
+
+
+

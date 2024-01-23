@@ -1,0 +1,29 @@
+:host {
+  padding: 5px 16px 15px 16px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  margin-left: 8px;
+}
+
+.left-header {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.right-header {
+  align-items: center;
+}
+
+.main-img {
+  min-height: 65vh;
+  max-height: 85vh;
+  height: auto;
+  width: auto;
+  border-radius: 5px;
+}

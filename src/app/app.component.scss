@@ -1,0 +1,39 @@
+.general-page {
+  background-color: var(--page-background-color);
+  overflow: hidden;
+  height: 100%;
+}
+
+.general-page > div {
+  display: flex;
+  flex-direction: row;
+  width:100%;
+}
+
+/* PEAK EXPERIENCE STYLES - MAY BE TEMPORARILY IN THIS SPOT */
+.right-panel {
+  min-height: 0;
+  height: 100%;
+  z-index:1;
+  padding-top: 15px;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  background: linear-gradient(11.08deg, #F7F9FE 79.83%, rgba(247, 249, 254, 0.766481) 92.46%, rgba(247, 249, 254, 0) 116.57%);
+}
+
+.page-bg-img {
+  position: absolute;
+  right: 10px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+ep-dropdown-menu {
+  position: absolute;
+}

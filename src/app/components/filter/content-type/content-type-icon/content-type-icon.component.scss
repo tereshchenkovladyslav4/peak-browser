@@ -1,0 +1,44 @@
+.content-type-icon-container {
+  width: 3.75rem;
+  height: 3.75rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3.75rem;
+}
+
+.content-type-icon-inner-container {
+  border: solid #D7DADF 1px;
+  border-radius: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.4rem 0.5rem;
+}
+
+
+.content-type-icon {
+  max-width: 2.5rem;
+  max-height: 2.5rem;
+}
+
+
+.content-type-icon-label {
+  text-align: center;
+  margin: 0.5rem 0;
+  max-width: 3.75rem;
+  cursor: pointer;
+  color: #87919F;
+}
+
+
+.active-border {
+  border: solid #6391FF 2px;
+  background-color: #f4f7ff
+}
+
+.active-text {
+  color: black;
+}

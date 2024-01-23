@@ -1,0 +1,122 @@
+.overlay {
+  position: relative;
+  text-align: left;
+}
+
+.svg-region {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  align-self: center;
+  height: 500px;
+  max-height: 50vh;
+  width: 100%;
+  background: white;
+}
+
+.svg-viewer {
+  border: solid;
+  border-width: 1px;
+  border-color: darkgray;
+  text-align: center;
+  display: block;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  user-select: none;
+}
+
+.svg-text {
+  pointer-events: none;
+}
+
+.selected {
+  background-color: #CFD8DC !important;
+  color: white;
+}
+
+.diagramviewer {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+  width: 15em;
+}
+
+.diagramviewer li {
+    cursor: pointer;
+    position: relative;
+    left: 0;
+    background-color: #EEE;
+    margin: .5em;
+    padding: .3em 0;
+    height: 1.6em;
+    border-radius: 4px;
+}
+
+.diagramviewer li.selected:hover {
+    background-color: #BBD8DC !important;
+    color: white;
+}
+
+.diagramviewer li:hover {
+    color: #607D8B;
+    background-color: #DDD;
+    left: .1em;
+}
+
+.diagramviewer .text {
+    position: relative;
+    top: -3px;
+}
+
+.wfBtn {
+  width:40px;
+  height:40px;
+  margin-top:-40px;
+  margin-right:42px;
+  text-align:right;
+  cursor:pointer;
+  float:right;
+  position:relative;
+  z-index:15000;
+}
+
+[data-toggle="collapse"].collapsed .if-not-collapsed {
+display: none;
+}
+
+[data-toggle="collapse"]:not(.collapsed) .if-collapsed {
+display: none;
+}
+
+[data-toggle="collapse"].collapsed .expandiconMinus {
+display: none;
+}
+
+[data-toggle="collapse"]:not(.collapsed) .expandiconPlus {
+display: none;
+}
+
+text {
+  user-select: none;
+}
+
+.btn-container {
+  position: absolute;
+  display: flex;
+  gap: 9px;
+  right: 0;
+  bottom: 0;
+  margin-right: 26px;
+  margin-bottom: 24px;
+}
+
+.btn-diagram {
+  height: 34px;
+  width: 34px;
+  border-radius: 5px;
+  border: none;
+  user-select: none;
+}

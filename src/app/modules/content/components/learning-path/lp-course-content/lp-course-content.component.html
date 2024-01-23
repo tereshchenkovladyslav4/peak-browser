@@ -1,0 +1,38 @@
+<ng-container *ngIf="!(isLoading$ | async); else loadingContent">
+  <ng-container *ngIf="!!(isCourseSummaryOpen$ | async); else courseContent">
+    <ep-finish-course></ep-finish-course>
+  </ng-container>
+  <ng-template #courseContent>
+    <ng-container *ngIf="(courseContent$ | async) as courseContent">
+      <div *ngIf="!(isQuizOpen$ | async)" class="lp-content-header">
+        <img [src]="courseContent?.typeIcon" *ngIf="courseContent != null" class="lp-content-header-icon" />
+        <span class="lp-content-header-text one-line-text-overflow" 
+          style="margin-right: 60px;"
+          epTooltip>{{courseContent?.name}}</span>
+      </div>
+    
+      <div class="lp-content-body">
+        <ng-container [ngSwitch]="courseContent?.type">
+          <ep-document-view *ngSwitchCase="contentType.Document" [content]="courseContent"></ep-document-view>
+          <ep-video-view *ngSwitchCase="contentType.Video" 
+            class="course-content-video"
+            [videoContent]="courseContent | as : Video"
+            (loadedEvent)="onLoaded($event)"
+            (playEvent)="onPlay($event)"
+            (timeUpdateEvent)="onTimeUpdate($event)"
+            (pauseEvent)="onPause($event)"
+            (endEvent)="onEnded($event)"></ep-video-view>
+          <ep-workflow-view *ngSwitchCase="contentType.Workflow" [workflowContent]="courseContent | as : Workflow"></ep-workflow-view>
+          <ep-quiz-view *ngSwitchCase="contentType.Quiz" [quizContent]="courseContent | as : Quiz"></ep-quiz-view>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-template>
+</ng-container>
+
+<!-- LP Consumption Spinner -->
+<ng-template #loadingContent>
+  <div class="flex-center h-full w-full" style="min-height: 65vh;">
+    <ep-spinner></ep-spinner>
+  </div>
+</ng-template>

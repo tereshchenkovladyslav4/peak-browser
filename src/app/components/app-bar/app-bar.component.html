@@ -1,0 +1,48 @@
+<div class="bar-container">
+  <div class="left-bar">
+    <div *ngIf="isFullScreen" class="exit-full-screen cursor-pointer" (click)="closeFullscreen()">
+      <img style="width: 26px;" src="assets/images/circle-x.svg" />
+      <span style="line-height: 20px;">{{fullScreenText}}</span>
+    </div>
+    <span *ngIf="(title$ | async); let title"
+      epTooltip
+      [epTooltipStyles]="{'font-size': '1.125rem'}"
+      class="title one-line-text-overflow">
+      {{title}}
+    </span>
+  </div>
+  <div class="right-bar">
+    <div *ngIf="!isFullScreen" class="search-input">
+      <form [formGroup]="form">
+        <div class="global-search-container">
+          <img class="search-icon" src="assets/images/search-results/search.svg" alt="search" (click)="onSearch()"/>
+          <input #searchInput
+            formControlName="search"
+            type="text"
+            class="global-search-field"
+            placeholder="Search All Content"
+            (keydown.enter)="onSearch(); searchInput.blur()" />
+        </div>
+      </form>
+    </div>
+    <div class="notifications">
+      <img class="notification-icon" src="assets/images/app-bar/notification-bell.svg" alt="N"/>
+    </div>
+    <ng-container>
+
+    </ng-container>
+    <ep-user-profile-image *ngIf="isUserLoaded$ | async"
+      [userImageUrl]="userImageUrl$ | async"
+      [displayName]="displayName$ | async"
+      (click)="toggleUserDropdown()">
+    </ep-user-profile-image>
+
+    <ep-dropdown-menu *ngIf="isUserDropdownOpened"
+      style="top:65px"
+      [dropdownItems]="dropdownItems"
+      (onClickedOut)="toggleUserDropdown()">
+    </ep-dropdown-menu>
+  </div>
+</div>
+
+<hr class="ep-hr">

@@ -1,0 +1,7 @@
+<form class="filter-section-scroll" [formGroup]="form" *ngIf="form">
+  <div class="filter-container" *ngFor="let publisher of (publishers$ | async)">
+    <ep-checkbox-input [selected]="form.get([publisher]).value"
+                       (selectedChange)="onSelectedChanged($event, publisher)"></ep-checkbox-input>
+    <span>{{publisher}}</span>
+  </div>
+</form>

@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  max-height: 40px;
+  /*width: 100%;*/
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.topic-icon {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 1px;
+  margin-right: 3px;
+}
+
+.topic-text {
+  flex-direction: column;
+  margin-left: 5px;
+  overflow: hidden;
+}
+
+.topic-name {
+  line-height: 15px;
+}
+
+.subtopic-name {
+  line-height: 14px;
+}

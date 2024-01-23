@@ -1,0 +1,121 @@
+<div id="card" class="ep-rounded">
+    <div id="body" class="flex-center cursor-pointer" (click)="navigateToContent()">
+      <div id="preview-image" class="flex-center">
+        <img *ngIf="isDefaultIcon === false" class="ep-rounded h-full w-full"
+             style="filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.15)); object-fit:cover;"
+             [src]="contentImageUrl" />
+        <img *ngIf="isDefaultIcon === true" class="ep-rounded h-full w-full"
+             style="filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.15)); padding:20px; background-color:#f7f8f9"
+             [src]="contentImageUrl" />
+        <div *ngIf="searchResult?.isPastDue"
+             id="past-due"
+             class="text-sm font-bold">{{"ep-search-results-card.past-due" | Translate}}</div>
+        <img *ngIf="isVideoType && isDefaultIcon === false"
+             id="video-play-image"
+             src="assets/images/search-results/video-play.svg" />
+        <div *ngIf="showDuration" id="duration" class="rounded-sm">
+          <img id="duration-icon" src="assets/images/clock-short.svg" />
+          <span class="text-lg" style="color: white;font-weight: 700;">{{duration}}</span>
+        </div>
+      </div>
+        <div id="details" class="h-full w-full">
+            <div id="header">
+                <div class="flex-center">
+                    <img class="img-base"
+                        style="margin-right: 5px;"
+                        [src]="contentTypeIconUrl" />
+                    <span class="font-normal text-base color-subtext">{{contentTypeName}}</span>
+                </div>
+                <div *ngIf="difficultyName !== 'None'" class="flex-center">
+                    <img class="img-base"
+                        [src]="difficultyIconUrl"/>
+                    <span class="font-normal text-base color-subtext" style="margin-left: 8px;">{{difficultyName}}</span>
+                </div>
+            </div>
+            <div name="content-info">
+                <div class="flex">
+                    <span id="content-name" 
+                        epHighlight [highlightSearchTerm]="searchTerm" [highlightText]="contentName" highlightCustomClasses="results-card-highlight"
+                        epTooltip [epTooltipText]="contentName" [epTooltipRestrictWidth]="true"
+                        class="one-line-text-overflow text-xl font-bold cursor-pointer"></span>
+                    <!--  <span id="content-name" class="text-xl font-bold" [innerHTML]="contentName"></span> -->
+                    <img *ngIf="isBookmarked"
+                        id="bookmark"
+                        src="assets/images/search-results/bookmark-with-spacing.svg" />
+                    <ep-content-progress *ngIf="searchResult?.contentType === contentType.LearningPath"
+                        [progress]="progress"
+                    ></ep-content-progress>
+                </div>
+                <div epTooltip [epTooltipText]="searchResult?.publisher?.name" [epTooltipRestrictWidth]="true" 
+                    id="content-publisher" 
+                    class="ep-overflow-ellipsis text-base color-subtext" 
+                    style="margin-bottom: 8px;">
+                    <span>{{"ep-search-results-card.by" | Translate }}</span>
+                    <span> {{searchResult?.publisher?.name}}</span>
+                </div>
+            </div>
+            <span id="content-description"
+                epHighlight [highlightSearchTerm]="searchTerm" [highlightText]="contentDescription" [highlightGlobalSearch]="false" highlightCustomClasses="results-card-highlight"
+                class="text-lg color-subtext cursor-pointer"></span>
+            <!-- <span id="content-description" class="text-lg color-subtext" [innerHTML]="contentDescription"></span> -->
+        </div>
+    </div>
+    <div id="footer"
+        class="rounded-b"
+        [class.footer-extended]="isExpanded">
+        <div class="flex" style="padding: 7px 14px;">
+            <ep-topic-info *ngFor="let topicSubtopicPair of topicSubtopicPairs; index as i"
+                [imageUrl]="topicSubtopicPair.imageUrl"
+                [topicName]="topicSubtopicPair.topicName"
+                [subtopicName]="topicSubtopicPair.subtopicName"
+                style="margin-right: 36px"
+            ></ep-topic-info>
+        </div>
+        <div class="flex-center" style="position: relative; padding: 12px 15px;">
+            <div *ngIf="isExpandable"
+                class="flex-center cursor-pointer"
+                style="margin-right: 15px;"
+                (click)="toggleDropdown()"
+                >
+                <span class="font-bold text-base" style="margin-right: 2px;white-space: nowrap;">{{dropdownText}}</span>
+                <img class="img-base"
+                    [class.rotate-180]="isExpanded"
+                    style="transition: transform ease 0.4s;"
+                    src="assets/images/droparrow-black.svg"/>
+            </div>
+            <img class="dropdown img-base cursor-pointer"
+                src="assets/images/nav-menu/ellipsis-vertical.svg"
+                (click)="dropdownMenuClick($event, searchResult?.contentId, searchResult?.contentType)"/>
+            <ep-dropdown-menu *ngIf="openDropdownMenuContentId === searchResult?.contentId"
+                    [dropdownItems]="dropdownItems"
+                    [ngStyle]="{'top.px': dropdownTop, 'left.px': dropdownLeft}"
+                    (onClickedOut)="closeDropdownMenu()"></ep-dropdown-menu>
+        </div>
+    </div>
+    <div class="extended-details" *ngIf="isExpanded">
+        <div class="course" *ngFor="let childSearchResult of searchResult?.children">
+            <div class="course-details">
+                <div class="flex cursor-pointer" (click)="navigateToContent()">
+                    <img class="course-icon img-lg" src="assets/images/content/icons/course.svg" />
+                    <div class="course-summary">
+                        <div class="text-lg" style="margin-bottom: 0.25rem;">{{childSearchResult?.title}}</div>
+                        <div class="text-base color-subtext">{{childSearchResult?.description}}</div>
+                    </div>
+                </div>
+                <div class="flex items-center" style="position: relative;">
+                    <button class="course-action-btn">Enroll</button>
+                    <img class="dropdown img-base cursor-pointer"
+                        src="assets/images/nav-menu/ellipsis-vertical.svg"
+                        (click)="dropdownMenuClick($event, childSearchResult?.contentId, childSearchResult?.contentType)"/>
+                    <ep-dropdown-menu *ngIf="openDropdownMenuContentId === childSearchResult?.contentId"
+                        [dropdownItems]="dropdownItems"
+                        [ngStyle]="{'top.px': dropdownTop, 'left.px': dropdownLeft}"
+                        (onClickedOut)="closeDropdownMenu()"></ep-dropdown-menu>
+                </div>
+            </div>
+            <hr>
+        </div>
+        
+    </div>
+</div>
+

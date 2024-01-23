@@ -1,0 +1,93 @@
+<div class="wrapper">
+  <ep-loading [isLoaded]="(isLoaded$ | async)">
+  <div>
+    <div class="library-header-container">
+      <form [formGroup]="form">
+        <div class="search-container" #searchContainer>
+          <div class="search-icon-container">
+            <img class="search-icon" src="assets/images/search-results/search.svg" alt="search" />
+          </div>
+          <input #searchInput
+                 formControlName="filter"
+                 type="text"
+                 class="global-search-field search-field"
+                 placeholder="Search Libraries" (keydown.enter)="$event.preventDefault()" />
+          <button (click)="onTopicsClick($event)" class="topics-filter-button">
+            Topics
+            <img class="topics-filter-icon" src="assets/images/nav-menu/droparrow-gray.svg">
+          </button>
+        </div>
+      </form>
+      <div class="active-filters-container" *ngIf="activeFilters$ | async; let activeFilters">
+        <ng-container *ngIf="activeFilters.length">
+          <div class="filter-wrapper">
+            <span class="active-filters-label">Filters:</span>
+          </div>
+          <ep-active-filters [filters]="activeFilters" (removeFilter)="onRemoveFilter($event)"></ep-active-filters>
+          <div class="filter-wrapper">
+            <span class="active-filters-clear-all" (click)="clearFilters()">Clear Filters</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <hr class="ep-hr" [ngStyle]="{'margin-top': (activeFilters$ | async).length ? '1rem' : '3rem'}">
+    <div class="sort-container" *ngIf="(shouldShowSort$ | async)">
+      <div class="flex cursor-pointer items-center" (click)="sortable.sortByProperty('name')">
+        <span class="sort-by-name">Name</span>
+        <ng-container *ngIf="sortable.triggerSort$ | async; let sortBy">
+          <img src="assets/images/arrow.svg" class="sort-by-name-order-img"
+               [ngClass]="{'sort-desc': sortBy?.order === 'desc'}">
+        </ng-container>
+      </div>
+    </div>
+    <div class="library-card-container">
+      <ng-container *ngIf="isNoDataResults$ | async; else data">
+        <div class="no-results">
+          <span class="no-results-title">Uh-oh, No Libraries In Sight!</span>
+          <span class="no-results-subtitle">
+            If the shelves are bare, reach out to our support team or your system admin for help.
+          </span>
+          <button ep-button
+                  buttonShape="pill"
+                  style="margin-top: 1.5rem; width: fit-content"
+                  (click)="onContactSupport()">
+            <img src="assets/images/question.svg" style="margin-right: 0.5rem">
+            Contact Support
+          </button>
+        </div>
+      </ng-container>
+    </div>
+    <div class="topics-filter-container"
+         [ngStyle]="topicsFilterConfig.styles"
+         *ngIf="topicsFilterConfig.isOpen"
+         #topicsFilter>
+      <ep-topics-filter [data$]="data$"
+                        [currentValues]="(topicsValues$ | async)"
+                        [currentSearchFilterValue]="(topicsSearchFilterValue$ | async)"
+                        [customStyles]="{form: {'max-height': '85vh'}, separator: true }"
+                        (searchFilterValue)="onSearch($event, filterType.TOPICS)"
+                        (filterValues)="onTopicsFilter($event, filterType.TOPICS)"></ep-topics-filter>
+      <hr class="form-separator">
+      <div class="apply-container">
+        <span (click)="isApplyFiltersActive && applyFilters()" class="apply-action" [ngClass]="{'apply-action-inactive': !isApplyFiltersActive}">Apply</span>
+      </div>
+    </div>
+  </div>
+  </ep-loading>
+</div>
+
+<ng-template #data>
+  <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+    <div class="no-results">
+      <span class="no-results-title">Results not Found</span>
+      <span class="no-results-subtitle">Try adjusting one of your active search filters.</span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #filteredData>
+  <ep-library-card *ngFor="let library of (filteredData$ | async)"
+                   [library]="library"
+                   class="library-card">
+  </ep-library-card>
+</ng-template>

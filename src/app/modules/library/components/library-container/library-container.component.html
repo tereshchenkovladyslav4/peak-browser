@@ -1,0 +1,13 @@
+<div class="wrapper">
+  <ep-loading [isLoaded]="(isLoaded$ | async)">
+    <div class="library-container">
+      <div class="library-content-search-container" style="margin-left: -48px;">
+        <ep-library-filters [isBuiltInSearchBarVisible]="true"
+                            builtInSearchBarTitle="Search Library"
+                            [isExtendedSearchAllowed]="false"
+                            class="filter"></ep-library-filters>
+      </div>
+      <ep-library-contents [library]="library$ | async" class="results"></ep-library-contents>
+    </div>
+  </ep-loading>
+</div>

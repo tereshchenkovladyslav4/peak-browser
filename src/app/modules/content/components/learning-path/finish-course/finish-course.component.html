@@ -1,0 +1,51 @@
+<ep-loading [isLoaded]="isLoaded$ | async">
+  <div class="container">
+    <ng-container [ngSwitch]="finishCourseState$ | async">
+      <div class="completed mini-container" *ngSwitchCase="FinishCourseState.Completed">
+        <img style="height: 140px; width: auto;" src="assets/images/content/icons/certificate.svg" />
+        <h1>You have completed 100% of this course!</h1>
+        <ng-container *ngIf="!!courseCertificateUrl" >
+          <span class="text-gray-1 subtext">You received a certificate of completion for this course</span>
+          <a class="certificate-link btn-override"
+            [attr.href]="courseCertificateUrl"
+            title="Course Certificate"
+            target="_blank">
+            <img src="assets/images/download-white.svg" />
+            Download Certificate
+          </a>
+        </ng-container>
+        <a class="text-blue-3 cursor-pointer" 
+          style="font-weight: 700;" 
+          (click)="shareFeedback()">Share Your Feedback</a>
+      </div>
+      <div class="partially-completed mini-container" *ngSwitchCase="FinishCourseState.PartiallyCompleted">
+        <img style="height: 53px; width: 53px;" src="assets/images/warning.svg" />
+        <h1>You have completed {{activeCourseProgress$ | async}}% of this course.</h1>
+        <span class="text-gray-1 subtext" style="font-size: 1rem;">Are you sure you want to finish this course?  If you move forward you will not receive a certificate.</span>
+      </div>
+      <div class="drop-course mini-container" *ngSwitchCase="FinishCourseState.UnfinishedQuizzes">
+        <img style="height: 47px; width: 47px; margin-bottom: 20px;" src="assets/images/circle-x-outline.svg" />
+        <h1 style="margin-bottom: 35px;">You have reviewed {{activeCourseProgress$ | async}}% of course content. Unfortunately, you can't mark it as complete.</h1>
+        <span class="text-gray-1 subtext" style="font-size: 1.25rem; margin-bottom: 5px;">You haven't passed all required quizzes.</span>
+        <span class="text-gray-1 subtext">For more information about this course and the ones you've wrapped up successfully, head over to the Enrollment History in the Assignments area.</span>
+        <button ep-button 
+          class="btn-override"
+          style="padding: 8px 20px;"
+          (click)="navigateToEnrollmentHistory()">View Enrollment History</button>
+      </div>
+      <div class="drop-course mini-container" *ngSwitchCase="FinishCourseState.HasToDrop">
+        <img style="height: 47px; width: 47px; margin-bottom: 20px;" src="assets/images/circle-x-outline.svg" />
+        <h1 style="margin-bottom: 35px;">You have reviewed {{activeCourseProgress$ | async}}% of course content. Unfortunately, you can't mark it as complete.</h1>
+        <span class="text-gray-1 subtext" style="font-size: 1.25rem; margin-bottom: 5px;">You haven't passed all required quizzes. Please drop this course.</span>
+        <span class="text-gray-1 subtext">For more information about this course and the ones you've wrapped up successfully, head over to the Enrollment History in the Assignments area.</span>
+        <button ep-button 
+          class="btn-override"
+          style="padding: 8px 20px;"
+          (click)="navigateToEnrollmentHistory()">View Enrollment History</button>
+      </div>
+      <ng-container *ngSwitchCase="FinishCourseState.Error">
+        <h1>An issue has occurred while trying to finalize this course for you</h1>
+      </ng-container>
+    </ng-container>
+  </div>
+</ep-loading>

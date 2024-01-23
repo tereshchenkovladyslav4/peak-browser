@@ -1,0 +1,27 @@
+<div class="content-footer-container">
+  <ep-horizontal-tabs [tabs]="tabs$ | async"
+    tabFontWeight="700"
+    tabFontSize="1.25rem"
+    [isSticky]="true"
+    tabBackgroundColor="white"
+    (onTabChange)="setCurrentTabKey($event)" ></ep-horizontal-tabs>
+  <ng-container *ngIf="activeContentDetails$ | async as content">
+    <div class="selected-tab">
+      <ng-container [ngSwitch]="currentTabKey">
+        <ep-content-footer-description 
+          *ngSwitchCase="footerTab.DESCRIPTION"
+          [description]="content?.description"></ep-content-footer-description>
+        <ep-content-footer-related-content 
+          *ngSwitchCase="footerTab.RELATED_CONTENT"
+          [relatedContents]="relatedContent"></ep-content-footer-related-content>
+        <ep-content-footer-prerequisites 
+          *ngSwitchCase="footerTab.PREREQUISITES"
+          [prerequisites]="content?.prerequisites"></ep-content-footer-prerequisites>
+        <ep-content-footer-comments 
+          *ngSwitchCase="footerTab.COMMENTS"
+          [contentId]="content?.id" 
+          [contentType]="content?.type"></ep-content-footer-comments>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>

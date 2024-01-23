@@ -1,0 +1,37 @@
+.truncate-container {
+  position: relative;
+}
+
+.truncate-content {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.full-text-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px 2px rgba(0, 0, 0, 0.1);
+  color: var(--color-1-blue-2);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.truncate-container:hover .full-text-card {
+  opacity: 1;
+  height: unset;
+  transition: all 300ms 500ms;
+}

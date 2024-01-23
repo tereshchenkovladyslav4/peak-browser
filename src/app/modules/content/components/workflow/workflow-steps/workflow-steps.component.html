@@ -1,0 +1,35 @@
+<ng-container *ngIf="steps$ | async as steps; else noSteps">
+  <ng-container *ngIf="task$ | async as task;">
+    <span class="task-name">{{((openProcessIndex$ | async) + 1) + '.' + ((activeTaskIndex$ | async) + 1) + ' ' + task?.name}}</span>
+    <span class="task-desc">{{task?.description}}</span>
+  </ng-container>
+  <div class="step-container">
+    <div *ngFor="let step of steps; index as stepIndex" class="step-dropdown">
+      <div class="header cursor-pointer" 
+        [class.active]="stepIndex === activeStepIndex"
+        (click)="toggleDropdown(stepIndex)">
+        <span class="name">{{step?.name}}</span>
+        <img style="transition: transform 400ms;" [class.rotate-icon]="stepIndex === activeStepIndex"
+          src="assets/images/dropdown-arrow-circle.svg" />
+      </div>
+      <div class="body ep-slider"
+        [class.closed]="stepIndex !== activeStepIndex">
+        <ng-container *ngIf="step?.description; else showPlainDesc">
+          <span [modalHTML]="step?.description" class="desc"></span>
+        </ng-container>
+        <ng-template #showPlainDesc>
+          <span class="desc">{{step?.plainDescription}}</span>
+        </ng-template>
+        <img *ngIf="!step?.imageUrl" [src]="step?.imageUrl" />
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #noSteps>
+  <div class="unselected-task"
+    [style.margin-top.px]="(viewState$ | async) !== 'Tree Only' ? 200 : 0"
+    [style.justify-content]="(viewState$ | async) === 'Tree Only' ? 'center' : 'flex-start'">
+    <img src="assets/images/content-types/workflow.svg" style="opacity: 0.2; padding-right: 18px;" />
+    <span style="color: #87919F;">{{'workflow-steps.unselected-task' | Translate}}</span>
+  </div>
+</ng-template>

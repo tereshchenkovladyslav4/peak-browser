@@ -1,0 +1,59 @@
+:host {
+  height: 35px;
+}
+
+.user {
+  width: 35px;
+  height: 35px;
+  font-weight: 500;
+  font-size: initial;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: grey;
+  border-radius: 50%;
+}
+
+.user,
+.initials-container {
+    cursor: pointer;
+}
+
+.user-profile-image {
+  border-radius: 50%;
+  overflow: hidden;
+  -o-object-fit: cover;
+  object-fit: cover;
+  width: 35px;
+  height: 35px;
+  color: grey;
+}
+
+.user {
+  background: #ced4da;
+}
+
+.initials {
+  color: white;
+  user-select: none;
+  display: flex;
+}
+
+.overlay-background {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius:50px;
+    border: 1px solid #D7DADF;
+    background-color: #FFF;
+    width: 36px;
+    height: 36px;
+}
+
+.overlay-img {
+    width: 20px;
+    height: 20px;
+}

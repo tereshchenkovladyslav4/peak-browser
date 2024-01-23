@@ -1,0 +1,6 @@
+<div class="search-container">
+  <ep-search-filter class="filter"></ep-search-filter>
+  <ep-search-results class="results ep-scrollbar"
+    [searchTerms]="searchTerms"
+    (scroll)="onScroll($event)"></ep-search-results>
+</div>

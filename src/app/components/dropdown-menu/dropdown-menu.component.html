@@ -1,0 +1,39 @@
+<ng-container *ngFor="let item of dropdownItems">
+  <ng-container *ngIf="item?.visible">
+    <ng-container [ngSwitch]="item?.iconUrl">
+      <div *ngSwitchCase="'profile'" class="dropdown-item">
+        <div class="dropdown-item-content">
+          <ep-user-profile-menu />
+        </div>
+        <div *ngIf="item?.children?.length" class="right-arrow" (click)="menuPanel.show($event)"></div>
+      </div>
+      <hr *ngSwitchCase="'hr'" class="ep-dropdown-divider" />
+      <div
+        *ngSwitchDefault
+        class="dropdown-item cursor-pointer"
+        (click)="dropdownItemAction(item?.action); $event.stopPropagation()"
+      >
+        <img class="img-base" [src]="item.iconUrl" [style.visibility]="item?.iconUrl ? 'auto' : 'hidden'" />
+        <span>{{ item?.text }}</span>
+      </div>
+
+      <p-overlayPanel #menuPanel (onShow)="handleShowSubmenu()" (onHide)="isSubMenuOpen = false">
+        <ng-template pTemplate="content">
+          <div class="sub-menu-wrap">
+            <ng-container *ngFor="let subMenu of item?.children">
+              <div
+                class="dropdown-item cursor-pointer"
+                (click)="subMenuAction(subMenu?.action); $event.stopPropagation()"
+              >
+                <img class="img-base" [src]="subMenu.iconUrl" [style.visibility]="subMenu?.iconUrl ? 'auto' : 'hidden'" />
+                <span>{{ subMenu?.text }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </ng-template>
+      </p-overlayPanel>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<div *ngIf="isSubMenuOpen" class="dark-overlay"></div>

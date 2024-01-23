@@ -1,0 +1,11 @@
+<div class="collapse-icon-container"
+  [ngClass]="{'scale-up': scaleUpClassCondition, 'scale-down': scaleDownClassCondition}"
+  [style.top.px]="top"
+  [style.right.px]="right"
+  [style.left.px]="left">
+  <img class="collapse-icon cursor-pointer"
+      src="assets/images/nav-menu/collapse-icon.svg"
+      [class.icon-collapsed]="rotateIconClassCondition"
+      [class.reverse]="reverseIcon"
+      (click)="onClicked()"/>
+</div>

@@ -1,0 +1,12 @@
+<div class="profile-content">
+  <ep-user-profile-image [userImageUrl]="userImageUrl$ | async" [displayName]="displayName$ | async" />
+  <div>
+    <div class="profile-name">
+      {{ displayName$ | async }}
+    </div>
+    <div class="tenant-name">
+      {{ currentTenantDetails?.tenantName }}
+    </div>
+  </div>
+</div>
+

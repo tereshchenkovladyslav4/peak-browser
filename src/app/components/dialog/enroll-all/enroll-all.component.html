@@ -1,0 +1,65 @@
+<ep-dialog-base>
+  <ng-container title>
+    <div class="title">Enroll in all courses?</div>
+    <div class="close-button" (click)="close(false)">
+      <img
+        class="dropdown cursor-pointer close-icon"
+        src="assets/images/close.svg"
+        alt="close"
+      />
+    </div>
+  </ng-container>
+
+  <ng-container content>
+    <div class="subtitle">
+      You are about to enroll in all the courses contained in ‘{{
+        data?.learningPath?.name
+      }}’. You can optionally set a due date for completing these courses.
+    </div>
+
+    <div class="ep-mt-5">
+      <p-checkbox
+        [(ngModel)]="isAssignDueDate"
+        [binary]="true"
+        label="Assign a due date for completion"
+      ></p-checkbox>
+      <div class="ep-mt-2">
+        <span class="p-float-label">
+          <p-calendar
+            id="dueDate"
+            [(ngModel)]="dueDate"
+            [showIcon]="true"
+            [showButtonBar]="true"
+            [disabled]="!isAssignDueDate"
+          ></p-calendar>
+          <label for="dueDate">Due Date</label>
+        </span>
+      </div>
+    </div>
+
+    <!--
+    <div class="ep-mt-45">
+      <p-checkbox
+        [(ngModel)]="isPersonalize"
+        [binary]="true"
+        inputId="isPersonalize"
+        label="Personalize My learning"
+      ></p-checkbox>
+      <div class="text-gray-1 ep-mt-2 personalize-desc">
+        Select a skills assessment to identify your skill gaps and personalize
+        learning. You will be able to select the assessment of your choice an
+        optionally set an expire date for the assessment.
+      </div>
+    </div>
+    -->
+  </ng-container>
+
+  <ng-container actions>
+    <div class="button-container ep-mt-5">
+      <button ep-button (click)="close()">Cancel</button>
+      <button ep-button buttonType="green" (click)="enroll()">
+        Enroll in All
+      </button>
+    </div>
+  </ng-container>
+</ep-dialog-base>

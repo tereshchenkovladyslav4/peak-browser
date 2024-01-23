@@ -1,0 +1,33 @@
+<div class="card-container">
+  <ep-bookmark-card-icon *ngIf="isBookmarked"></ep-bookmark-card-icon>
+  <div class="top-image-container">
+    <div *ngIf="checkbox" class="checkbox-container">
+      <ep-checkbox-input (selectedChange)="selectEvent(content)"
+                         [selected]="content?.selected"
+                         [disabled]="content?.disabled">
+      </ep-checkbox-input>
+    </div>
+    <ng-container *ngIf="clickable else noClick">
+      <img [src]="contentImage" class="pointer " [ngClass]="imageClass" (click)="clickEvent()" alt="">
+    </ng-container>
+    <ng-template #noClick>
+      <img [src]="contentImage" [ngClass]="imageClass" alt="">
+    </ng-template>
+  </div>
+  <div class="kebab-container" *ngIf="dropdownItems" [class.show]="isMenuOpened">
+    <ep-dropdown-menu-container [id]="content?.data?.id" [contentType]="content.data.type" [dropdownItems]="dropdownItems" (statusEmitter)="isMenuOpened = $event">
+    </ep-dropdown-menu-container>
+  </div>
+  <div class="bottom-info-container">
+    <div class="icon-container">
+      <ng-container *ngIf="!isFolder && contentTypeImage">
+        <img class="ml-2 icon" [src]="contentTypeImage" [alt]="type" />
+      </ng-container>
+    </div>
+
+    <div class="folder-name">
+      <span class="ellipsis other-content card-name">{{content.data?.name}}</span>
+      <span class="ellipsis other-content content-type">{{content.data?.contentTypeMeta?.label}}</span>
+    </div>
+  </div>
+</div>

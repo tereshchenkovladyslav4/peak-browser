@@ -1,0 +1,22 @@
+<div class="user"
+     [ngStyle]="diameter && {'width': diameter+'px', 'height': diameter+'px'}"
+     [style.position]="overlayActionImg !== '' ? 'relative' : ''">
+
+  <img *ngIf="userImageUrl; else initialsRef;"
+       [ngStyle]="diameter && {'width': diameter+'px', 'height': diameter+'px'}"
+       class="user-profile-image" [src]="userImageUrl" alt="U">
+
+  <span *ngIf="overlayActionImg"
+        class="overlay-background"
+        [ngStyle]="diameter && {'right': '0px', 'bottom': '0px', 'position':'absolute'}"      
+        (click)="executeOverlayAction()">
+    <img class="overlay-img" [src]="overlayActionImg" />
+  </span>
+
+</div>
+<ng-template #initialsRef>
+  <div class="initials-container">
+    <span class="initials"
+          [ngStyle]="diameter && {'font-size': diameter/3+'px'}">{{initials}}</span>
+  </div>
+</ng-template>

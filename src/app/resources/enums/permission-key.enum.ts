@@ -1,0 +1,15 @@
+export enum PermissionKey {
+  DB_ADMIN = 'db_admin',
+  DB_ASSIGNOR = 'db_assignor',
+  DB_CONTENT_AUTHOR = 'db_content_author',
+  DB_CONTENT_PUBLISHER = 'db_content_publisher',
+  DB_CREATE_EXTERNAL = 'db_create_external',
+  DB_ENROLL_LP = 'db_enroll_lp',
+  DB_MANAGE_BRANDING = 'db_manage_branding',
+  DB_PROCESS_AUTHOR = 'db_process_author',
+  DB_PROJECT_MANAGER = 'db_project_manager',
+  DB_RESTRICT_SUPPORT = 'db_restrict_support',
+  DB_SENSITIVE_INFO = 'db_sensitive_info',
+  DB_WORKGROUP_ADMIN = 'db_workgroup_admin',
+  DB_WORKGROUP_CREATE = 'db_workgroup_create',
+}

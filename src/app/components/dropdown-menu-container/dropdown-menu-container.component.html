@@ -1,0 +1,30 @@
+<ng-container *ngIf="showCustomTrigger; else defaultTrigger">
+  <div (click)="dropdownMenuClick($event); menuPanel.toggle($event)">
+    <ng-content></ng-content>
+  </div>
+</ng-container>
+
+<ng-template #defaultTrigger>
+  <div
+    class="dropdown-container"
+    [class.transparent]="isTransparent"
+    [style.box-shadow]="enableBoxShadow ? '0 2px 3px 0 #00000040' : 'none'"
+    [style.background-color]="enableBgColor ? '#fff' : 'none'"
+    (click)="dropdownMenuClick($event); menuPanel.toggle($event)"
+  >
+    <img class="dropdown img-base cursor-pointer" src="assets/images/nav-menu/ellipsis-vertical.svg" />
+  </div>
+</ng-template>
+
+<p-overlayPanel #menuPanel>
+  <ng-template pTemplate="content">
+    <ep-dropdown-menu
+      [dropdownItems]="dropdownItems"
+      [activationElement]="elRef"
+      [ngStyle]="{ position: 'unset' }"
+      [isLegacy]="false"
+      (onClickedOut)="closeDropdownMenu()"
+    >
+    </ep-dropdown-menu>
+  </ng-template>
+</p-overlayPanel>

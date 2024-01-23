@@ -1,0 +1,22 @@
+<div class="floating-form mt-3" [attr.title]="this.value + '/5'" style="display: flex; justify-content: space-between;">
+
+    <div class="floating-label ff">
+
+        <!--This input is never used. Just for formating the
+        input field so that it is consistent with all
+        other input fields. Everything actually
+        happens in ep-star-rating down below.-->
+        <input class="floating-input"
+               disabled
+               placeholder=" ">
+
+        <label class="input-label-color long-placeholder">
+            {{placeholder}}
+        </label>
+    </div>
+
+    <img *ngIf="disabled" src="assets/images/Lock.svg" alt="" class="floating-lock-image" />
+
+    <ep-star-rating class="rating-input-footer-container" [value]="value" [allowEditing]="!disabled" (valueChange)="onRatingChanged($event)"></ep-star-rating>
+
+</div>

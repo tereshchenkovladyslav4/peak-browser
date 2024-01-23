@@ -1,0 +1,42 @@
+/* FONT SIZES */
+.text-sm {
+  font-size: 0.625rem;
+  /* 10px */
+}
+
+.text-base {
+  font-size: 0.75rem;
+  /* 12px */
+}
+
+.text-lg {
+  font-size: 0.875rem;
+  /* 14px */
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  /* 20px */
+}
+
+/* FONT WEIGHT */
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* TEXT COLOR*/
+.text-blue-3 {
+  color: var(--color-1-blue-3);
+}
+
+.text-gray-1 {
+  color: var(--color-1-grey-1);
+}

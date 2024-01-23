@@ -1,0 +1,9 @@
+<div class="ep-tooltip"
+  [ngClass]="['ep-tooltip--' + position, 'ep-tooltip--' + theme, (enableArrow ? 'ep-tooltip--' + position + '-arrow' : '')]"
+  [ngStyle]="customStyles"
+  [class.ep-tooltip--visible]="visible"
+  [style.left]="left + 'px'" 
+  [style.top]="top + 'px'"
+  [style.width]="width ? width : ''">
+  {{tooltip}}
+</div>

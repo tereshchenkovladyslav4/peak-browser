@@ -1,0 +1,49 @@
+<ng-container [ngSwitch]="textInputType">
+
+    <ng-container *ngSwitchCase="'ShortFormText'">
+        <div class="shortForm floating-form mt-3">
+            <div class="floating-label ff image-input">
+                <input class="floating-input"
+                       [ngStyle]="disabled === true ? {'width': '90%'} : {'':''}"
+                       maxlength="255"
+                       type="text"
+                       (paste)="onPaste($event, 255)"
+                       placeholder=" "
+                       (keydown)="validatekeyDown($event.key)"
+                       [(ngModel)]="value"
+                       [disabled]="disabled">
+
+                <span class="highlight"></span>
+
+                <label class="input-label-color long-placeholder">{{placeholder}}</label>
+
+                <img *ngIf="disabled" src="assets/images/Lock.svg" alt="" class="floating-lock-image" />
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'LongFormText'" >
+        <div class="longForm floating-form mt-3">
+            <div class="floating-label ff image-input">
+                <textarea class="floating-input"
+                          [ngStyle]="disabled === true ? {'width': '90%'} : {'':''}"
+                          maxlength="500"
+                          (paste)="onPaste($event, 500)"
+                          placeholder=" "
+                          (keydown)="validatekeyDown($event.key)"
+                          [(ngModel)]="value"
+                          [disabled]="disabled"
+                          wrap="hard"></textarea>
+
+                <span class="highlight"></span>
+
+                <label class="input-label-color long-placeholder">{{placeholder}}</label>
+
+                <img *ngIf="disabled" src="assets/images/Lock.svg" alt="" class="floating-lock-image" />
+            </div>
+        </div>
+    </ng-container>
+
+</ng-container>
+
+

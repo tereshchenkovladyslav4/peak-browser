@@ -1,0 +1,28 @@
+.tab-container {
+  display: flex;
+  position: sticky;
+  top: 0;
+  padding-top: 20px;
+  z-index: 1;
+}
+
+.group-underline {
+  border-bottom: 1px solid #D7DADF;
+}
+
+.tab {
+  padding-bottom: 5px;
+  margin-right: 50px;
+  color: #87919F;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tab-active {
+  font-weight: 700;
+  color: black;
+}
+
+.tab-active-border {
+  border-bottom: 3px solid #6391FF;
+}

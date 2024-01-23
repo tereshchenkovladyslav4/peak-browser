@@ -1,0 +1,54 @@
+<div class="form">
+  <form [formGroup]="form">
+    <div class="form-field">
+      <span class="comment-label"
+            [ngClass]="{'comment-label-active': !!form.get('commentText').value || commentText['focused']}">
+        Comment
+      </span>
+      <textarea formControlName="commentText"
+                class="comment-input"
+                #commentText
+                (focus)="commentText['focused'] = true"
+                (blur)="commentText['focused'] = false">
+      </textarea>
+      <button ep-button
+              buttonShape="pill"
+              [buttonType]="form.get('commentText').value ? 'secondary' : 'normal' "
+              class="post-button"
+              [ngClass]="{'active': !!form.get('commentText').value}"
+              [disabled]="!form.get('commentText').value || disablePost"
+              (click)="onPostClick()">Post
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="comments">
+  <div class="comment-container" *ngFor="let comment of enrichedComments$ | async">
+    <div class="comment-content">
+      <ep-user-profile-image [userImageUrl]="comment?.imageURL"
+                             [displayName]="comment?.name"
+                             class="profile-image"></ep-user-profile-image>
+      <div class="text-content">
+        <div class="meta-info">
+          <span class="text-lg ep-overflow-ellipsis author"
+                style="max-width: 200px;"
+                epTooltip>
+            {{comment?.name}}
+          </span>
+          <span class="text-lg ep-overflow-ellipsis publish-date"
+                style="max-width: 200px;">
+            {{comment?.publishDate | date:'shortDate'}} at {{comment?.publishDate | date:'shortTime'}}
+          </span>
+        </div>
+      <span class="comment-text" style="word-break: break-word;">
+        {{comment?.commentText}}
+      </span>
+      </div>
+    </div>
+    <div *ngIf="comment?.canDelete" class="delete-container" (click)="onDeleteClick(comment?.commentId)">
+      <span class="delete">Delete</span>
+      <img class="delete-icon" src="assets/images/content/icons/trash.svg" alt="delete icon">
+    </div>
+  </div>
+</div>

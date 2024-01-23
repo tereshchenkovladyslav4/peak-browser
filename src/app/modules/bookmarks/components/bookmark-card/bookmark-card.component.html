@@ -1,0 +1,41 @@
+<div class="bookmark-card-container" (click)="onBookmarkClick()">
+  <div class="bookmark-image-container">
+    <ep-bookmark-card-icon></ep-bookmark-card-icon>
+    <img *ngIf="!!image; else defaultImage" [src]="image" class="bookmark-image"
+         alt="bookmark-image">
+  </div>
+  <div class="bookmark-content">
+    <div class="bookmark-meta">
+      <div class="bookmark-content-type">
+        <img class="img-base"
+             style="margin-right: 5px;"
+             [src]="contentTypeIconUrl" />
+        <span class="font-normal text-base color-subtext bookmark-content-type-label">{{contentTypeName}}</span>
+      </div>
+    </div>
+
+    <div class="kebab-container" *ngIf="dropdownItems" [class.show]="isMenuOpened">
+      <ep-dropdown-menu-container [id]="bookmark?.content?.id" [contentType]="bookmark?.content?.type" [dropdownItems]="dropdownItems" (statusEmitter)="isMenuOpened = $event">
+      </ep-dropdown-menu-container>
+    </div>
+
+    <div class="bookmark-titles-container">
+      <div class="bookmark-title-label" epTextTruncate [rows]="2" (rowsCalculated)="titleRows = $event">
+        {{bookmark?.content?.name}}
+      </div>
+      <div class="bookmark-subtitle">
+        <div class="bookmark-subtitle-label" [ngClass]="(subtitleClass$ | async) || initSubtitleClass()">
+          {{bookmark?.content?.publisher?.name}}
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: auto;">
+      <hr />
+      <!-- Content Type Specific Label -->
+      <div class="content-type-label">{{contentSummary}}</div>
+    </div>
+  </div>
+</div>
+<ng-template #defaultImage>
+  <img [src]="contentTypeIconUrl" class="default-bookmark-image" alt="bookmark-image">
+</ng-template>

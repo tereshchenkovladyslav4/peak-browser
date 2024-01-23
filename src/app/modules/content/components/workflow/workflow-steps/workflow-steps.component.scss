@@ -1,0 +1,72 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 40px;
+  overflow-y: auto;
+  padding-bottom: 15px;
+  user-select: none;
+  min-width: 300px;
+}
+
+.task-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 28px;
+  margin-bottom: 15px;
+}
+
+.task-desc {
+  font-size: 0.875rem;
+  line-height: 20px;
+  color: #87919f;
+  margin-bottom: 30px;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.step-dropdown {
+  border-radius: 10px;
+  border: 1px solid #D7DADF;
+  background: rgba(215, 218, 223, 0.20);
+  padding: 22px 30px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.header .name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+.body:not(.closed) {
+  margin-top: 20px;
+}
+
+.body.closed {
+  overflow: hidden;
+}
+
+.unselected-task {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  gap: 37px;
+  min-width: 300px;
+}

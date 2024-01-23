@@ -1,0 +1,7 @@
+<div class="duration-container">
+  <div class="custom-slider" *ngIf="options">
+    <ngx-slider [(value)]="minValue" [(highValue)]="highValue" [options]="options"
+                (userChange)="onUserChange($event)">
+    </ngx-slider>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+/* BUTTONS */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button:hover:not(:disabled),
+input[type="submit"]:not(:disabled) {
+  cursor: pointer;
+}
+
+/* CURSOR */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* USER SELECT */
+.select-none {
+  user-select: none;
+}
+
+/* TRANSITIONS */
+.expanded {
+  transform: rotate(180deg);
+  transition: all ease 0.4s;
+}
+
+.is-collapsed {
+  transform: rotate(0deg);
+  transition: all ease 0.4s;
+}
+
+.scale-up {
+  transform: scale(1);
+  transition: transform ease-in-out 120ms 120ms;
+}
+
+.scale-down {
+  transform: scale(0);
+  transition: transform ease-in-out 120ms;
+}
+
+.spin {
+  animation: 2s infinite linear spin-counterclockwise;
+}
+
+@keyframes spin-counterclockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-1turn);
+  }
+}

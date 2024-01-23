@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <ep-loading [isLoaded]="!isLoading">
+    <ep-home-section
+      *ngIf="assignments?.length"
+      [section]="HomeSection.ASSIGNMENTS"
+      sectionTitle="Assignments"
+      [link]="'/' + APP_ROUTES.assignments"
+      [items]="assignments"
+    />
+
+    <ep-home-section
+      [section]="HomeSection.LIBRARIES"
+      sectionTitle="Libraries"
+      [link]="'/' + APP_ROUTES.libraries"
+      [items]="libraries"
+    />
+  </ep-loading>
+</div>

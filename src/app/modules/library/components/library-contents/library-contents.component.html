@@ -1,0 +1,56 @@
+<div class="page">
+  <div class="header-container"
+       [style.background-image]="bannerStyle">
+    <span class="title">{{ library?.name }}</span>
+    <span
+      class="description">{{ library?.description }}</span>
+    <span class="count">{{ libraryContentsCount$ | async }} Content Items</span>
+  </div>
+  <div class="contents-header-container">
+    <span class="subtitle">All Content</span>
+    <hr class="ep-hr">
+  </div>
+  <div class="contents-sortable-container">
+    <div class="flex items-center" *ngIf="(shouldShowSort$ | async)">
+      <div class="sort-container cursor-pointer" (click)="sortable.sortByProperty('name')">
+        <span class="sort-by-name">Name</span>
+        <ng-container *ngIf="sortable.triggerSort$ | async; let sortBy">
+          <img src="assets/images/arrow.svg" class="sort-by-name-order-img"
+               [ngClass]="{'sort-desc': sortBy?.order === 'desc'}">
+        </ng-container>
+      </div>
+    </div>
+    <div class="contents-container">
+      <ng-container *ngIf="isNoDataResults$ | async; else data">
+        <div class="no-results">
+          <span class="no-results-title">No content has been added.</span>
+          <button ep-button
+                  buttonShape="pill"
+                  style="margin-top: 1rem; width: fit-content"
+                  (click)="onNavigateToLibraries()">
+            <img src="assets/images/libraries-dark.svg" class="library-icon">
+            Browse Libraries
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #data>
+  <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+    <div class="no-results">
+      <span class="no-results-title">Results not Found</span>
+      <span class="no-results-subtitle">Try adjusting one of your active search filters.</span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #filteredData>
+  <ng-container *ngIf="(filteredData$ | async); let libraryContents">
+    <ng-container *ngFor="let content of libraryContents">
+      <ep-card-view class="content-card" [content]="content.tableRow" (click)="onCardClick(content?.tableRow)"
+                    [dropdownItems]="content?.dropdownItems"></ep-card-view>
+    </ng-container>
+  </ng-container>
+</ng-template>

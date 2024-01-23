@@ -1,0 +1,22 @@
+.bookmark-wrap {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bookmark-wrap img {
+  height: 16px;
+}
+
+.bookmark-wrap.white {
+  min-height: 30px;
+  min-width: 30px;
+  max-height: 30px;
+  max-width: 30px;
+  background-color: rgba(31, 40, 58, 0.5);
+}
+.bookmark-wrap.white img {
+  width: 20px;
+  height: 20px;
+}

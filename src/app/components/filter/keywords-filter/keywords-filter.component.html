@@ -1,0 +1,32 @@
+<ng-container *ngIf="(emptyForm$ | async); else keywordsAvailable">
+  <span>{{'keywords-filter.no-keywords' | Translate}}</span>
+</ng-container>
+
+<ng-template #keywordsAvailable>
+  <form [formGroup]="filterForm">
+    <div class="search-container">
+      <img class="search-icon" src="assets/images/search-results/search.svg" alt="search"/>
+      <input formControlName="filter"
+             type="text"
+             class="filter-control"
+             placeholder="Search Keywords"/>
+    </div>
+  </form>
+  
+  <form class="filter-section-scroll" [formGroup]="form" *ngIf="form">
+    <div class="filter-container"
+         *ngIf="'no keywords assigned'.includes(filterForm?.get('filter')?.value?.toLowerCase()) ||
+                !filterForm?.get('filter')?.value">
+      <ep-checkbox-input [selected]="form.get('noKeywordsAssigned').value"
+                         (selectedChange)="onSelectedChanged($event)"></ep-checkbox-input>
+      <span class="topic">{{'keywords-filter.no-keywords-assigned' | Translate}}</span>
+    </div>
+    <ng-container class="filter-container" *ngFor="let keyword of (keywords$ | async)">
+      <div class="filter-container" *ngIf="keyword?.show">
+        <ep-checkbox-input [selected]="form.get([keyword?.name]).value"
+                           (selectedChange)="onKeywordSelectedChanged($event, keyword?.name)"></ep-checkbox-input>
+        <span>{{keyword?.name}}</span>
+      </div>
+    </ng-container>
+  </form>
+</ng-template>

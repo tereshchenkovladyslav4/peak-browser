@@ -1,0 +1,86 @@
+<div style="text-align:center;">
+  <div class="login-form" style="text-align:left;">
+
+    <!-- Email form. Takes an email and retrieves organization information
+        for the associated user so the password form can provide a list of tenants. -->
+    <form *ngIf="formStatus === 0" [formGroup]="loginForm" (ngSubmit)="submitEmail()">
+      <div class="mb-3">
+        <label class="form-label">
+          <span>{{emailLabel}}:</span>
+        </label>
+        <input class="form-control" type="email" formControlName="email">
+
+        <!-- Provide but hide the password input so browsers will offer credential autosaving. -->
+        <input class="form-control" type="password" style="display:none;" aria-hidden="true">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          <span>{{langLabel}}:</span>
+        </label>
+        <select class="form-select" formControlName="language">
+          <option [ngValue]="null" disabled>{{langSelect}}</option>
+          <option *ngFor="let l of allLanguages" [ngValue]="l.code">
+            {{l.name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3" style="float:right;">
+        <input class="form-control" style="width:150px;" type="submit" value="{{nextLabel}}">
+      </div>
+    </form>
+
+    <!-- Password form. Takes a password to log the user into the selected tenant. -->
+    <form *ngIf="formStatus === 1" [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="mb-3">
+        <label class="form-label">
+          <span>{{'app-login-component.password-label' | Translate}}:</span>
+
+        </label>
+        <!-- Provide but hide the email input so browsers will offer
+  credential autosaving. -->
+        <input class="form-control" type="email" style="display:none;" aria-hidden="true">
+
+        <input class="form-control" type="password" formControlName="password">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          <span>{{'app-login-component.tenant-label' | Translate}}:</span>
+        </label>
+        <select class="form-select" formControlName="tenant">
+          <option [ngValue]="null" disabled>{{'app-login-component.tenant-select-message' | Translate}}</option>
+          <option *ngFor="let t of allTenants" [ngValue]="t">
+            {{t.name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          <span>{{'app-login-component.language-label' | Translate}}:</span>
+        </label>
+        <select class="form-select" formControlName="language">
+          <option [ngValue]="null" disabled>{{'app-login-component.language-select-message' | Translate}}</option>
+          <option *ngFor="let l of allLanguages" [ngValue]="l.code">
+            {{l.name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3" style="float:right;">
+        <input type="submit" class="form-control" style="width:150px;" value="{{'app-login-component.log-in-label' | Translate}}">
+      </div>
+    </form>
+
+    <form *ngIf="formStatus === 2">
+      <div class="message">{{'app-login-component.loading-message' | Translate}}</div>
+    </form>
+
+    <form *ngIf="formStatus === 3">
+      <div class="message">{{'app-login-component.error-message' | Translate}}</div>
+      <input class="form-control" type="button" value="{{'app-login-component.okay-label' | Translate}}" (click)="reset()">
+    </form>
+  </div>
+</div>

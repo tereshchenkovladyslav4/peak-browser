@@ -1,0 +1,12 @@
+<div style="padding-right: 50px; padding-top:25px;" [ngStyle]="customStyles">
+  <video-player #videoPlayerViewPage
+    [videoInfo]="videoInfo" 
+    [transcriptDiv]="'videoTranscript'" 
+    [videoPlayerStateServiceType]="'view_page'" 
+    [autoPlay]="false"
+    (loadedEvent)="onLoaded($event)"
+    (playEvent)="onPlay($event)"
+    (timeUpdateEvent)="onTimeUpdate($event)"
+    (pauseEvent)="onPause($event)"
+    (endEvent)="onEnded($event)"></video-player>
+</div>

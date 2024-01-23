@@ -1,0 +1,6 @@
+<button class="course-dropdown-btn" ep-button buttonShape="pill" (click)="courseActionButtonClicked.emit()">
+  <div class="left-button">{{ course?.actionBtnText }}</div>
+  <ep-dropdown-menu-container [id]="'id'" [contentType]="" [dropdownItems]="dropdownItems" [showCustomTrigger]="true">
+    <div class="right-button"></div>
+  </ep-dropdown-menu-container>
+</button>

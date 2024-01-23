@@ -1,0 +1,11 @@
+.loading {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+ep-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}

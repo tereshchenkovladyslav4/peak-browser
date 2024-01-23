@@ -1,0 +1,32 @@
+.no-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-results-title {
+  color: var(--color-1-blue-2);
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.no-results-subtitle {
+  color: var(--color-1-blue-2);
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin-top: 4px;
+}
+
+.actions-wrap {
+  margin-top: 30px;
+  display: flex;
+  gap: 30px;
+}

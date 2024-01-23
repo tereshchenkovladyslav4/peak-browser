@@ -1,0 +1,141 @@
+/* DISPLAY */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ALIGN ITEMS */
+.items-center {
+  align-items: center;
+}
+
+/* HR */
+.ep-hr {
+  border: 1px solid #D7DADF;
+  margin: 0.25rem 3rem;
+  width: auto;
+}
+
+/* SLIDER */
+/* ngx slider styles - to match Admin */
+.ngx-slider {
+  zoom: 1.149; /* counter global zoom */
+}
+
+.ngx-slider .ngx-slider-pointer {
+  cursor: pointer;
+  width: 23px !important; /* counter global zoom */
+  height: 23px !important; /* counter global zoom */
+  top: -13px !important;
+  background-color: #6391ff !important;
+  z-index: 3;
+  border-radius: 16px;
+}
+
+.ngx-slider .ngx-slider-bar-wrapper {
+  margin-top: -19px !important; /* counter global zoom */
+}
+
+.ngx-slider-floor,
+.ngx-slider-model-value, 
+.ngx-slider-model-high,
+.ngx-slider-high,
+.ngx-slider-model-ceil, 
+.ngx-slider-ceil,
+.ngx-slider-combined {
+  font-size: 14px !important; /* apply this to all of these to counter global zoom */
+}
+
+.ngx-slider .ngx-slider-pointer:focus-visible {
+  top: -13px !important;
+  background-color: #6391ff !important;
+}
+
+.ngx-slider .ngx-slider-pointer:after {
+  content: "";
+  width: 19px !important; /* counter global zoom */
+  height: 19px !important; /* counter global zoom */
+  position: absolute;
+  top: 2px !important;
+  left: 2px !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+}
+
+.ngx-slider .ngx-slider-selection {
+  z-index: 2;
+  background: #6391ff !important;
+  border-radius: 2px;
+}
+
+/* OVERFLOW */
+.filter-section-scroll {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+/* SCROLLBAR */
+.ep-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(11.08deg, #F7F9FE 79.83%, rgba(247, 249, 254, 0.766481) 92.46%, rgba(247, 249, 254, 0) 116.57%);
+}
+
+.ep-scrollbar::-webkit-scrollbar-track {
+  background: linear-gradient(11.08deg, #F7F9FE 79.83%, rgba(247, 249, 254, 0.766481) 92.46%, rgba(247, 249, 254, 0) 116.57%);
+}
+
+.ep-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c6c6c6;
+  border-radius: 30px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-width: 3px 3px 3px 2px;
+  min-height: 45px;
+}
+
+/* default scrollbar */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: rgba(0,0,0,0);
+}
+
+/* default scrollbar */
+*::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+  box-shadow: none; /* override ableplayer's styles */
+}
+
+/* default scrollbar */
+*::-webkit-scrollbar-thumb {
+  background-color: #c6c6c6;
+  border-radius: 20px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-width: 3px 3px 3px 2px;
+  min-height: 45px;
+}
+
+.ep-slider {
+  transition: all 500ms cubic-bezier(0, 1, 0.5, 1);
+}
+
+.ep-slider.closed {
+  max-height: 0 !important;
+}
+
+.ep-progress-bar {
+  height: 8px;
+  border-radius: 15px;
+  background-color: #D7DADF;
+}

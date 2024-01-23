@@ -1,0 +1,11 @@
+:host {
+  grid-row: 1 / span 12;
+}
+
+.document-body {
+  padding-top: 20px;
+  margin-right: 17px;
+  padding-right: 36px;
+  height: 65vh;
+  overflow-y: scroll;
+}

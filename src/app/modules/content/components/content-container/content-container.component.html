@@ -1,0 +1,73 @@
+<ng-container *ngIf="accessDenied$ | async; else showContent">
+  <div class="denied">
+    <div class="denied-container">
+      <img class="cones-img" src="assets/images/traffic-cones.svg" />
+      <div class="denied-text">
+        <div class="details">
+          <span>{{'content-container.access-denied' | Translate}}</span>
+          <p>{{'content-container.denied-text' | Translate}}</p>
+        </div>
+      </div>
+      <button ep-button buttonShape="pill" iconUri="assets/images/stacked-books.svg"
+        (click)="onBrowseLibraries()">{{'content-container.browse-libraries' | Translate}}</button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #showContent>
+  <ng-container *ngIf="!(isDetailsLoading$ | async); else loadingContent">
+    <ng-container *ngIf="(contentDetails$ | async) as contentDetails">
+      <ep-content-header [content]="contentDetails"></ep-content-header>
+    
+      <div class="flex h-full" style="min-height: 0; background: white;">
+        <ng-container *ngIf="showWorkflowTree$ | async">
+          <ep-workflow-tree *ngIf="contentDetails?.type === contentType.Workflow || contentDetails?.type === contentType.LearningPath"></ep-workflow-tree>
+        </ng-container>
+  
+        <ng-container *ngIf="showCoursesList$ | async">
+          <ep-courses-list></ep-courses-list>
+        </ng-container>
+  
+        <div class="flex w-full" style="flex-direction: column;">
+          <div class="content-panel"
+            [style.padding-right.px]="(isFullScreen$ | async) ? 50 : 15"
+            [style.margin-right.px]="(isFullScreen$ | async) ? 0 : 30">
+    
+            <ng-container [ngSwitch]="contentDetails?.type">
+              <ep-document-view *ngSwitchCase="contentType.Document" [content]="contentDetails"></ep-document-view>
+              <ep-video-view *ngSwitchCase="contentType.Video" 
+                [videoContent]="contentDetails | as : Video"
+                class="video-view"></ep-video-view>
+              <ep-learning-path-orchestrator *ngSwitchCase="contentType.LearningPath" 
+                [content]="contentDetails"
+                [style.flex-grow]="!!(isCourseContentQuiz$ | async) || !!(isCourseSummaryOpen$ | async) ? '1' : '0'"></ep-learning-path-orchestrator>
+              <ep-workflow-view *ngSwitchCase="contentType.Workflow" [workflowContent]="contentDetails | as : Workflow"></ep-workflow-view>
+            </ng-container> 
+      
+            <ng-container *ngIf="showContentFooter$ | async">
+              <ep-content-footer [contentDetails]="contentDetails" [relatedContent]="relatedContent$ | async" [comments]="comments$ | async"></ep-content-footer>
+            </ng-container>
+          </div>
+    
+          <ng-container *ngIf="showCourseNavButtons$ | async">
+            <ep-course-nav-buttons></ep-course-nav-buttons>
+          </ng-container>
+        </div>
+    
+        <ng-container *ngIf="showWorkflowSteps$ | async">
+          <ep-workflow-steps></ep-workflow-steps>
+        </ng-container>
+    
+        <ng-container *ngIf="(showContentDetailsPanel$ | async) && contentDetails">
+          <ep-content-details-panel></ep-content-details-panel>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+  
+  <ng-template #loadingContent>
+    <div class="flex-center h-full w-full">
+      <ep-spinner></ep-spinner>
+    </div>
+  </ng-template>
+</ng-template>

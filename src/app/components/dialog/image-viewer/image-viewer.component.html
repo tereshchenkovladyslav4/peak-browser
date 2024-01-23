@@ -1,0 +1,22 @@
+<ep-dialog-base>
+  <ng-container title>
+    <div class="header-container">
+      <div class="left-header">
+        <img width="40" 
+          height="40" 
+          src="assets/images/image-viewer-icon.svg" 
+          style="margin-top: 8px;"/>
+        <span>{{data?.config?.title}}</span>
+      </div>
+      <div class="right-header">
+        <img class="dropdown img-sm cursor-pointer close-icon"
+             src="assets/images/close.svg"
+             alt="close"
+             (click)="close(false)"/>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container content>
+    <img class="main-img" src="{{data?.config?.content}}">
+  </ng-container>
+</ep-dialog-base>

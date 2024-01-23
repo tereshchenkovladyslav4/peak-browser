@@ -1,0 +1,97 @@
+<div class="currently-assigned-container">
+  <ng-container *ngIf="(sortedAssignments$ | async)?.length < 1; else data">
+    <div class="no-result-container">
+      <ep-no-result
+        [title]="'assignments.no-assignments-title' | Translate"
+        [subTitle]="'assignments.no-assignments-subtitle' | Translate"
+      >
+        <ng-container actions>
+          <button
+            ep-button
+            buttonShape="pill"
+            iconUri="assets/images/libraries-dark.svg"
+            [routerLink]="['/', APP_ROUTES.libraries]"
+          >
+            {{ 'content-container.browse-libraries' | Translate }}
+          </button>
+          <button
+            ep-button
+            buttonShape="pill"
+            iconUri="assets/images/search-results/search.svg"
+            [routerLink]="['/', APP_ROUTES.search]"
+          >
+            {{ 'assignments.search-for-content' | Translate }}
+          </button>
+        </ng-container>
+      </ep-no-result>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #data>
+  <div class="assignment-cards-container">
+    <ng-container *ngIf="viewMode === ViewMode.GRID; else listView">
+      <ng-container *ngFor="let assignment of sortedAssignments$ | async">
+        <ep-assignment-card [assignment]="assignment"></ep-assignment-card>
+      </ng-container>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #listView>
+  <div class="table-container">
+    <p-table
+      [value]="sortedAssignments$ | async"
+      [scrollable]="true"
+      scrollHeight="calc(100vh - 274px)"
+      [sortField]="DEFAULT_SORT_FIELD"
+      [sortOrder]="DEFAULT_SORT_ORDER"
+      [lazy]="true"
+      [lazyLoadOnInit]="false"
+      (onLazyLoad)="getData($event)"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <th *ngIf="column.sortable" [pSortableColumn]="column.field">
+              <div class="flex-row">
+                {{ column.header | Translate }}
+                <p-sortIcon *ngIf="column.sortable" [field]="column.field"></p-sortIcon>
+              </div>
+            </th>
+            <th *ngIf="!column.sortable">
+              {{ column.header | Translate }}
+            </th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-assignment>
+        <tr>
+          <td>
+            <div class="name-wrap">
+              {{ assignment.learningPath?.name }}
+              <ep-assignment-bookmark [learningPathId]="assignment?.learningPath?.id" [isWhite]="false"/>
+              <div class="assignment-banner" *ngIf="isPastDue(assignment)">
+                <span class="assignment-banner-label">{{ 'assignments.past-due' | Translate }}</span>
+              </div>
+            </div>
+          </td>
+          <td>{{ assignment?.contentType }}</td>
+          <td>
+            <span *ngIf="assignment?.dueDate">{{ assignment?.dueDate | epDate }}</span>
+          </td>
+          <td>
+            <div class="status-wrap">
+              <ep-assignment-status [assignment]="assignment"/>
+            </div>
+          </td>
+          <td>
+            <div class="actions-wrap">
+              <ep-assignment-menu [assignment]="assignment" [isTransparent]="true"/>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</ng-template>

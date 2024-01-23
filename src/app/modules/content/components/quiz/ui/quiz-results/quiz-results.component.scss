@@ -1,0 +1,132 @@
+:host {
+  height: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  min-width: 700px;
+  max-width: 1180px;
+  margin-top: 25px;
+}
+
+.results-header {
+  display: flex;
+  gap: 45px;
+  border-bottom: 1px solid #eaeaea;
+  padding: 60px 35px;
+  user-select: none;
+}
+
+.result-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 44px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 14px 5px 10px;
+  align-self: flex-start;
+}
+
+.pill-green {
+  background-color: rgba(65, 204, 132, 0.13);
+  color: #41CC84;
+}
+
+.pill-red {
+  background-color: rgba(237, 118, 118, 0.13);
+  color: #F86161;
+}
+
+.results-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.results-text > span:first-child {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.results-text > span:last-child {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #636D7B;
+  max-width: 625px;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.question-header > span {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.answer {
+  display: flex;
+  align-items: center;
+  padding: 18px 24px;
+  border-radius: 5px;
+}
+
+.row-id {
+  margin-right: 25px;
+}
+
+.selected-text {
+  word-break: break-word;
+}
+
+.selected-correct {
+  background-color: #41CC8424;
+}
+
+.selected-correct > .selected-text {
+  color: #41CC84;
+  font-weight: 700;
+}
+
+.selected-incorrect {
+  background-color: #ED76761A;
+}
+
+.selected-incorrect > .selected-text {
+  color: #F86161;
+  font-weight: 700;
+}
+
+.text-correct-answer {
+  color: #41CC84;
+}
+
+.fill-text-acceptable {
+  text-wrap: nowrap;
+}
+
+.fill-text-acceptable,
+.fill-text-given-answer {
+  gap: 10px;
+}

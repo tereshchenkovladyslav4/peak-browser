@@ -1,0 +1,119 @@
+<div class="list-panel" [class.collapsed]="responsiveMode && isMenuCollapsed">
+  <ng-container *ngIf="responsiveMode">
+    <!-- COLLAPSE BUTTON -->
+    <ep-collapse-button [top]="30"
+      [right]="-15"
+      [scaleUpClassCondition]="!isMenuCollapsed"
+      [scaleDownClassCondition]="isMenuCollapsed"
+      [rotateIconClassCondition]="isMenuCollapsed"
+      (onIconClick)="toggleMenu()"></ep-collapse-button>
+  
+    <!-- EXPAND BUTTON -->
+    <ep-expand-button [top]="30"
+      [right]="-29"
+      [scaleUpClassCondition]="isMenuCollapsed"
+      [scaleDownClassCondition]="!isMenuCollapsed"
+      [reverseIcon]="true"
+      (onIconClick)="toggleMenu()"></ep-expand-button>
+  </ng-container>
+
+  <div class="title-and-progress">
+  <span class="course-title two-line-overflow-text" >{{activeCourseName}}</span>
+  <div class="lp-progress" *ngIf="activeCourseProgress >= 0">
+    <div class="progress-fields">
+      <span>{{'courses-list.course-progress' | Translate}}</span>
+      <span>{{activeCourseProgress + '%'}}</span>
+    </div>
+    <div class="ep-progress-bar">
+      <!-- min-width: 4% due to % being smaller than 4% makes bar not look rounded -->
+      <div class="ep-progress-bar progress-bar-fill"
+        style="background-color: #41CC84;"
+        [style.width]="activeCourseProgress + '%'"
+        [style.min-width]="activeCourseProgress > 0 ? '4%' : '0'"></div>
+    </div>
+  </div>
+    </div>
+  <!-- Insert similar progress bar from details panel after assignments is complete -->
+  <div #courseContainer class="course-container">
+    <div #courseViewport class="course-viewport">
+      <ng-container *ngFor="let course of enrolledCourses; index as courseIndex; trackBy: identifyCourse">
+        <div #course class="course" (click)="toggleCourse(courseIndex)">
+          <img [style.align-self]="course?.plainDesc?.length || course?.htmlDesc?.length ? 'flex-start' : 'auto'"
+            height="30" 
+            width="30" 
+            src="assets/images/content-types/course.svg" />
+          <div>
+            <span class="two-line-overflow-text" epTooltip>{{course?.name}}</span>
+            <span class="view-course-desc"
+              [style.display]="course?.plainDesc?.length || course?.htmlDesc?.length ? 'inline' : 'none'"
+              (click)="openCourseDescModal($event, course)">View Course Description</span>
+          </div>
+          <img class="course-dropdown-arrow" 
+            [ngClass]="{
+              'expanded': courseIndex === activeCourseIndex && isCourseExpanded, 
+              'is-collapsed': courseIndex !== activeCourseIndex || !isCourseExpanded}"
+            src="assets/images/droparrow-black.svg" />
+        </div>
+        <div #courseContentContainer class="course-content-container ep-slider"
+          [style.overflow]="courseIndex === activeCourseIndex && isCourseExpanded ? 'auto' : 'hidden'"
+          [style.max-height]="courseIndex === activeCourseIndex && isCourseExpanded ? '100%' : '0'">
+          <ng-container *ngFor="let courseContent of course?.content; index as courseContentIndex; trackBy: identifyCourseContent">
+            <div class="style-wrapper">
+              <div class="course-content" 
+                [class.active]="courseContentIndex === activeContentIndex && !isCourseSummaryOpen"
+                [class.disabled]="activeCourseDisabledContent[courseContentIndex]"
+                [class.quiz-fail-bg]="courseContent?.quizData?.status === QuizStatus.Fail"
+                (click)="openCourseContent(courseContentIndex)">
+                <img height="35" width="35" [src]="courseContent?.contentIconUrl" />
+                <span class="ep-overflow-ellipsis" epTooltip>{{courseContent?.name}}</span>
+                <!-- VIDEO PROGRESS STATUS -->
+                <ep-circle-progress class="video-progress-bar"
+                  *ngIf="!activeCourseDisabledContent[courseContentIndex]
+                  && courseContent?.contentType === ContentType.Video 
+                  && courseContent?.status !== AssignmentEnrollmentStatus.Completed
+                  && course?.settings?.overrideReqVidWatchPct
+                  && course?.settings?.reqVidWatchPct > 0
+                  && courseContent?.progress > 0"
+                  [size]="20"
+                  [strokeWidth]="2"
+                  [progress]="courseContent?.progress"
+                  trackStroke="#e5e5e5"
+                  progressStroke="#87919F"></ep-circle-progress>
+                <!-- QUIZ FAIL STATUS -->
+                <div *ngIf="courseContent?.quizData?.status === QuizStatus.Fail"
+                  class="quiz-fail-circle">
+                  <img src="assets/images/close-circle.svg" />
+                </div>
+                <!-- COMPLETE STATUS -->
+                <div class="complete-circle"
+                    [style.display]="courseContent?.contentType !== ContentType.Quiz && courseContent?.status === AssignmentEnrollmentStatus.Completed 
+                    || courseContent?.contentType === ContentType.Quiz && courseContent?.quizData?.status === QuizStatus.Pass ? 'flex' : 'none'">
+                    <img src="assets/images/check.svg" />
+                  </div>
+                <!-- QUIZ QUESTION COUNTER STATUS -->
+                <ng-container *ngIf="courseContent?.contentType === ContentType.Quiz
+                  && courseContent?.quizData?.status !== QuizStatus.Fail
+                  && courseContent?.quizData?.status !== QuizStatus.Pass 
+                  && courseContent?.quizData?.progress?.totalQuestionsComplete >= 0
+                  && courseContent?.quizData?.progress?.totalQuizQuestions > 0">
+                  <div class="quiz-progress">
+                    <span>{{ courseContent?.quizData?.progress?.totalQuestionsComplete + 1 }}</span><span class="questions-count">/{{ courseContent?.quizData?.progress?.totalQuizQuestions }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+          <div class="style-wrapper">
+            <div class="course-content"
+              [class.active]="isCourseSummaryOpen"
+              [class.disabled]="course?.settings?.mustViewContentInOrder && activeCourseProgress < 100"
+              (click)="openFinishCourse($event)">
+              <img height="35" width="35" src="assets/images/content/icons/certificate.svg" />
+              <span>{{'courses-list.finish-course' | Translate}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

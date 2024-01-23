@@ -1,0 +1,9 @@
+<ng-container *ngIf="isLoaded; else loading">
+  <ng-content></ng-content>
+</ng-container>
+
+<ng-template #loading>
+  <div class="loading">
+    <ep-spinner></ep-spinner>
+  </div>
+</ng-template>

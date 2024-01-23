@@ -1,0 +1,27 @@
+:host ::ng-deep .view-mode .p-button {
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+:host ::ng-deep .view-mode .p-selectbutton .p-button {
+  background: #fff;
+  border: 1px solid var(--color-1-grey-4);
+}
+
+:host ::ng-deep .view-mode .p-selectbutton .p-button.p-highlight {
+  background: #e8ecec;
+  border-color: var(--color-1-grey-2);
+}
+
+:host ::ng-deep .view-mode .p-selectbutton .p-button:not(.p-highlight):hover {
+  background: #fff;
+  border: 1px solid var(--color-1-grey-4);
+}
+
+.view-mode-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  object-position: center;
+}

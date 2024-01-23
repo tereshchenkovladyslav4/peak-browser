@@ -1,0 +1,48 @@
+.assignments-container {
+  padding: 1rem 3rem 3rem;
+  overflow-y: scroll;
+  height: 100%;
+  position: relative;
+}
+
+.assignments-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.search-container,
+.global-search-field {
+  width: 450px;
+}
+
+.search-icon-container {
+  position: absolute;
+  top: 14px;
+  left: 1px;
+  cursor: pointer;
+  height: 1.5rem;
+  display: flex;
+  background-color: white;
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  padding-left: 10px;
+}
+
+.search-icon {
+  position: unset;
+  cursor: pointer;
+  height: 1rem;
+}
+
+.search-field {
+  height: 50px;
+  padding: 20px 105px 17px 10px;
+}

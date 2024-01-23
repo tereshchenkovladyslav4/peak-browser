@@ -1,0 +1,24 @@
+.assignment-progress-pill {
+  height: 26px;
+  width: fit-content;
+  background: #f2f2f2;
+  border-radius: 44px;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  justify-content: center;
+}
+
+.status-icon {
+  margin-right: 0.2rem;
+}
+
+.assignment-progress-pill-label {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #636d7b;
+}

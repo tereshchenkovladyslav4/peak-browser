@@ -1,0 +1,63 @@
+<ep-loading [isLoaded]="(isLoaded$ | async)">
+  <div class="wrapper">
+    <div class="bookmarks-container">
+      <div class="bookmarks-header-container">
+        <form [formGroup]="form">
+          <div class="search-container">
+            <div class="search-icon-container">
+              <img class="search-icon" src="assets/images/search-results/search.svg" alt="search"/>
+            </div>
+            <input formControlName="filter"
+                   type="text"
+                   class="global-search-field search-field"
+                   placeholder="Search Bookmarks"/>
+          </div>
+        </form>
+      </div>
+      <hr class="ep-hr" [ngStyle]="{'margin': '3rem 0'}">
+      <div class="bookmarks-card-container">
+        <ng-container *ngIf="isNoDataResults$ | async; else data">
+          <div class="no-results">
+            <span class="no-results-title">
+              {{'bookmarks-container.bookmarks-empty-title' | Translate}}
+            </span>
+            <span class="no-results-subtitle">
+              {{'bookmarks-container.bookmarks-empty-subtitle' | Translate}}
+            </span>
+            <div style="margin-top:30px;">
+              <button ep-button
+                      buttonShape="pill"
+                      iconUri="assets/images/libraries-dark.svg"
+                      [routerLink]="['/', APP_ROUTES.libraries]"
+                      style="margin-right:20px">
+                {{'bookmarks-container.browse-libraries' | Translate}}
+              </button>
+              <button ep-button
+                      buttonShape="pill"
+                      iconUri="assets/images/search-results/search.svg"
+                      [routerLink]="['/', APP_ROUTES.search]">
+                {{'bookmarks-container.search-content' | Translate}}
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ep-loading>
+
+<ng-template #data>
+  <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+    <div class="no-results">
+      <span class="no-results-title">Results not Found</span>
+      <span class="no-results-subtitle">Try adjusting one of your active search filters.</span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #filteredData>
+  <ng-container *ngFor="let bookmark of (filteredData$ | async)">
+    <ep-bookmark-card [bookmark]="bookmark" class="library-card"></ep-bookmark-card>
+  </ng-container>
+</ng-template>
+

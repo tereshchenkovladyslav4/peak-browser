@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "app-login-component": {
+    "email-label": "Email",
+    "error-message": "There was a problem with your username or password.",
+    "forgot-password-label": "Forgot password?",
+    "language-label": "Language",
+    "language-select-message": "Select a language",
+    "loading-message": "Loading, please wait...",
+    "log-in-label": "Log In",
+    "next-step-label": "Continue >>",
+    "okay-label": "Okay",
+    "password-label": "Password",
+    "remember-me-label": "Remember me",
+    "sign-in-label": "Sign in",
+    "tenant-label": "Tenant",
+    "tenant-select-message": "Select a tenant"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "resume": "Resume",
+    "save": "Save",
+    "save-exit": "Save & Exit",
+    "view": "View",
+    "view-more": "View More",
+    "view-less": "View Less",
+    "drop": "Drop",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "complete": "Complete",
+    "close": "Close",
+    "cannot-download": "Cannot download!"
+  },
+  "content-container": {
+    "access-denied": "Access Denied.",
+    "denied-text": "We're sorry, but it seems you don't currently have the necessary permissions to access this particular content. Please contact your Pinnacle Series Content Team if you think you have reached this page by accident.",
+    "browse-libraries": "Browse Libraries",
+    "exit-workflow": "Exit Workflow",
+    "exit-learning-path": "Exit Learning Path",
+    "lp-friction-title": "Are you sure you want to exit this learning path?",
+    "lp-friction-body": "Don't worry, all your progress will be saved.",
+    "drop-course-friction-title": "Drop Course?",
+    "drop-course-friction-body": "Are you sure you want to drop '[COURSE_NAME]'? This may effect your ability to complete assignment.",
+    "drop-lp-friction-title": "Drop Entire Learning Path?",
+    "drop-lp-friction-body": "Are you sure you want to drop the entire '[LEARNING_PATH_NAME]' Learning Path?",
+    "dropped-message": "[NAME] dropped.",
+    "delete-comment-confirm-title": "Permanently Delete Comment?",
+    "delete-comment-confirm-body": "Are you sure you would like to permanently delete this comment? It will not be able to be recovered."
+  },
+  "content-details": {
+    "autoscroll-tooltip": "Toggle on Auto-scrolling to automatically scroll the transcript with the narration."
+  },
+  "content-type": {
+    "course": "Course",
+    "document": "Document",
+    "folder": "Folder",
+    "learning-path": "Learning Path",
+    "process": "Process",
+    "video": "Video",
+    "workflow": "Workflow",
+    "task": "Task",
+    "milestone": "Milestone",
+    "step": "Step",
+    "live-event": "Live Event",
+    "quiz": "Quiz",
+    "scorm-package": "Scorm Package",
+    "live-event-session": "Live Event Session",
+    "tool": "Tool",
+    "library": "Library"
+  },
+  "content-view-header": {
+    "suggestions": "Send Feedback",
+    "add-bookmark": "Add to Bookmarks",
+    "remove-bookmark": "Remove from Bookmarks",
+    "share": "Share",
+    "like": "Like"
+  },
+  "course-nav-buttons": {
+    "start-quiz": "Start Quiz",
+    "retake-quiz": "Retake Quiz",
+    "continue": "Contineu",
+    "finish-course": "Finish Course"
+  },
+  "course-state": {
+    "drop-fail": "System was unable to drop the course."
+  },
+  "courses-list": {
+    "course-progress": "Course Progress",
+    "finish-course": "Finish Course"
+  },
+  "difficulty-filter": {
+    "no-difficulties": "Content does not have difficulty assigned"
+  },
+  "document-type": {
+    "custom": "Document",
+    "excel": "Excel Document",
+    "pdf": "Pdf Document",
+    "powerpoint": "Powerpoint Document",
+    "word": "Word Document"
+  },
+  "dropdown-menu": {
+    "add-to-bookmarks": "Add to Bookmarks",
+    "remove-from-bookmarks": "Remove from Bookmarks",
+    "share-notification": "Share via Notification",
+    "share-to-workgroup": "Share to Work Group",
+    "copy-link-formatted": "Copy Link (Formatted)",
+    "copy-link-unformatted": "Copy Link (Unformatted)",
+    "profile-and-settings": "Profile & Settings",
+    "sign-out": "Sign Out",
+    "help-and-support": "Help & Support"
+  },
+  "ep-content-progress": {
+    "completed": "Completed",
+    "not-enrolled": "Not Enrolled",
+    "not-started": "Not Started",
+    "dropped": "Dropped"
+  },
+  "ep-search-results-card": {
+    "past-due": "PAST DUE!",
+    "by": "by"
+  },
+  "keywords-filter": {
+    "no-keywords": "Content not tagged with keywords",
+    "no-keywords-assigned": "No Keywords Assigned"
+  },
+  "learning-path-view": {
+    "all-learning-path-content": "All Learning Path Content",
+    "enroll-in-all": "Enroll in All",
+    "no-courses": "This Learning Path currently doesn't contain any content. Please revisit at a later time for additions.",
+    "no-course-content": "This Course currently doesn't contain any content. Please revisit at a later time for additions.",
+    "description": "Description",
+    "course-content": "Course Content",
+    "details": "Details",
+    "enroll": "Enroll",
+    "start": "Start",
+    "re-enroll": "Re-enroll"
+  },
+  "my-documents": {
+    "no-documents-message": "No documents to display"
+  },
+  "navigation-menu": {
+    "management": "MANAGEMENT"
+  },
+  "quiz-view": {
+    "landing-title": "Quiz",
+    "landing-description": "Click Start Quiz to get started."
+  },
+  "topics-filter": {
+    "no-topics": "Content does not have topics assigned",
+    "no-topics-assigned": "No Topics Assigned"
+  },
+  "user-profile": {
+    "change-password": "Change Password",
+    "old-password": "Old Password",
+    "new-password": "New Password",
+    "re-enter-new-password": "Confirm New Password",
+    "all-fields-required": "All fields are required.",
+    "passwords-do-not-match": "Please enter the same password into the new and confirm password fields.",
+    "complex-password": "The given password did not meet the enforced password guidelines.",
+    "uppercase-req": "At least one uppercase character (A-Z)",
+    "lowercase-req": "At least one lowercase character (a-z)",
+    "non-alpha-req": "At least one non-alphanumeric character (e.g. !, #, $, %)",
+    "unique-pass-prefix": "Be different than the last ",
+    "unique-pass-suffix": " passwords used",
+    "min-eight-chars-req": "Minimum of eight characters",
+    "password-updated": "Password successfully updated.",
+    "password-update-fail": "The given password could not be updated. Please try again.",
+    "edit-username": "Edit Username",
+    "username": "Username",
+    "display-name-updated": "Name updated successfully.",
+    "failed-display-name-update": "Failed to update display name. Please try again.",
+    "edit-profile-picture": "Edit Profile Picture",
+    "upload-new-photo": "Upload New Photo",
+    "upload-file-size-error": "Sorry, this file is too large. Please choose a file that's less than or equal to the default size: ",
+    "kilobytes": " KB",
+    "invalid-file-type": "Invalid image type. Please use .gif, .png, .jpg, or .jpeg.",
+    "invalid-file-type-2-no-gif": "Invalid image type. Please use .png, .jpg, or .jpeg.",
+    "img-upload-success": "Image updated successfully.",
+    "img-upload-failure": "Error upload: Error uploading image"
+  },
+  "view-certificate": {
+    "title": "Congratulations",
+    "subtitle": "You received a certificate of completion.",
+    "no-certificate": "No certificate available.",
+    "download-certificate": "Download Certificate"
+  },
+  "workflow-diagram-view": {
+    "back-to-workflow": "Go Back to Workflow",
+    "zoom-in": "Zoom In",
+    "zoom-out": "Zoom Out",
+    "recenter": "Recenter"
+  },
+  "workflow-steps": {
+    "unselected-task": "Workflow steps will appear here when clicked",
+    "no-steps": "No Workflow steps available"
+  },
+  "workflow-tree": {
+    "diagram-only": "Diagram Only",
+    "tree-only": "Tree Only",
+    "diagram-tree": "Diagram and Tree"
+  },
+  "workflow-view": {
+    "landing-title": "This Workflow will open in full screen mode.",
+    "landing-description": "To optimize the user experience, all Workflows will seamlessly launch in full screen mode. To view this Workflow's details and meta data exit full screen mode.",
+    "launch-workflow": "Launch Workflow"
+  },
+  "assignments": {
+    "no-assignments-title": "No Current Assignments",
+    "no-assignments-subtitle": "Enjoy a well-deserved break, or explore other amazing content.",
+    "no-assignment-history-title": "You Have No Enrollment History",
+    "no-assignment-history-subtitle": "Start your learning journey now to build your enrollment history!",
+    "search-for-content": "Search for Content",
+    "results-not-found": "Results not Found",
+    "try-adjusting-filters": "Try adjusting one of your active search filters.",
+    "search-assignments": "Search Assignments",
+    "name": "Name",
+    "content-type": "Content Type",
+    "due-expiration-date": "Due / Expiration Date",
+    "status": "Status",
+    "not-started": "Not Started",
+    "percent-course-completed": "% Course Completed",
+    "past-due": "PAST DUE!",
+    "learning-path": "Learning Path",
+    "status-date": "Status Date",
+    "mark-course-as-completed-title": "Mark Course as Complete?",
+    "mark-course-as-completed-description": "Are you sure you want to mark '[COURSE_NAME]' as complete?",
+    "mark-course-as-completed-success": "Assignment marked as complete.",
+    "complete-without-certificate-title": "Complete Without Certificate?",
+    "complete-without-certificate-description": "You have only completed [PROGRESS]% of all requirements for this assignment. If you move forward you will not receive a certificate.",
+    "complete-without-certificate-success": "Assignment marked  as complete. Certificate was not generated.",
+    "enrollment-details": "Enrollment Details",
+    "download-certificate": "Download Certificate",
+    "assigned-by": "Assigned By",
+    "percent-reviewed": "Percent Reviewed",
+    "certificate-status": "Certificate Status",
+    "view-time": "View Time",
+    "quiz-overview": "Quiz Overview",
+    "no-quizzes": "No Quizzes to Review",
+    "certificates-available": "Certificates available for download.",
+    "certificates-not-available": "Certificates not available for download.",
+    "certificates-not-available-dropped": "Certificates was not provided because you dropped this course.",
+    "certificates-not-available-skipped": "Certificates was not provided because of skipped content in this course.",
+    "certificates-not-available-failed-quiz": "There is no certificate because a quiz in the course has been failed.",
+    "attempts": "Attempts",
+    "highest-score": "Highest Score",
+    "most-recent-completion": "Most Recent Completion",
+    "review-quiz-results": "Review Quiz Results",
+    "quiz-result": "Quiz Result",
+    "you-passed": "You Passed!",
+    "you-failed": "You Failed!",
+    "completed": "Completed",
+    "quiz-attempt": "Quiz Attempt",
+    "attempt": "Attempt",
+    "correct": "Correct",
+    "incorrect": "Incorrect",
+    "correct-answer": "Correct Answer",
+    "your-answer": "Your Answer",
+    "change-due-date": "Change Due Date",
+    "change-due-date-subtitle": "You are about to update the due date for '[NAME]'. This will overwrite any previously set due date.",
+    "due-date": "Due Date"
+  },
+  "bookmark-card": {
+    "summary-courses": " Courses",
+    "summary-content-items": " Content Items",
+    "summary-processes": " Processes",
+    "summary-tasks": " Tasks",
+    "summary-document-native": "Native Document"
+  },
+  "bookmarks-container": {
+    "bookmarks-empty-title": "Your Bookmarks List Is Empty",
+    "bookmarks-empty-subtitle": "Start adding your favorite content items for quick access.",
+    "browse-libraries": "Browse Libraries",
+    "search-content": "Search for Content"
+  },
+  "user-profile-menu": {
+    "switch-tenant-friction-title": "Switch Tenant?",
+    "switch-tenant-friction-body": "Are you sure you want to change your tenant from [FROM_TENANT_NAME] to [TO_TENANT_NAME]?"
+  }
+}

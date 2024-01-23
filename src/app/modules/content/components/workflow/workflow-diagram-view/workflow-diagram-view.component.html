@@ -1,0 +1,192 @@
+<div class="svg-region" style="margin-top:20px;">
+  <ng-container *ngIf="diagramView$ | async as diagramView; else loadingDiagram">
+    <svg #diagramSVG
+    class="svg-viewer actual-scale"
+    [attr.viewBox]="viewBoxText"
+    style="overflow: hidden"
+    (click)="clearSelection()">
+      <g name="shape-objs" *ngFor="let diagramObject of diagramView?.objects; index as objShapeIndex">
+        <!-- gradient elements for each shape obj -->
+        <defs>
+          <g name="shape-gradients-group">
+            <g name="shape-gradient-0" *ngIf="diagramObject?.fillType === 0">
+              <linearGradient [id]="diagramObject?.contentId" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+                <stop offset="100%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+              </linearGradient>
+            </g>
+            <g name="shape-gradient-1" *ngIf="diagramObject?.fillType === 1">
+              <linearGradient [id]="diagramObject?.contentId" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+                <stop offset="100%" [ngStyle]="{'stop-color': diagramObject?.color2Hex}" />
+              </linearGradient>
+            </g>
+            <g name="shape-gradient-2" *ngIf="diagramObject?.fillType === 2">
+              <linearGradient [id]="diagramObject?.contentId" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+                <stop offset="50%" [ngStyle]="{'stop-color': diagramObject?.color2Hex}" />
+                <stop offset="100%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+              </linearGradient>
+            </g>
+            <g name="shape-gradient-3" *ngIf="diagramObject?.fillType === 3">
+              <linearGradient [id]="diagramObject?.contentId" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+                <stop offset="100%" [ngStyle]="{'stop-color': diagramObject?.color2Hex}" />
+              </linearGradient>
+            </g>
+            <g name="shape-gradient-4" *ngIf="diagramObject?.fillType === 4">
+              <linearGradient [id]="diagramObject?.contentId" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+                <stop offset="50%" [ngStyle]="{'stop-color': diagramObject?.color2Hex}" />
+                <stop offset="100%" [ngStyle]="{'stop-color': diagramObject?.color1Hex}" />
+              </linearGradient>
+            </g>
+            <g>
+              <filter [id]="'f' + diagramObject?.contentId" width="200%" height="200%">
+                <feOffset result="offOut" in="SourceGraphic" dx="10" dy="10" />
+                <feColorMatrix result="matrixOut" in="offOut" type="matrix" values="0.2 0 0 0 0 0 0.2 0 0 0 0 0 0.2 0 0 0 0 0 1 0" />
+                <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="10" />
+                <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+              </filter>
+            </g>
+          </g>
+        </defs>
+
+        <!--selection rectangle first-->
+        <g name="shape-group" *ngIf="!diagramObject?.isSwimlane">
+          <rect *ngIf="(isDiagramWorkflow$ | async) === true ? objShapeIndex === (openProcessIndex$ | async) : objShapeIndex === (activeTaskIndex$ | async)"
+            name="shape-highlight"
+            [attr.x]="diagramObject?.basePtX - 25"
+            [attr.y]="diagramObject?.basePtY - 25"
+            [attr.width]="diagramObject?.sizeX + 50"
+            [attr.height]="diagramObject?.sizeY + 50"
+            stroke="#848484"
+            stroke-width="1"
+            fill="#A9BCF5">
+          </rect>
+          <g [ngSwitch]="diagramObject?.objType" 
+            name="shape-type-group" 
+            (click)="objectClick(objShapeIndex, $event)">
+            <g name="shape-task" *ngSwitchCase="'task'">
+              <rect *ngIf="!diagramObject?.isDecision"
+                id="object_{{diagramObject?.contentId}}"
+                [attr.x]="diagramObject?.basePtX"
+                [attr.y]="diagramObject?.basePtY"
+                [attr.width]="diagramObject?.sizeX"
+                [attr.height]="diagramObject?.sizeY"
+                [attr.stroke]="diagramObject?.borderColorHex"
+                stroke-width="1"
+                attr.fill="url(#{{diagramObject?.contentId}})"
+                attr.filter="url(#f{{diagramObject?.contentId}})"></rect>
+
+              <polygon *ngIf="diagramObject?.isDecision"
+                id="object_{{diagramObject?.contentId}}"
+                [attr.stroke]="diagramObject?.borderColorHex"
+                stroke-width="3"
+                attr.fill="url(#{{diagramObject?.contentId}})"
+                attr.filter="url(#f{{diagramObject?.contentId}})"
+                [attr.points]="diagramObject?.decisionGeom" />
+            </g>
+            <g *ngSwitchCase="'milestone'" 
+              name="shape-milestone" 
+              (click)="objectClick(objShapeIndex, $event)"
+              (dblclick)="objectDblClick($event)">
+              <rect id="object_{{diagramObject?.contentId}}"
+                [attr.x]="diagramObject?.basePtX"
+                [attr.y]="diagramObject?.basePtY"
+                [attr.width]="diagramObject?.sizeX" 
+                [attr.height]="diagramObject?.sizeY"
+                [attr.rx]="diagramObject?.sizeY*.5" 
+                [attr.ry]="diagramObject?.sizeY*.5"
+                [attr.stroke]="diagramObject?.borderColorHex"
+                stroke-width="1"
+                attr.filter="url(#f{{diagramObject?.contentId}})"
+                attr.fill="url(#{{diagramObject?.contentId}})">
+            </rect>
+            </g>
+            <g *ngSwitchCase="'process'"
+              name="shape-process" 
+              (click)="objectClick(objShapeIndex, $event)"
+              (dblclick)="objectDblClick($event)">
+              <polygon id="object_{{diagramObject?.contentId}}"
+                [attr.stroke]="diagramObject?.borderColorHex"
+                stroke-width="1"
+                attr.fill="url(#{{diagramObject?.contentId}})"
+                attr.filter="url(#f{{diagramObject?.contentId}})"
+                [attr.points]="diagramObject?.processGeom"></polygon>
+            </g>
+          </g>
+          <text name="shape-text"
+            class="svg-text"
+            dominant-baseline="middle"
+            text-anchor="middle" 
+            [attr.y]="diagramObject?.basePtY + (diagramObject?.sizeY / 2) - 18"
+            font-family="Arial" 
+            font-size="9pt" 
+            [attr.fill]="diagramObject?.textColorHex"
+            width="100px"
+            height="100px">
+            <tspan *ngFor="let txt of diagramObject?.wrappedName" [attr.x]="diagramObject?.basePtX + (diagramObject?.sizeX / 2)" dy="14">
+              {{txt ?? ''}}
+            </tspan>
+            <tspan *ngFor="let txt of diagramObject?.wrappedAssigned" [attr.x]="diagramObject?.basePtX + (diagramObject?.sizeX / 2)" dy="14">
+              {{txt ?? ''}}
+            </tspan>
+          </text>
+        </g>
+      </g>
+      <g *ngFor="let line of diagramView?.lines">
+        <path stroke-width="2"
+              stroke="black"
+              fill="none"
+              [attr.d]="line?.lineGeom" />
+
+        <polygon stroke-width="1"
+                  stroke="black"
+                  fill="black"
+                  [attr.points]="line?.arrowGeom" />
+
+        <text class="svgLabel" 
+          [attr.dx]="line?.labelPoints?.x"
+          [attr.dy]="line?.labelPoints?.y"
+          [attr.text-anchor]="line?.labelAnchor">
+          {{line.label}}
+        </text>
+      </g>
+    </svg>
+
+    <div class="btn-container">
+      <button class="btn-diagram"
+        [ngClass]="{'scale-up': !(isDiagramWorkflow$ | async), 'scale-down': (isDiagramWorkflow$ | async)}"
+        epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'workflow-diagram-view.back-to-workflow' | Translate"
+        (click)="goBackToWorkflow()">
+        <img src="assets/images/left-chevron.svg" />
+      </button>
+
+      <button class="btn-diagram"
+        epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'workflow-diagram-view.zoom-in' | Translate"
+        (click)="zoomIn()">
+        <img src="assets/images/content/workflow-view/diagram-zoom-in.svg" />
+      </button>
+  
+      <button class="btn-diagram"
+        epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'workflow-diagram-view.zoom-out' | Translate" 
+        (click)="zoomOut()">
+          <img src="assets/images/content/workflow-view/diagram-zoom-out.svg" />
+      </button>
+  
+      <button class="btn-diagram"
+        epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'workflow-diagram-view.recenter' | Translate"
+        (click)="recenter()">
+          <img src="assets/images/content/workflow-view/diagram-expand.svg" />
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- spinner -->
+  <ng-template #loadingDiagram>
+    <!-- TEMPORARY IMAGE -->
+    <ep-spinner style="position: absolute;"></ep-spinner>
+  </ng-template>
+</div>
+

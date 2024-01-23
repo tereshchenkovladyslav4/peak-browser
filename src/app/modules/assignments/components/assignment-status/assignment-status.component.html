@@ -1,0 +1,10 @@
+<div class="assignment-progress-pill">
+  <img src="assets/images/status.svg" class="status-icon" *ngIf="!!assignment?.progress" />
+  <span class="assignment-progress-pill-label">
+    {{
+      !!assignment?.progress
+        ? assignment?.progress + ('assignments.percent-course-completed' | Translate)
+        : ('assignments.not-started' | Translate)
+    }}
+  </span>
+</div>

@@ -1,0 +1,41 @@
+.p-dropdown {
+  border-radius: 10px;
+  border-color: var(--color-1-grey-4);
+  box-shadow: none;
+}
+
+.p-dropdown:not(.p-disabled):hover {
+  border-color: var(--color-1-highlight-border);
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+  border-color: var(--color-1-highlight-border);
+}
+
+.p-dropdown-panel {
+  padding: 10px 5px;
+  border-radius: 10px;
+  border: 1px solid var(--color-1-grey-4);
+  background: #fff;
+  box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.3);
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: var(--color-1-blue-2);
+  border-radius: 2px;
+  padding: 6px 15px 6px 35px;
+  text-overflow: ellipsis;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-disabled):hover,
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+  background-color: rgba(215, 218, 223, 0.15);
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  color: var(--color-1-blue-2);
+  position: relative;
+  background-size: 20px 20px;
+  background: #fff url('../../assets/images/check-green.svg') no-repeat 10px center;
+}

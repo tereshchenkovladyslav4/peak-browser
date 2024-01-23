@@ -1,0 +1,146 @@
+:host {
+  overflow-y: auto;
+  padding-right: 40px;
+  padding-bottom: 260px;
+  /*Below style is needed to show menu popup*/
+  margin-left: -3rem;
+  padding-left: 4rem;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.7rem;
+  height: 12.5rem;
+  padding: 1rem 2rem;
+  justify-content: space-around;
+  background-size: cover;
+}
+
+.title {
+  font-family: Roboto, sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #2B3242;
+}
+
+.description {
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #2B3242;
+}
+
+.count {
+  width: fit-content;
+  height: 1.7rem;
+  padding: 5px 14px 5px 14px;
+  border-radius: 44px;
+  gap: 5px;
+  background: #F2F2F2;
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #636D7B;
+  box-shadow: 0 1px 2px 0 #00000040;
+  display: flex;
+  align-items: center;
+}
+
+.contents-header-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+.subtitle {
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #2B3242;
+}
+
+.ep-hr {
+  margin: 1rem 0 0;
+}
+
+.contents-sortable-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.sort-container {
+  margin: 0.5rem 0.5rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sort-by-name {
+  font-family: Roboto, 'sans-serif';
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: left;
+  color: #2B3242;
+  transition: all 200ms;
+}
+
+.sort-by-name-order-img {
+  height: 1rem;
+  width: 1rem;
+  margin-left: 0.5rem;
+}
+
+.sort-desc {
+  transform: rotate(180deg);
+}
+
+.contents-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.content-card {
+  cursor: pointer;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  margin: 8rem auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-results-title {
+  font-size: 28px;
+  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+.no-results-subtitle {
+  text-align: center;
+}
+

@@ -1,0 +1,58 @@
+<div class="text-xl font-bold ml-12">
+  <span *ngIf="(isLoaded$ | async); else loading">
+    <ng-container *ngIf="!!searchTerms">
+      {{searchResults?.length}} Results for &ldquo;{{searchTerms}}&rdquo;
+    </ng-container>
+  </span>
+</div>
+
+<ng-container *ngIf="(isLoaded$ | async)">
+  <ng-container *ngIf="isNoDataResults$ | async; else data">
+    <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+      <div class="no-data-container">
+        <span class="whoops lighter-color">Time to start typing...</span>
+        <span class="instructions lighter-color">Please enter in keywords or phrases to start your search.</span>
+        <form [formGroup]="form">
+          <div class="global-search-container">
+            <input #searchInput
+                   formControlName="search"
+                   type="text"
+                   class="global-search-field"
+                   placeholder="Search"
+                   (keydown.enter)="onSearch(); searchInput.blur()"
+                   autofocus />
+            <img class="search-icon" src="assets/images/search-results/search.svg" alt="search" (click)="onSearch()"/>
+          </div>
+        </form>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #data>
+  <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+    <div class="no-filtered-data-container">
+      <img src="assets/images/search-results/search-results-anim.gif" alt="binos"/>
+      <span class="whoops">Whoops! Nothing to see here.</span>
+      <span class="instructions">No results matching your criteria were found. Try different, less specific keywords or use your company's customized extended search.</span>
+      <button ep-button
+              buttonShape="pill"
+              (click)="onResetClick()">
+        Reset Criteria
+      </button>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #filteredData>
+  <ep-search-results-card
+    *ngFor="let searchResult of (searchResults$ | async); trackBy: searchResultTrackBy"
+    [searchResult]="searchResult"
+  ></ep-search-results-card>
+</ng-template>
+
+<ng-template #loading>
+  <span>
+    Loading Results for &ldquo;{{searchTerms}}&rdquo;
+  </span>
+</ng-template>

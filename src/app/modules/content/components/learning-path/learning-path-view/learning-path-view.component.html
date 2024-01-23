@@ -1,0 +1,132 @@
+<ng-container *ngIf="courses$ | async as courses; else loadingCourses">
+  <div class="course-header">
+    <span>{{'learning-path-view.all-learning-path-content' | Translate}}</span>
+    <div class="header-actions">
+      <button ep-button (click)="enrollInAll()" [disabled]="!notEnrolledCourses?.length">
+        {{'learning-path-view.enroll-in-all' | Translate}}
+      </button>
+      <button ep-button buttonType="green"
+        iconUri="assets/images/sync-dark.svg"
+        [disabled]="!courses?.length || notEnrolledCourses?.length === courses?.length"
+        (click)="resume()">
+        {{'common.resume' | Translate}}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!courses?.length; else showCourses"
+    class="no-content course-border"
+    style="margin-right: 35px; min-height: 320px;">
+    {{'learning-path-view.no-courses' | Translate}}
+  </div>
+
+  <ng-template #showCourses>
+    <div #courseContainer
+    class="course-container ep-slider"
+    [class.course-container-extended]="courses?.length <= 3 || !courseListCollapsed"
+    (scroll)="onScroll()">
+      <div #courseScrollTarget *ngFor="let course of courses; index as courseIndex">
+        <div class="course-border"
+          [class.courses-collapsed]="courseListCollapsed">
+          <div class="course"
+            [class.expanded-course]="expandedCourses[courseIndex]">
+            <div class="course-info">
+              <span style="margin-right: 24px;">{{courseIndex + 1}}</span>
+              <img class="img-lg" style="margin-right: 24px;" src="assets/images/content/icons/course.svg" />
+              <span class="course-name two-line-overflow-text" epTooltip [epTooltipRestrictWidth]="true">{{course?.name}}</span>
+            </div>
+            <div class="flex-spacer"></div>
+            <span class="course-duration">{{course?.duration}}</span>
+            <div class="flex-spacer"></div>
+            <ep-content-progress class="course-status"
+              [status]="course.status"
+              [progress]="course?.progress"></ep-content-progress>
+            <div class="flex-spacer"></div>
+            <div class="course-actions">
+              <div style="margin-right: 28px;">
+                <ep-course-dropdown-menu
+                  *ngIf="(course.status === AssignmentEnrollmentStatus.Not_Started || course.status === AssignmentEnrollmentStatus.In_Progress) else notDropdownButton"
+                  [course]="course"
+                  (courseActionButtonClicked)="courseActionBtnClicked(courseIndex, course)"
+                  (courseDropButtonClicked)="courseDropBtnClicked(course)">
+                </ep-course-dropdown-menu>
+
+                <ng-template #notDropdownButton>
+                  <button ep-button buttonShape="pill" (click)="courseActionBtnClicked(courseIndex, course)">{{course?.actionBtnText}}</button>
+                </ng-template>
+              </div>
+              <img class="img-base cursor-pointer select-none"
+                [ngClass]="{'expanded': expandedCourses[courseIndex], 'is-collapsed': !expandedCourses[courseIndex]}"
+                src="assets/images/dropdown-arrow-circle.svg"
+                (click)="toggleCourse(courseScrollTarget, extendedDetails, courseIndex)" />
+            </div>
+          </div>
+        </div>
+        <div #extendedDetails class="extended-details ep-slider"
+          [class.closed]="!expandedCourses[courseIndex]"
+          [style.overflow]="expandedCourses[courseIndex] ? 'auto' : 'hidden'"
+          [style.margin-top.px]="expandedCourses[courseIndex] ? '24' : '0'">
+          <ep-horizontal-tabs [tabs]="courseTabsMap[course?.courseId]"
+            tabFontSize="0.875rem"
+            tabBackgroundColor="#fff"
+            [activeTabKey]="activeCourseTabsMap[course?.courseId]"
+            [underlineAlways]="true"
+            (onTabChange)="onTabChange($event, course?.courseId)"></ep-horizontal-tabs>
+            <ng-container *ngIf="activeCourseTabsMap[course?.courseId] === 'Details'">
+              <div class="course-details">
+                <div class="course-desc-title">{{'learning-path-view.description' | Translate}}</div>
+                <ng-container *ngIf="course?.htmlDesc?.length; else showPlainDesc">
+                  <div [modalHTML]="course?.htmlDesc"></div>
+                </ng-container>
+                <ng-template #showPlainDesc>
+                  <p class="course-scroll" style="margin-top: 20px;">{{course?.plainDesc}}</p>
+                </ng-template>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="activeCourseTabsMap[course?.courseId] === 'Course Content'">
+              <div class="course-scroll course-content-container" (scroll)="onScroll()">
+                <div *ngIf="!course?.content?.length; else courseContent"
+                  class="no-content">
+                  {{'learning-path-view.no-course-content' | Translate}}
+                </div>
+                <ng-template #courseContent>
+                  <div class="course-content" *ngFor="let content of course?.content; index as contentIndex">
+                    <div class="flex" style="align-items: center;">
+                      <img class="img-lg"
+                        style="margin-right: 24px;"
+                        [src]="content?.contentIconUrl"/>
+                      <span class="two-line-overflow-text">{{content?.name}}</span>
+                    </div>
+                    <img #shareIcon class="img-base cursor-pointer"
+                      src="assets/images/share-dark.svg"
+                      (click)="dropdownMenuClick(shareIcon)"/>
+                  </div>
+                </ng-template>
+              </div>
+            </ng-container>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+
+
+  <div *ngIf="courses?.length > 3"
+  class="btn-container"
+  [class.btn-container-collapsed]="courseListCollapsed && courses?.length" >
+    <button class="view-btn"
+      [class.view-btn-expanded]="!courseListCollapsed"
+      ep-button buttonShape="pilldropdown" [iconUri]="courseListCollapsed ? 'assets/images/down-caret.svg' : 'assets/images/up-caret.svg'"
+      (click)="toggleCourseList()">{{(courseListCollapsed ? 'common.view-more' : 'common.view-less') | Translate}}</button>
+  </div>
+
+  <ep-dropdown-menu *ngIf="showCourseContentDropdown"
+    [dropdownItems]="dropdownItems"
+    [ngStyle]="{'top.px': openCourseDropdownTopPos, 'left.px': openCourseDropdownLeftPos}"
+    (onClickedOut)="closeDropdownMenu()"></ep-dropdown-menu>
+</ng-container>
+
+<ng-template #loadingCourses>
+  <!-- height set to closely match height after content loads -->
+  <ep-spinner class="flex-center" style="height: 400px;"></ep-spinner>
+</ng-template>

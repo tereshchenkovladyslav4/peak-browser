@@ -1,0 +1,25 @@
+.filter-container {
+  padding: 0.65rem 0 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.search-icon {
+  position: absolute;
+  top: 0.4rem;
+  height: 1rem;
+  left: 0;
+}
+
+.filter-control {
+  border: none;
+  outline: none;
+  background: inherit;
+  padding: 0.3rem 1.5rem;
+}

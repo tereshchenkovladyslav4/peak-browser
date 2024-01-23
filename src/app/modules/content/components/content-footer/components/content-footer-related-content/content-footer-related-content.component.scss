@@ -1,0 +1,9 @@
+.related-content-container {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.related-content-card {
+  cursor: pointer;
+}

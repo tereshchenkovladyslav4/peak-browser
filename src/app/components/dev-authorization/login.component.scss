@@ -1,0 +1,63 @@
+:host {
+    margin: 0 auto;
+}
+
+.login-form {
+    display: inline-block;
+    width: 500px;
+    margin-top: 2em;
+}
+
+form input[type="submit"] {
+    margin: 0 auto;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 400px;
+  background-color: rgb(245, 245, 245);
+  color: rgb(46, 46, 46);
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 0.5em;
+  padding: 1.5rem 2rem;
+}
+
+  form > * {
+    /*margin: 0.5em;*/
+  }
+
+/*form > label {
+    display: flex;
+    height: 2em;
+    line-height: 2em;
+    flex-direction: row;    
+}*/
+
+label > span {
+    flex-shrink: 0;
+}
+
+/*label > input[type="checkbox"] {
+    font-size: inherit;
+    margin-top: auto;
+    margin-bottom: auto;
+    flex-shrink: 1;
+    min-width: 0;
+}*/
+
+/*label > input:not([type="checkbox"]),
+label > select {
+    flex-basis: 100%;
+}
+*/
+/* Give a left margin to every child
+   except the first. */
+label > * + * {
+    margin-left: 0.5em;
+}
+
+form > .message {
+    text-align: center;
+}

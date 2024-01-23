@@ -1,0 +1,52 @@
+<div class="assignment-card-container" [class.has-multiple]="assignment?.hasMultiple" (click)="onAssignmentClick()">
+  <ep-assignment-bookmark [learningPathId]="assignment?.learningPath?.id" />
+  <div class="assignment-banner" *ngIf="pastDue">
+    <span class="assignment-banner-label">{{ 'assignments.past-due' | Translate }}</span>
+  </div>
+  <div class="assignment-image-container">
+    <img *ngIf="!!image; else defaultImage" [src]="image" class="assignment-image"
+         alt="assignment-image">
+  </div>
+  <div class="assignment-content">
+    <div class="assignment-meta">
+      <div class="assignment-content-type">
+        <img class="img-base"
+             style="margin-right: 5px;"
+             [src]="assignment?.learningPath?.type | epContentTypeIcon" />
+        <span class="font-normal text-base color-subtext assignment-content-type-label">{{assignment?.contentType}}</span>
+      </div>
+      <div class="assignment-due">
+        <span class="assignment-due-label" *ngIf="assignment?.dueDate">
+          Due: {{assignment?.dueDate | date : 'shortDate'}}
+        </span>
+      </div>
+    </div>
+    <div class="assignment-titles-container">
+      <div class="assignment-title" epTextTruncate [rows]="2" (rowsCalculated)="titleRows = $event">
+        {{ assignment?.learningPath?.name }}
+      </div>
+      <div class="assignment-subtitle" epTextTruncate [rows]="3 - (titleRows || 0)">
+        {{ assignment?.course?.name }}
+      </div>
+    </div>
+    <div class="assignment-progress-bar-container" [ngClass]="{'past-due-progress-container': pastDue}">
+      <div class="assignment-progress-bar" [ngClass]="{'past-due-progress': pastDue}" [ngStyle]="{'width': assignment?.progress + '%'}">
+      </div>
+    </div>
+    <div class="assignment-progress">
+      <ep-assignment-status [assignment]="assignment" />
+      <div class="assignment-trophy"><img src="assets/images/trophy.svg" *ngIf="assignment?.assessment"></div>
+    </div>
+  </div>
+  <div class="kebab-container" [class.show]="isMenuOpened">
+    <ep-assignment-menu [assignment]="assignment" (statusEmitter)="isMenuOpened = $event" />
+  </div>
+  <ng-container *ngIf="assignment?.hasMultiple">
+    <div class="extra-card" style="bottom: -8px; z-index: -3;"></div>
+    <div class="extra-card" style="bottom: -16px; z-index: -4;"></div>
+  </ng-container>
+</div>
+
+<ng-template #defaultImage>
+  <img src="assets/images/libraries.svg" class="default-assignment-image" alt="assignment-image">
+</ng-template>

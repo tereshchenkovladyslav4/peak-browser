@@ -1,0 +1,25 @@
+@import "./primeng_calendar.scss";
+@import "./primeng_checkbox.scss";
+@import "./primeng_dropdown.scss";
+@import "./primeng_inputtext.scss";
+@import "./primeng_overlay-panel.scss";
+@import "./primeng_table.scss";
+
+
+.p-component {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+}
+
+.p-float-label label {
+  left: 16px;
+  color: var(--color-1-grey-3);
+}
+.p-float-label .p-inputwrapper-filled ~ label,
+.p-float-label .p-inputwrapper-focus ~ label{
+  top: 16px;
+  font-size: 10px;
+}
+.p-float-label .p-inputtext {
+  padding: 1.375rem 0.875rem 0.875rem;
+}

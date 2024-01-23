@@ -1,0 +1,93 @@
+<ep-loading [isLoaded]="isLoaded$ | async">
+  <ep-dialog-base>
+    <ng-container title>
+      <div class="title">{{ data.quizSummary?.courseName }}</div>
+      <div class="subtitle">{{ data.quizSummary?.name }}</div>
+      <div class="close-button" (click)="close(false)">
+        <img class="dropdown cursor-pointer close-icon" src="assets/images/close.svg" alt="close" />
+      </div>
+    </ng-container>
+
+    <ng-container content>
+      <ng-container *ngIf="quizResults$ | async as quizResults">
+        <div>
+          <!-- RESULTS HEADER -->
+          <div class="results-header">
+            <div class="results-summary">
+              <ep-circle-progress
+                [size]="60"
+                [strokeWidth]="3"
+                fontSize="14px"
+                [progress]="quizResults?.percentage"
+                [trackStroke]="quizResults?.isPassFail && !quizResults?.passed ? '#f9d0d0' : '#beeed5'"
+                [progressStroke]="quizResults?.isPassFail && !quizResults?.passed ? '#ED7676' : '#41CC84'"
+                [showPercentage]="true"
+              ></ep-circle-progress>
+              <div>
+                <div class="results-text">
+                  <span>
+                    {{ 'assignments.quiz-result' | Translate
+                    }}<span *ngIf="quizResults?.isPassFail"
+                      >:
+                      {{
+                        (quizResults?.passed ? 'assignments.you-passed' : 'assignments.you-failed') | Translate
+                      }}</span
+                    >
+                  </span>
+                </div>
+                <div class="completed-date">
+                  {{ 'assignments.completed' | Translate }}
+                  : {{ quizResults?.endDatetime ? (quizResults?.endDatetime | epDate) : 'N/A' }}
+                </div>
+              </div>
+            </div>
+            <div *ngIf="attemptOptions?.length > 1">
+              <span class="p-float-label attempt-dropdown">
+                <p-dropdown
+                  id="attempt"
+                  [options]="attemptOptions"
+                  [(ngModel)]="attemptIndex"
+                  (ngModelChange)="handleChangeAttempt()"
+                  optionLabel="label"
+                  optionValue="value"
+                ></p-dropdown>
+                <label for="attempt">{{ 'assignments.quiz-attempt' | Translate }}</label>
+              </span>
+            </div>
+          </div>
+
+          <div class="questions" #questions>
+            <div class="question" *ngFor="let question of quizResults?.questions; index as questionIndex">
+              <!-- QUESTION HEADER -->
+              <div class="question-header">
+                <span>{{ questionIndex + 1 }}. {{ question?.text }}</span>
+                <ng-container *ngIf="question?.userAnsweredCorrectly; else incorrect">
+                  <div class="result-pill pill-green">
+                    <img src="assets/images/check.svg" />
+                    <span>{{ 'assignments.correct' | Translate }}</span>
+                  </div>
+                </ng-container>
+                <ng-template #incorrect>
+                  <div class="result-pill pill-red">
+                    <img src="assets/images/close-circle.svg" />
+                    <span>{{ 'assignments.incorrect' | Translate }}</span>
+                  </div>
+                </ng-template>
+              </div>
+              <!-- QUESTION IMAGE -->
+              <img *ngIf="question?.imageUrl" class="quiz-img" [src]="question?.imageUrl" />
+              <!-- ANSWERS OUTLET -->
+              <ep-quiz-answer [question]="question" />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container actions>
+      <div class="button-container ep-mt-5">
+        <button ep-button (click)="close()">{{ 'common.close' | Translate }}</button>
+      </div>
+    </ng-container>
+  </ep-dialog-base>
+</ep-loading>

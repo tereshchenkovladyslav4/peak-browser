@@ -1,0 +1,26 @@
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  max-width: 100%;
+  vertical-align: middle;
+  transform: rotate(-90deg); /* Fix the orientation */
+}
+
+.track,
+.progress {
+  fill: transparent;
+}
+
+.progress {
+  transition: stroke-dashoffset 120ms ease-in;
+}
+
+.progress-text {
+  position: absolute;
+  font-weight: 700;
+}

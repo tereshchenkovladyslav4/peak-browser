@@ -1,0 +1,27 @@
+.my-account-background {
+    background-color: #FFF;
+    margin: 0 auto;
+    margin-top: 25px;
+    width: 95vw;
+    border-radius: 20px;
+    padding: 20px;
+    height:100vh;
+}
+
+.main-container {
+    display: flex;
+    margin-top:82px;
+    padding:20px;
+    height: calc(100% - 300px);
+}
+
+.left-container {
+    width: 60%;
+}
+
+.right-container {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    padding:20px;
+}

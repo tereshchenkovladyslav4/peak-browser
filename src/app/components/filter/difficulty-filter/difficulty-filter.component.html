@@ -1,0 +1,13 @@
+<ng-container *ngIf="(emptyForm$ | async); else difficultiesAvailable">
+  <span>{{'difficulty-filter.no-difficulties' | Translate}}</span>
+</ng-container>
+
+<ng-template #difficultiesAvailable>
+  <form [formGroup]="form" *ngIf="form">
+    <div class="filter-container" *ngFor="let difficulty of (difficulties$ | async)">
+      <ep-checkbox-input [selected]="form.get([difficulty?.key]).value"
+                         (selectedChange)="onSelectedChanged($event, difficulty?.key)"></ep-checkbox-input>
+      <span>{{difficulty?.label}}</span>
+    </div>
+  </form>
+</ng-template>

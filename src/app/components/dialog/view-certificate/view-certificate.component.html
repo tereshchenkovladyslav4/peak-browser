@@ -1,0 +1,40 @@
+<ep-loading [isLoaded]="isLoaded$ | async">
+  <ng-container *ngIf="certificate$ | async as certificate">
+    <ng-container *ngIf="userDisplayName$ | async as userDisplayName">
+      <ep-dialog-base>
+        <ng-container title>
+          <div class="header">
+            <div class="title">{{ 'view-certificate.title' | Translate }}, {{ userDisplayName }}</div>
+            <div class="subtext color-subtext">{{ 'view-certificate.subtitle' | Translate }}</div>
+            <img class="close-img" (click)="close()" src="assets/images/close.svg" />
+          </div>
+        </ng-container>
+        <ng-container content>
+          <ng-container *ngIf="!!certificate?.useAsDefault; else showNoCertificate">
+            <ep-expandable-image
+              name="Certificate of Completion"
+              [url]="certificate?.docPreviewUrl"
+              [imgStyles]="{ border: '1px solid var(--color-1-grey-4)' }"
+            ></ep-expandable-image>
+          </ng-container>
+          <ng-template #showNoCertificate>
+            <span>{{ 'view-certificate.no-certificate' | Translate }}</span>
+          </ng-template>
+        </ng-container>
+        <ng-container actions>
+          <div class="button-container">
+            <button ep-button (click)="close()">{{ 'common.cancel' | Translate }}</button>
+            <button
+              ep-button
+              buttonType="primary"
+              [disabled]="!certificate?.useAsDefault"
+              (click)="downloadCertificate(certificate?.docUrl)"
+            >
+              {{ 'view-certificate.download-certificate' | Translate }}
+            </button>
+          </div>
+        </ng-container>
+      </ep-dialog-base>
+    </ng-container>
+  </ng-container>
+</ep-loading>

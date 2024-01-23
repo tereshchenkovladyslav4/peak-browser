@@ -1,0 +1,43 @@
+:host {
+  padding: 10px;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.close-img {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.subtext {
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-top: 7px;
+  margin-bottom: 25px;
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  align-items: center;
+  border-top: 1px solid rgb(215, 218, 223);
+  padding-top: 25px;
+  margin-bottom: 10px;
+}

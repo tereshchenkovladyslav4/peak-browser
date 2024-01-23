@@ -1,0 +1,11 @@
+:host {
+  position: relative;
+}
+
+.type-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  width: fit-content;
+}

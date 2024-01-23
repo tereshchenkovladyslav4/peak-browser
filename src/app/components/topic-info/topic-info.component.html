@@ -1,0 +1,11 @@
+<img class="topic-icon rounded-full" 
+    [src]="imageUrl ? imageUrl : 'assets/images/default-topic-color.svg'"
+    [width]="imgWidth"/>
+<div class="topic-text flex">
+    <span class="topic-name ep-overflow-ellipsis h-full w-full" 
+        epTooltip
+        [style.font-size]="topicFontSize">{{topicName}}</span>
+    <span class="subtopic-name ep-overflow-ellipsis text-sm color-subtext h-full w-full" 
+        epTooltip
+        [style.font-size]="subtopicFontSize">{{subtopicName}}</span>
+</div>

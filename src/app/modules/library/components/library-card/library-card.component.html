@@ -1,0 +1,19 @@
+<div class="library-card-container" (click)="onLibraryClick()">
+  <div class="library-banner" *ngIf="isNew">
+    <span class="library-banner-label">NEW LIBRARY</span>
+  </div>
+  <div class="library-image-container">
+    <img *ngIf="library?.imageUrl; else defaultImage" [src]="library?.imageUrl" class="library-image"
+         alt="library-image">
+  </div>
+  <div class="library-title">
+    <span class="library-title-label" epTextTruncate [rows]="1">{{library?.name}}</span>
+  </div>
+  <div class="library-content">
+    <span class="library-content-label">{{library?.contentCount}} Content Items</span>
+  </div>
+</div>
+
+<ng-template #defaultImage>
+  <img src="assets/images/libraries.svg" class="default-library-image" alt="library-image">
+</ng-template>

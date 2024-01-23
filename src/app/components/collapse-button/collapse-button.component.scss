@@ -1,0 +1,18 @@
+.collapse-icon-container {
+  position: absolute;
+  z-index: 1;
+}
+
+.collapse-icon.reverse {
+  transform: rotate(180deg);
+}
+
+.collapse-icon {
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 75%);
+  border-radius: 50%;
+  transition: transform 500ms;
+}
+
+.icon-collapsed {
+  transform: rotate(180deg);
+}

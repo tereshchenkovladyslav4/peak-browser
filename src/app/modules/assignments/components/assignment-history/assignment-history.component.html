@@ -1,0 +1,100 @@
+<div class="table-container">
+  <ep-loading [isLoaded]="isLoaded$ | async">
+    <ng-container *ngIf="isNoDataResults$ | async; else data">
+      <div class="no-result-container">
+        <ep-no-result
+          [title]="'assignments.no-assignment-history-title' | Translate"
+          [subTitle]="'assignments.no-assignment-history-subtitle' | Translate"
+        >
+          <ng-container actions>
+            <button
+              ep-button
+              buttonShape="pill"
+              iconUri="assets/images/libraries-dark.svg"
+              [routerLink]="['/', APP_ROUTES.libraries]"
+            >
+              {{ 'content-container.browse-libraries' | Translate }}
+            </button>
+            <button
+              ep-button
+              buttonShape="pill"
+              iconUri="assets/images/search-results/search.svg"
+              [routerLink]="['/', APP_ROUTES.search]"
+            >
+              {{ 'assignments.search-for-content' | Translate }}
+            </button>
+          </ng-container>
+        </ep-no-result>
+      </div>
+    </ng-container>
+  </ep-loading>
+</div>
+
+<ng-template #data>
+  <ng-container *ngIf="isNoFilteredDataResults$ | async; else filteredData">
+    <div class="no-result-container">
+      <ep-no-result
+        [title]="'assignments.results-not-found' | Translate"
+        [subTitle]="'assignments.try-adjusting-filters' | Translate"
+      ></ep-no-result>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #filteredData>
+  <p-table [columns]="columns" 
+    [value]="tableData$ | async" 
+    [scrollable]="true"
+    scrollHeight="calc(100vh - 274px)"
+    selectionMode="single"
+    [sortField]="DEFAULT_SORT_FIELD"
+    [sortOrder]="DEFAULT_SORT_ORDER"
+    [lazy]="true"
+    [lazyLoadOnInit]="false"
+    (onLazyLoad)="getData($event)"
+    [(selection)]="selectedRow"
+    dataKey="id"
+    (onRowSelect)="onRowSelect($event)">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <ng-container *ngFor="let column of columns">
+          <th *ngIf="column.sortable" [pSortableColumn]="column.field">
+            <div class="flex-row">
+              {{ column.header | Translate }}
+              <p-sortIcon *ngIf="column.sortable" [field]="column.field"></p-sortIcon>
+            </div>
+              </th>
+          <th *ngIf="!column.sortable">
+            {{ column.header | Translate }}
+          </th>
+        </ng-container>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <tr [pSelectableRow]="rowData">
+        <td *ngFor="let col of columns" [ngSwitch]="col.field">
+          <ng-container *ngSwitchCase="'name'">
+            <div class="name-wrap">
+              {{ rowData[col.field] }}
+              <ep-assignment-bookmark [learningPathId]="rowData?.learningPathId" [isWhite]="false"/>
+            </div>
+          </ng-container>
+          <ng-container *ngSwitchCase="'statusDate'">
+            {{ rowData[col.field] | epDate }}
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{ rowData[col.field] }}
+          </ng-container>
+        </td>
+        <td style="display: flex; justify-content: center;">
+          <div class="actions-wrap">
+            <ep-dropdown-menu-container [dropdownItems]="dropdownMenusMap.get(rowData?.id)"
+              [enableBoxShadow]="false"
+              [enableBgColor]="false"></ep-dropdown-menu-container>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>

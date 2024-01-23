@@ -1,0 +1,35 @@
+<ep-dialog-base>
+  <ng-container title>
+    <div class="title">{{ 'assignments.change-due-date' | Translate }}</div>
+    <div class="close-button" (click)="close(false)">
+      <img class="dropdown cursor-pointer close-icon" src="assets/images/close.svg" alt="close" />
+    </div>
+  </ng-container>
+
+  <ng-container content>
+    <div class="subtitle">
+      {{ subtitle }}
+    </div>
+
+    <div class="ep-mt-5">
+      <div class="ep-mt-2">
+        <span class="p-float-label">
+          <p-calendar
+            id="dueDate"
+            [(ngModel)]="dueDate"
+            [showIcon]="true"
+            [showButtonBar]="true"
+          ></p-calendar>
+          <label for="dueDate">{{ 'assignments.due-date' | Translate }}</label>
+        </span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container actions>
+    <div class="button-container ep-mt-5">
+      <button ep-button (click)="close()">{{ 'common.cancel' | Translate }}</button>
+      <button ep-button buttonType="green" (click)="save()">{{ 'common.save' | Translate }}</button>
+    </div>
+  </ng-container>
+</ep-dialog-base>

@@ -1,0 +1,41 @@
+<ng-container *ngIf="(emptyForm$ | async); else topicsAvailable">
+  <span>{{'topics-filter.no-topics' | Translate}}</span>
+</ng-container>
+
+<ng-template #topicsAvailable>
+  <form [formGroup]="filterForm">
+    <div class="search-container">
+      <img class="search-icon" src="assets/images/search-results/search.svg" alt="search"/>
+      <input formControlName="filter"
+             type="text"
+             class="filter-control"
+             placeholder="Search Topics"/>
+    </div>
+  </form>
+
+  <hr *ngIf="customStyles?.separator" class="form-separator">
+
+  <form class="filter-section-scroll" [formGroup]="form" *ngIf="form" [ngStyle]="customStyles?.form">
+    <div class="filter-container"
+         *ngIf="'no topics assigned'.includes(filterForm?.get('filter')?.value?.toLowerCase()) ||
+                !filterForm?.get('filter')?.value">
+      <ep-checkbox-input [selected]="form.get('noTopicsAssigned').value"
+                         (selectedChange)="onSelectedChanged($event)"></ep-checkbox-input>
+      <span class="topic">{{'topics-filter.no-topics-assigned' | Translate}}</span>
+    </div>
+    <div class="topic-subtopic-container" *ngFor="let topic of (topics$ | async)">
+      <div class="filter-container" *ngIf="topic?.show">
+        <ep-checkbox-input [selected]="form.controls['topics']['controls'][topic.name].value"
+                           (selectedChange)="onTopicSelectedChanged($event, topic)"></ep-checkbox-input>
+        <span class="topic">{{topic.name}}</span>
+      </div>
+      <ng-container *ngFor="let subtopic of topic.subtopics">
+        <div class="filter-container subtopic" *ngIf="subtopic?.show">
+          <ep-checkbox-input [selected]="form.controls[topic.name]['controls'][subtopic.name].value"
+                             (selectedChange)="onSubtopicSelectedChanged($event, topic.name, subtopic.name)"></ep-checkbox-input>
+          <span>{{subtopic.name}}</span>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+</ng-template>

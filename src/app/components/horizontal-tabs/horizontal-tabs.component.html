@@ -1,0 +1,15 @@
+<div class="tab-container" 
+  [class.group-underline]="tabs?.length > 1 || underlineAlways"
+  [style.background-color]="tabBackgroundColor"
+  [style.padding-top.px]="isSticky ? 20 : 0">
+  <div class="tab" 
+    *ngFor="let tab of tabs; index as i" 
+    [class.tab-active]="i === activeTabIndex"
+    [class.tab-active-border]="i === activeTabIndex && (tabs?.length > 1 || underlineAlways)"
+    [class.cursor-pointer]="tabs?.length > 1"
+    [style.font-size]="tabFontSize"
+    [style.font-weight]="tabFontWeight"
+    (click)="onTabClick(i)">
+    {{tab?.label}}
+  </div>
+</div>

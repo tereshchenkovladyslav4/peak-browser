@@ -1,0 +1,22 @@
+<div class="workflow-container"
+  [style.justify-content]="(isWorkflowOpen$ | async) ? 'flex-start' : 'center'">
+  <div *ngIf="!(isWorkflowOpen$ | async); else showWorkflowDetails" class="launch-workflow-container">
+    <img src="assets/images/expand-large.svg" />
+    <span class="title">{{"workflow-view.landing-title" | Translate}}</span>
+    <span class="description">{{"workflow-view.landing-description" | Translate}}</span>
+    <button ep-button buttonType="secondary" iconUri="assets/images/expand-small-white.svg" iconPosition="right" [gap]="15"
+      (click)="openWorkflow()">{{"workflow-view.launch-workflow" | Translate}}</button>
+  </div>
+  
+  <ng-template #showWorkflowDetails>
+    <ng-container *ngIf="(viewState$ | async) === 'Tree Only'">
+      <ep-workflow-steps></ep-workflow-steps>
+    </ng-container>
+    <ng-container *ngIf="(viewState$ | async) !== 'Tree Only'">
+      <div class="diagram-container">
+        <ep-workflow-view-selector *ngIf="(viewState$ | async) === 'Diagram Only'"></ep-workflow-view-selector>
+        <ep-workflow-diagram-view></ep-workflow-diagram-view>
+      </div>
+    </ng-container>
+  </ng-template>
+</div>

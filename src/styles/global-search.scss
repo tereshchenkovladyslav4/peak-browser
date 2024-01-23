@@ -1,0 +1,28 @@
+
+.global-search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.search-icon {
+  position: absolute;
+  top: 13px;
+  left: 1rem;
+  cursor: pointer;
+  height: 1rem;
+}
+
+.global-search-field {
+  padding: 20px 8px 17px;
+  width: 323px;
+  height: 40px;
+  background: #FFFFFF;
+  border: 1px solid #D7DADF;
+  border-radius: 10px;
+  text-indent: 2rem;
+}
+
+.global-search-field:focus {
+  outline: none;
+  border: 1px solid #80bdff;
+}

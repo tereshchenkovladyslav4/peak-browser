@@ -1,0 +1,10 @@
+<form [formGroup]="form" *ngIf="form">
+  <div class="filter-container" style="margin-bottom: -1.25rem;">
+    <ng-container *ngFor="let contentType of (contentTypes$ | async)">
+      <ep-content-type-icon [contentType]="contentType"
+                            [isSelected]="form.get(contentType).value"
+                            (select)="onSelectedChanged($event)">
+      </ep-content-type-icon>
+    </ng-container>
+  </div>
+</form>

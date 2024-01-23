@@ -1,0 +1,37 @@
+<div class="assignments-container">
+  <div class="assignments-header-container">
+    <form [formGroup]="form">
+      <div class="search-container">
+        <div class="search-icon-container">
+          <img class="search-icon" src="assets/images/search-results/search.svg" alt="search" />
+        </div>
+        <input
+          formControlName="filter"
+          type="text"
+          class="global-search-field search-field"
+          [placeholder]="'assignments.search-assignments' | Translate"
+        />
+      </div>
+    </form>
+
+    <div *ngIf="currentTabKey === 'current'">
+      <ep-view-mode [viewMode]="viewMode" (viewModeChanged)="handleChangeViewMode($event)"></ep-view-mode>
+    </div>
+  </div>
+  <hr class="ep-hr" [ngStyle]="{ margin: '3rem 0' }" />
+
+  <ep-horizontal-tabs
+    [tabs]="tabs"
+    tabFontSize="1.25rem"
+    tabFontWeight="700"
+    [underlineAlways]="true"
+    (onTabChange)="setCurrentTabKey($event)"
+  ></ep-horizontal-tabs>
+
+  <div class="assignments-card-container">
+    <ng-container [ngSwitch]="currentTabKey">
+      <ep-currently-assigned *ngSwitchCase="'current'" [formFilter$]="formFilter$" [viewMode]="viewMode"></ep-currently-assigned>
+      <ep-assignment-history *ngSwitchCase="'history'" [formFilter$]="formFilter$"></ep-assignment-history>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<ep-dialog-base class="dialog-padding">
+  <ng-container title>
+    <div class="header">
+      <span></span>
+      {{data?.config?.title}}
+      <img class="close-img" (click)="close()" src="assets/images/close.svg" />
+    </div>
+  </ng-container>
+  <ng-container content>
+    <div class="image-container">
+      <ep-user-profile-image [userImageUrl]="data?.userDetails?.currentImage"
+                             [displayName]="data?.userDetails?.displayName"
+                             [diameter]="150">
+      </ep-user-profile-image>
+      <div class="img-btn-container">
+        <button ep-button buttonShape="pill">
+          <span (click)="_fileInput.click()">
+            {{'user-profile.upload-new-photo' | Translate}}
+          </span>
+          <input #_fileInput type="file" (change)="onUploadNewImage($event)" accept=".png, .jpg, .gif, .jpeg" hidden />
+        </button>
+        <button ep-button buttonShape="pill" (click)="removeImage()">
+          {{'common.delete' | Translate}}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <div class="button-container">
+      <button ep-button (click)="close()">{{data?.config?.negativeButton}}</button>
+      <button ep-button [buttonType]="data?.config?.buttonType" (click)="updateProfileImage()">{{data?.config?.positiveButton}}</button>
+    </div>
+  </ng-container>
+</ep-dialog-base>

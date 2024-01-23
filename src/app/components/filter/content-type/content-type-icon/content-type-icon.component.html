@@ -1,0 +1,6 @@
+<div class="content-type-icon-container" *ngIf="displayType" (click)="onSelect()">
+  <div class="content-type-icon-inner-container" [class.active-border]="isSelected">
+    <img class="content-type-icon" [src]="displayType?.image" alt="search"/>
+  </div>
+  <div class="content-type-icon-label" [class.active-text]="isSelected">{{displayType?.label}}</div>
+</div>

@@ -1,0 +1,45 @@
+textarea {
+    height: 6rem;
+    resize: vertical;
+}
+
+.long-placeholder {
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.image-input{
+    display: flex;
+}
+
+img.floating-lock-image {
+    position: absolute;
+    right: 1rem;
+    top: -6px;
+    pointer-events: none;
+    height: 20px;
+    width: 20px;
+}
+
+.shortForm.floating-form {
+    height: 57px;
+    padding-top: 24px;
+}
+
+.longForm.floating-form {
+    padding-top: 22px;
+}
+
+.floating-input {
+    padding: 0px 14px 10px;
+}
+
+     .floating-input:focus ~ label,
+    .floating-input:not(:placeholder-shown) ~ label {
+        left: 12px;
+        top: -16px;
+        font-size: 10px;
+        color: #afb6bf;
+    }

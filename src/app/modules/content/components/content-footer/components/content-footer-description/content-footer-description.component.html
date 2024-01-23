@@ -1,0 +1,4 @@
+<div class="description-container">
+  <div *ngIf="description; else showEmpty" [modalHTML]="description"></div>
+  <ng-template #showEmpty></ng-template>
+</div>

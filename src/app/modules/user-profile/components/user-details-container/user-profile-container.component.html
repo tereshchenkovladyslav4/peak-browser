@@ -1,0 +1,17 @@
+<div class="my-account-background" *ngIf="currentUser$ | async as currentUser else isLoading">
+  <ep-user-details-header [style.margin-bottom.px]="82"
+                          [currentUser]="currentUser"
+                          [currentTenantDetails]="currentTenantDetails">
+  </ep-user-details-header>
+  <div class="main-container">
+    <div class="left-container">
+      Info like managers, areas of expertise, commands in autodesk products will go here.
+    </div>
+    <div class="right-container">
+      <ep-update-password-section></ep-update-password-section>
+    </div>
+  </div>
+</div>
+<ng-template #isLoading>
+  <ep-loading></ep-loading>
+</ng-template>

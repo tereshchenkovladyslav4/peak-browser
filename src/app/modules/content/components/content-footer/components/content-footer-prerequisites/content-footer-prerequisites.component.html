@@ -1,0 +1,5 @@
+<div class="prerequisites-container">
+  <ng-container *ngFor="let prerequisite of cardData">
+    <ep-card-view class="prerequisite-card" [content]="prerequisite" (click)="onCardClick(prerequisite)"></ep-card-view>
+  </ng-container>
+</div>

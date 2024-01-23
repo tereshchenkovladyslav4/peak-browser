@@ -1,0 +1,66 @@
+<ng-container
+  *ngIf="data?.config?.contentViewer?.contentType !== 'Image' && (content$ | async); let content; else loadingContent">
+  <ep-dialog-base>
+    <ng-container title>
+      <div class="header-container">
+        <div class="left-header">
+          <img [src]="content?.contentTypeImage" class="content-type-icon" alt="content-type"/>
+          <span>{{content?.name}}</span>
+        </div>
+        <div class="right-header">
+          <img class="dropdown img-sm cursor-pointer close-icon"
+               src="assets/images/close.svg"
+               alt="close"
+               (click)="close(false)"/>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container content>
+      <ng-container [ngSwitch]="content.type">
+        <ep-document-view *ngSwitchCase="contentType.Document" [content]="content"
+                          [customStyles]="documentStyles"></ep-document-view>
+        <ep-video-view *ngSwitchCase="contentType.Video" [videoContent]="content | as : Video"
+                       [customStyles]="videoStyles"></ep-video-view>
+        <ng-container *ngSwitchCase="contentType.Course">
+          <div *ngIf="content?.description?.length; else plainDescription" [modalHTML]="content?.description" class="course-desc"></div>
+          <ng-template #plainDescription>
+            <div class="course-desc">{{content?.plainDescription}}</div>
+          </ng-template>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container actions>
+      <div class="button-container">
+        <button *ngIf="content?.type === contentType.Course; else defaultButton" ep-button (click)="close()">Close</button>
+        <ng-template #defaultButton>
+          <button ep-button buttonType="green" (click)="close({id: content?.id})">Go to Content</button>
+        </ng-template>
+      </div>
+    </ng-container>
+  </ep-dialog-base>
+</ng-container>
+
+<ng-template #loadingContent>
+  <ep-spinner></ep-spinner>
+</ng-template>
+
+<ng-template #imageContent>
+  <ep-dialog-base>
+    <ng-container title>
+      <div class="header-container">
+        <div class="left-header">
+          <span></span>
+        </div>
+        <div class="right-header">
+          <img class="dropdown img-sm cursor-pointer close-icon"
+               src="assets/images/close.svg"
+               alt="close"
+               (click)="close(false)"/>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container content>
+      <img src="{{data?.config?.contentViewer?.contentId}}" [style.margin-top]="'1rem'" [ngStyle]="imageStyles">
+    </ng-container>
+  </ep-dialog-base>
+</ng-template>

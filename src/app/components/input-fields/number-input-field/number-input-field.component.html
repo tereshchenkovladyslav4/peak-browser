@@ -1,0 +1,21 @@
+<div class="floating-form mt-3">
+
+    <div class="floating-label ff">
+
+        <input class="floating-input"
+               [min]="min"
+               [max]="max"
+               [(ngModel)]="value"
+               [disabled]="disabled"
+               type="number"
+               placeholder=" ">
+
+        <span class="highlight"></span>
+
+        <label class="input-label-color long-placeholder">
+            {{placeholder}}
+        </label>
+
+    </div>
+
+</div>

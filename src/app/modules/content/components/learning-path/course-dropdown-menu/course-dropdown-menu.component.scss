@@ -1,0 +1,53 @@
+.course-dropdown-btn {
+  max-width: 120px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  & .left-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    padding: 0 12px 0 20px;
+  }
+
+  & .right-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px 8px 6px;
+    width: 38px;
+    height: 36px;
+    background-image: url('../../../../../../assets/images/down-caret.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: 6px center;
+
+    &:hover {
+      background: var(--color-1-grey-4);
+      background-image: url('../../../../../../assets/images/down-caret-white.svg');
+      background-size: 20px 20px;
+      background-repeat: no-repeat;
+      background-position: 6px center;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 0;
+      border-left: solid 1px var(--color-1-grey-4);
+    }
+  }
+}
+
+:host ::ng-deep {
+  .course-dropdown-btn .buttonFlex {
+    column-gap: 0;
+  }
+}

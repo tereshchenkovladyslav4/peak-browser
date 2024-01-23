@@ -1,0 +1,141 @@
+<ng-container *ngIf="(activeContentDetails$ | async) as content">
+  <!-- COLLAPSE BUTTON -->
+  <ep-collapse-button [top]="30"
+    [left]="-14"
+    [scaleUpClassCondition]="!isMenuCollapsed"
+    [scaleDownClassCondition]="isMenuCollapsed"
+    [reverseIcon]="true"
+    (onIconClick)="toggleMenu()"></ep-collapse-button>
+
+  <!-- EXPAND BUTTON -->
+  <ep-expand-button [top]="30"
+    [left]="-29"
+    [scaleUpClassCondition]="isMenuCollapsed"
+    [scaleDownClassCondition]="!isMenuCollapsed"
+    (onIconClick)="toggleMenu()"></ep-expand-button>
+
+  <div class="content-details-panel"
+  [class.panel-collapsed]="isMenuCollapsed">
+    <ep-horizontal-tabs [tabs]="tabs" (onTabChange)="onTabChange($event)"></ep-horizontal-tabs>
+
+    <ng-container *ngIf="currTabName === 'Details'">
+      <div [style.display]="(currTabName === 'Details') ? 'block':'none'" style="overflow-y: auto; overflow-x: hidden;">
+        <div class="content-image-div"
+            [style.margin-bottom]="content?.type === ContentType.LearningPath || content?.type === ContentType.Course ? '15px' : '35px'">
+          <img [src]="contentImage" *ngIf="contentImage != null" class="h-full w-full"
+              [style.padding]="isDefaultImage===true ? 'padding:30px;' : ''" />
+        </div>
+
+        <!-- REMOVE false conditional after assignments implemented -->
+        <ng-container *ngIf="false && content?.type === ContentType.LearningPath">
+          <div class="text-lg" style="margin-bottom: 5px;">Total Complete</div>
+          <div class="flex" style="align-items: center;">
+            <div class="ep-progress-bar" style="background-color: #D7DADF; width: 240px; margin-right: 12px;">
+              <div class="ep-progress-bar"
+                  style="background-color: #41CC84;"
+                  [style.width]="0 + '%'"></div>
+            </div>
+            <div class="text-lg">{{0 + '%'}}</div>
+          </div>
+
+          <hr />
+        </ng-container>
+
+        <div class="details-section" style="margin-top: 0;">
+          <div class="attribute" *ngFor="let attr of detailAttributes">
+            <div class="attr-label-group">
+              <img class="img-base" [src]="attr?.imageUrl" />
+              <span class="attribute-label">{{attr?.label}}</span>
+              <img *ngIf="attr?.includeInfoIcon"
+                  class="img-md cursor-pointer"
+                  src="assets/images/info-tooltip.svg"
+                  style="margin-left: 6px;" />
+            </div>
+            <span style="font-size: 0.875rem; max-width: 220px;"
+              class="ep-overflow-ellipsis"
+              [style.font-weight]="attr?.isBold === true ? '700' : '400'"
+              epTooltip>{{attr?.value}}</span>
+          </div>
+        </div>
+
+        <hr />
+
+        <ng-container *ngIf="content?.keywords?.length">
+          <div class="details-section details-section-right">
+            <div class="details-section-title">Keywords</div>
+            <div class="flex" style="flex-wrap: wrap;">
+              <div *ngFor="let keyword of content?.keywords"
+                class="keyword ep-overflow-ellipsis"
+                epTooltip>
+                {{keyword}}
+              </div>
+            </div>
+          </div>
+
+          <hr />
+        </ng-container>
+
+        <ng-container *ngIf="content?.associatedTopics?.length">
+          <div class="details-section details-section-right">
+            <div class="details-section-title">Topics & Subtopics</div>
+            <div class="flex" style="flex-wrap:wrap;">
+              <ep-topic-info *ngFor="let topicSubtopicPair of topicSubtopicPairs"
+                            [imageUrl]="topicSubtopicPair.imageUrl"
+                            [topicName]="topicSubtopicPair.topicName"
+                            [subtopicName]="topicSubtopicPair.subtopicName"
+                            [imgWidth]="37"
+                            topicFontSize="0.875rem"
+                            subtopicFontSize="0.75rem"
+                            style="margin-bottom: 10px; margin-right: 22px;"></ep-topic-info>
+            </div>
+          </div>
+
+          <hr />
+        </ng-container>
+
+        <ng-container *ngIf="experts?.length">
+          <div class="details-section details-section-right">
+            <div class="details-section-title">Experts</div>
+            <div class="expert" *ngFor="let expert of experts">
+              <div class="expert-info">
+                <ep-user-profile-image [userImageUrl]="expert?.imageUrl" [displayName]="expert?.displayName" ></ep-user-profile-image>
+                <span class="text-lg ep-overflow-ellipsis"
+                  style="max-width: 200px;"
+                  epTooltip>{{expert?.displayName}}</span>
+              </div>
+              <img class="cursor-pointer"
+                src="assets/images/email-dark.svg"
+                epTooltip [epTooltipText]="expert?.email" epTooltipPosition="above" [epTooltipArrow]="true" epTooltipTheme="dark" />
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div [style.display]="(currTabName === 'Chapters') ? 'block':'none'" style="height: calc(100vh - 140px); overflow-y: scroll; padding-right: 10px;">
+        <ep-video-chapter-list *ngIf="(content | as : Video)?.chapters?.length" [chapters]="(content | as : Video)?.chapters"></ep-video-chapter-list>
+      </div>
+    </ng-container>
+
+    <ng-container >
+      <div id="transcriptionTabContent"  [style.display]="(currTabName === 'Transcript') ? 'block':'none'" [style.margin-top.px]="15">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid #D7DADF;" >
+          <div style="display:flex;">
+            <span style="font-size: 0.875rem; font-weight:700; padding-right: 8px;">Auto-scrolling</span>
+            <img src="assets/images/info-tooltip.svg"
+                epTooltip [epTooltipText]="'content-details.autoscroll-tooltip' | Translate"
+                  epTooltipPosition="below" /> 
+          </div>
+          <div style="justify-content:end;">
+            <img *ngIf="autoscrollTranscript===true" src="assets/images/toggle-on.svg" (click)="onToggleAutoscroll()" style="cursor:pointer;" />
+            <img *ngIf="autoscrollTranscript===false" src="assets/images/toggle-off.svg" (click)="onToggleAutoscroll()" style="cursor:pointer;" />
+          </div>
+        </div>
+        <div id="videoTranscript" style="height:calc(100vh - 200px); overflow-y:scroll;">
+
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

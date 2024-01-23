@@ -1,0 +1,108 @@
+<ep-loading [isLoaded]="isQuizLoaded$ | async">
+  <div class="quiz-container">  
+    <ng-container *ngIf="!(isQuizFinished$ | async); else showQuizResults">
+      <ng-container *ngIf="questionData$ | async as questionData">
+        <div class="question-header">
+          <div class="question-counter">
+            <span>{{ questionData?.index + 1 }}</span><span class="questions-count">/{{ questionData?.count }}</span>
+          </div>
+        </div>
+        <div class="question-container">
+          <div class="left">
+            <div class="question-number">{{ questionData?.index + 1 }}</div>
+          </div>
+          <div class="right">
+            <span class="question-text">{{ questionData?.question?.questionText }}</span>
+            <span class="question-desc">{{ questionData?.question?.explanation }}</span>
+            <!-- QUESTION DEFAULT TEXT -->
+            <ng-container *ngTemplateOutlet="questionDefaultText;  context: {$implicit: questionData?.question}"></ng-container>
+            <!-- QUESTION IMAGE -->
+            <div *ngIf="questionData?.question?.imageUrl" class="question-img-wrapper">
+              <div class="question-img-container">
+                <ep-quiz-image [imageUrl]="questionData?.question?.imageUrl" />
+                <div class="expand-icon-container" (click)="openImageDialog($event, 'Question Image', questionData?.question?.imageUrl)">
+                  <img height="16" width="16" src="assets/images/expand-large-white.svg" />
+                </div>
+              </div>
+            </div>
+            <!-- ANSWERS OUTLET -->
+            <ng-container *ngTemplateOutlet="questionAnswers; context: {$implicit: questionData?.question}"></ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #showQuizResults>
+      <ep-quiz-results [quizResults]="quizResults$ | async"></ep-quiz-results>
+    </ng-template>
+  </div>
+</ep-loading>
+
+<!-- QUESTION DEFAULT TEXT -->
+<ng-template #questionDefaultText let-question>
+  <ng-container [ngSwitch]="question?.questionType">
+    <div class="question-desc" *ngSwitchCase="QuizQuestionType.ChooseSingleAnswer">Please choose the correct answer below.</div>
+    <div class="question-desc" *ngSwitchCase="QuizQuestionType.ChooseMultipleAnswers">Please select all correct answers below.</div>
+    <div class="question-desc" *ngSwitchCase="QuizQuestionType.FillInText">Please enter your response below.</div>
+    <div class="question-desc" *ngSwitchCase="QuizQuestionType.TrueFalse">Please choose the correct answer below.</div>
+  </ng-container>
+</ng-template>
+
+<!-- ANSWERS OUTLET -->
+<ng-template #questionAnswers let-question>
+  <ng-container [ngSwitch]="question?.questionType">
+    <!-- CHOOSE SINGLE ANSWER -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.ChooseSingleAnswer">
+      <div #textAnswer *ngFor="let answer of question?.answers; index as answerIndex" 
+        class="text-answer"
+        (click)="radioAnswerSelected(textAnswer)">
+        <input type="radio"
+          name="choose-answers"
+          [value]="answer?.imageUrl ? 'Image' + (answerIndex + 1) : answer?.answerText"
+          [class.img-answer]="answer?.imageUrl" />
+        <ng-container *ngTemplateOutlet="answerImage; context {$implicit: answer}"></ng-container>
+      </div>
+    </div>
+    <!-- CHOOSE MULTIPLE ANSWER -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.ChooseMultipleAnswers">
+      <div #textAnswer *ngFor="let answer of question?.answers; index as answerIndex" 
+        class="text-answer"
+        (click)="checkboxAnswerSelected(textAnswer, answerIndex)">
+        <input type="checkbox"
+          name="choose-answers"
+          [value]="answer?.imageUrl ? 'Image' + (answerIndex + 1) : answer?.answerText"
+          [class.img-answer]="answer?.imageUrl" />
+        <ng-container *ngTemplateOutlet="answerImage; context {$implicit: answer}"></ng-container>
+      </div>
+    </div>
+    <!-- FILL IN TEXT -->
+    <ng-container *ngSwitchCase="QuizQuestionType.FillInText">
+      <div class="textarea-container">
+        <textarea #fillInTextarea (focus)="textareaFocus($event)" (blur)="textareaBlur($event)" (input)="textareaInputEvent($event)"></textarea>
+        <label [class.label-sm]="isTextareaFocused || !isTextareaValueEmpty">Your Response</label>
+      </div>
+    </ng-container>
+    <!-- TRUE / FALSE -->
+    <div class="answers" *ngSwitchCase="QuizQuestionType.TrueFalse">
+      <div #textAnswer *ngFor="let answer of question?.answers; index as answerIndex" 
+        class="text-answer"
+        (click)="radioAnswerSelected(textAnswer)">
+        <input type="radio" name="true-false" [value]="answer?.answerText" />
+        <span>{{ answer?.answerText }}</span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #answerImage let-answer>
+  <ng-container *ngIf="answer?.imageUrl; else showAnswerText">
+    <div class="img-container">
+      <ep-quiz-image [imageUrl]="answer?.imageUrl" />
+      <div class="expand-icon-container" (click)="openImageDialog($event, 'Answer Image', answer?.imageUrl)">
+        <img height="16" width="16" src="assets/images/expand-large-white.svg" />
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #showAnswerText>
+    <span>{{ answer?.answerText }}</span>
+  </ng-template>
+</ng-template>

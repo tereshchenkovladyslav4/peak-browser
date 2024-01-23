@@ -1,0 +1,53 @@
+.bar-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  width: 100%;
+  gap: 100px;
+}
+
+.exit-full-screen {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.left-bar {
+  flex: 1 1 auto;
+}
+
+.right-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title {
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  color: #1F283A;
+}
+
+
+.notifications {
+  width: 35px;
+  height: 35px;
+  font-weight: 500;
+  font-size: initial;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: grey;
+  /* Color  1/Grey 4 */
+
+  border: 1px solid #D7DADF;
+  border-radius: 50%;
+}
+
+

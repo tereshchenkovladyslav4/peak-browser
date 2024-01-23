@@ -1,0 +1,4 @@
+<svg class="indicator" width="162" height="162" viewBox="0 0 162 162" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle class="track" cx="80.7935" cy="80.7838" r="77.3667" stroke="#41CC84" stroke-width="6"/>
+  <circle class="progress" cx="80.7935" cy="80.7838" r="77.3667" stroke="#beeed5" stroke-width="6" />
+</svg>

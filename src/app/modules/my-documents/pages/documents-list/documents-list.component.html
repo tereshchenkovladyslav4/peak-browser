@@ -1,0 +1,39 @@
+<div class="wrapper">
+  <ep-loading [isLoaded]="isLoaded$ | async">
+    <ng-container *ngIf="isNoDataResults$ | async; else data">
+      <div class="no-results">
+        <span class="no-results-subtitle">{{ 'my-documents.no-documents-message' | Translate }}</span>
+      </div>
+    </ng-container>
+  </ep-loading>
+</div>
+
+<ng-template #data>
+  <p-table [value]="filteredData$ | async" [scrollable]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Date Modified</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-document>
+      <tr>
+        <td>
+          <div class="document-name">
+            <img src="assets/images/content-types/my-document.svg" />
+            <div class="cursor-pointer" [routerLink]="['/content', document.id]">
+              {{ document.name }}
+            </div>
+          </div>
+        </td>
+        <td>{{ document.lastModified | epDate }}</td>
+        <td>
+          <div class="actions-wrap">
+            <ep-my-document-menu [document]="document" />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-template>

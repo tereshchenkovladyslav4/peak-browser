@@ -1,0 +1,44 @@
+.topic-subtopic-container {
+  display: flex;
+  flex-direction: column;
+  /*gap: 0.6rem;*/
+}
+
+.form-separator {
+  margin: 0.5rem -1rem;
+}
+
+.filter-container {
+  padding: 0.65rem 0 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.topic {
+  font-weight: 700;
+}
+
+.subtopic {
+  padding-left: 2.3rem;
+  font-size: 0.9rem;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+
+.search-icon {
+  position: absolute;
+  top: 0.4rem;
+  height: 1rem;
+  left: 0;
+}
+
+.filter-control {
+  border: none;
+  outline: none;
+  background: inherit;
+  padding: 0.3rem 1.5rem;
+}

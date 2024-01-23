@@ -1,0 +1,19 @@
+:host {
+  position: relative;
+  max-width: fit-content;
+}
+
+.expand-icon-container {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}

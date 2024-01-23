@@ -1,0 +1,111 @@
+:host {
+  --tooltip-bg: #2b3242;
+}
+
+.ep-tooltip {
+  position: fixed;
+  background-color: var(--tooltip-bg);
+  border-radius: 5px;
+  color: #ffffff;
+  font-family: Arial;
+  padding: 6px 10px;
+  font-size: 13px;
+  overflow-wrap: break-word;
+  transform:translateX(-50%);
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  font-weight: 700;
+}
+
+.ep-tooltip--visible {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.ep-tooltip--light {
+  background-color: white;
+  color: black;
+  box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
+  /*font-weight: 700;*/
+}
+
+.ep-tooltip--light::before {
+  border: 10px solid white;
+}
+
+.ep-tooltip--dark {
+  background-color: var(--tooltip-bg);
+  color: white;
+}
+
+.ep-tooltip--dark::before {
+  border: 10px solid var(--tooltip-bg);
+}
+
+.ep-tooltip--below {
+  transform:translateX(-50%);
+  margin-top: 7px;
+}
+
+.ep-tooltip--below-arrow::before {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top: none;
+  left: calc(50% - 8px);
+  top: -5px;
+}
+
+.ep-tooltip--above {
+  transform:translate(-50%, -100%);
+  margin-bottom: 7px;
+}
+
+.ep-tooltip--above-arrow::before {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom: none;
+  left: calc(50% - 8px);
+  bottom: -5px;
+}
+
+.ep-tooltip--left {
+  transform:translate(calc(-100% - 7px), -50%);
+}
+
+.ep-tooltip--left-arrow::before {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right: none;
+  right: -5px;
+  top: calc(50% - 8px);
+}
+
+.ep-tooltip--right {
+  transform:translateY(-50%);
+  margin-left: 7px;  
+}
+
+.ep-tooltip--right-arrow::before {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left: none;
+  left: -5px;
+  top: calc(50% - 8px);
+}

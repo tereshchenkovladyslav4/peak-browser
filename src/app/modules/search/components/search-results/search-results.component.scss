@@ -1,0 +1,54 @@
+:host {
+  overflow-y: auto;
+  padding-right: 20px;
+  padding-bottom: 260px;
+  margin-right: 5px;
+}
+
+.no-filtered-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 4rem auto;
+  width: 40rem;
+}
+
+.whoops {
+  font-family: Roboto, 'sans-serif';
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #636D7B;
+}
+
+.instructions {
+  font-family: Roboto, 'sans-serif';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #636D7B;
+}
+
+.no-data-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 14rem auto;
+  width: 40rem;
+}
+
+.global-search-field {
+  width: 27rem;
+}
+
+.lighter-color {
+  color: #87919F;
+}

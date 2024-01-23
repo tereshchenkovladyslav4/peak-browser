@@ -1,0 +1,32 @@
+.lp-content-header {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.lp-content-header-icon {
+  width: 54px;
+  height: 54px;
+  max-width: 54px;
+  max-height: 54px;
+  margin-right: 26px;
+}
+
+.lp-content-header-text {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 48px;
+  color: #2b3242;
+}
+
+.lp-content-body {
+  height: 100%;
+}
+
+.course-content-video {
+  display: block;
+  min-height: 30vh;
+  max-height: 65vh;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+}

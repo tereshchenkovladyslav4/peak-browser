@@ -1,0 +1,11 @@
+<p-selectButton
+  class="view-mode"
+  [options]="options"
+  [(ngModel)]="viewMode"
+  (ngModelChange)="setView($event)"
+  optionValue="value"
+>
+  <ng-template let-item>
+    <img [src]="item.icon" class="view-mode-icon" alt="" />
+  </ng-template>
+</p-selectButton>

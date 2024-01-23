@@ -1,0 +1,7 @@
+<div id="video-div" 
+  class="flex" 
+  style="width: auto; justify-content: center;"
+  [style.visibility]="(videoLoaded$ | async) ? 'visible' : 'hidden'"
+  [style.max-height]="(videoLoaded$ | async) ? 'fit-content' : '0'">
+</div>
+<ep-spinner *ngIf="!(videoLoaded$ | async)" class="flex-center" style="height: 65vh;"></ep-spinner>

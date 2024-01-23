@@ -1,0 +1,34 @@
+<div class="content-header">
+  <div class="content-header-left">
+    <img [src]="content?.typeIcon" *ngIf="content != null" class="content-header-icon" />
+    <span class="content-header-text one-line-text-overflow" 
+      style="margin-right: 60px;"
+      epTooltip>{{content?.name}}</span>
+  </div>
+  <div class="content-header-right">
+    <button ep-button iconUri="assets/images/content/header/suggestions.svg"  buttonType="secondary"
+            epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'content-view-header.suggestions' | Translate"></button>
+
+    <button ep-button  
+      iconUri="{{getBookmarkImageUrl()}}" buttonType="secondary"
+      (click)="toggleBookmarked()" epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true"
+            [epTooltipText]="isContentBookmarked ? ('content-view-header.remove-bookmark' | Translate)  : ('content-view-header.add-bookmark' | Translate)"></button>
+
+    <button ep-button 
+      iconUri="assets/images/content/header/share.svg"  buttonType="secondary"
+      (click)="dropdownShareMenu($event)"
+      epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'content-view-header.share' | Translate"></button>
+
+    <button ep-button 
+      iconUri="{{getLikeImageUrl()}}"  buttonType="secondary"
+      (click)="toggleLiked()"
+      epTooltip epTooltipPosition="above" epTooltipTheme="dark" [epTooltipArrow]="true" [epTooltipText]="'content-view-header.like' | Translate"
+      style="width: 94px;">+ {{likeCount}}</button>
+  </div>
+</div>
+
+<ep-dropdown-menu *ngIf="showDropdownShareMenu"
+                  [dropdownItems]="dropdownShareItems"
+                  [ngStyle]="{'top.px': dropdownTop, 'right.px': dropdownRight}"
+                   (onClickedOut)="closeDropdownShareMenu()"
+                 ></ep-dropdown-menu>
