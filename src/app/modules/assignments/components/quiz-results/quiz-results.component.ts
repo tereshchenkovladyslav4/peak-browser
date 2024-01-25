@@ -114,7 +114,7 @@ export class QuizResultsComponent extends DialogBaseComponent implements OnInit 
   }
 
   handleChangeAttempt() {
-    if (this.questionsElement.nativeElement) this.questionsElement.nativeElement.scrollTop = 0;
+    if (this.questionsElement?.nativeElement) this.questionsElement.nativeElement.scrollTop = 0;
     this.updateSession();
   }
 }
