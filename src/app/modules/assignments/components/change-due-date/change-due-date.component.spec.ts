@@ -11,17 +11,36 @@ import { AssignmentsActions } from '../../../../state/assignments/assignments.ac
 import { of } from 'rxjs';
 
 describe('ChangeDueDateComponent', () => {
-  let dialogRefMock: jest.Mocked<DialogRef>; // Services must be mocked
   let component: ChangeDueDateComponent;
   let fixture: ComponentFixture<ChangeDueDateComponent>;
 
+  // Mock all services
+  let dialogRefMock: jest.Mocked<DialogRef>;
+  let translationServiceMock: jest.Mocked<TranslationService>;
+  const dispatchMock = jest.fn().mockReturnValue(of({}));
+  const storeMock = {
+    dispatch: dispatchMock,
+  };
+
   beforeEach(async () => {
+    // Define all mock service calls
+    dialogRefMock = {
+      close: jest.fn(),
+    } as unknown as jest.Mocked<DialogRef>;
+
+    translationServiceMock = {
+      getTranslationFileData: jest.fn(),
+    } as unknown as jest.Mocked<TranslationService>;
+
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [FormsModule, SharedModule, CalendarModule],
       providers: [
-        TranslationService,
-        Store,
+        { provide: TranslationService, useValue: translationServiceMock },
+        {
+          provide: Store,
+          useValue: storeMock,
+        },
         {
           provide: DialogRef,
           useValue: dialogRefMock,
@@ -32,9 +51,8 @@ describe('ChangeDueDateComponent', () => {
         },
       ],
     }).compileComponents();
-  });
 
-  beforeEach(() => {
+    // Initialize component for testing
     fixture = TestBed.createComponent(ChangeDueDateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -57,12 +75,13 @@ describe('ChangeDueDateComponent', () => {
 
     // Provide the mock data to the component
     component.data = { assignment };
+    translationServiceMock.getTranslationFileData.mockReturnValue("Lorem '[NAME]'.");
 
     // Trigger ngOnInit
     component.ngOnInit();
 
     // Assertion
-    expect(component.subtitle).toContain('Learning Path Name');
+    expect(component.subtitle).toContain("Lorem 'Learning Path Name'");
     expect(component.dueDate).toEqual(new Date(assignment.dueDate));
   });
 
@@ -81,7 +100,7 @@ describe('ChangeDueDateComponent', () => {
     component.data = { assignment };
 
     // Spy on the store.dispatch method
-    const dispatchSpy = spyOn(TestBed.inject(Store), 'dispatch').and.returnValue(of({}));
+    const dispatchSpy = jest.spyOn(TestBed.inject(Store), 'dispatch').mockReturnValue(of({}));
 
     // Trigger ngOnInit
     component.ngOnInit();
