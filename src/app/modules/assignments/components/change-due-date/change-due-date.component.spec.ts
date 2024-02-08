@@ -13,14 +13,11 @@ import { of } from 'rxjs';
 describe('ChangeDueDateComponent', () => {
   let component: ChangeDueDateComponent;
   let fixture: ComponentFixture<ChangeDueDateComponent>;
+  let storeMock: jest.Mocked<Store>;
 
   // Mock all services
   let dialogRefMock: jest.Mocked<DialogRef>;
   let translationServiceMock: jest.Mocked<TranslationService>;
-  const dispatchMock = jest.fn().mockReturnValue(of({}));
-  const storeMock = {
-    dispatch: dispatchMock,
-  };
 
   beforeEach(async () => {
     // Define all mock service calls
@@ -31,6 +28,8 @@ describe('ChangeDueDateComponent', () => {
     translationServiceMock = {
       getTranslationFileData: jest.fn(),
     } as unknown as jest.Mocked<TranslationService>;
+
+    storeMock = { dispatch: jest.fn().mockReturnValue(of({})) } as unknown as jest.Mocked<Store>;
 
     await TestBed.configureTestingModule({
       declarations: [],
