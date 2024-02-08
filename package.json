@@ -29,6 +29,7 @@
     "file-saver": "^2.0.5",
     "ngx-toastr": "^16.2.0",
     "ngxs-reset-plugin": "^3.0.0",
+    "prettier": "^3.2.4",
     "primeicons": "^5.0.0",
     "primeng": "^15.4.1",
     "qs": "^6.11.2",
