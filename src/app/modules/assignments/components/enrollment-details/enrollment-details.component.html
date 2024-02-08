@@ -29,7 +29,7 @@
           <div>{{ 'assignments.percent-reviewed' | Translate }}: {{ data.assignmentHistory?.progress }}%</div>
         </div>
         <div class="row">
-          <div>
+          <div data-testid="certificate-status">
             {{ 'assignments.certificate-status' | Translate }}:
             {{ certificateUnavailableReason | Translate }}
           </div>
@@ -81,6 +81,7 @@
         <button
           ep-button
           buttonType="primary"
+          data-testid="download-button"
           [disabled]="!certificate?.useAsDefault"
           (click)="downloadCertificate(certificate?.docUrl)"
         >

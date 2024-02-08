@@ -71,7 +71,6 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
         } else {
           this.certificateUnavailableReason = 'assignments.certificates-not-available';
         }
-        this.isLoaded$.next(true);
       }),
     );
 
@@ -88,7 +87,9 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
           quizzes.map((quiz) =>
             this.enrollmentService.getQuizSessions(this.data.enrollId, quiz.id).pipe(
               map((quizSessions) => {
-                const scores = quizSessions.map((session) => session.quizAnswersCorrect / session.quizAnswersPossible);
+                const scores = quizSessions.map(
+                  (session) => session.quizAnswersCorrect / (session.quizAnswersPossible || 1),
+                );
                 const highestScoreIndex = scores.indexOf(Math.max(...scores));
                 const highestSession = quizSessions[highestScoreIndex];
 
