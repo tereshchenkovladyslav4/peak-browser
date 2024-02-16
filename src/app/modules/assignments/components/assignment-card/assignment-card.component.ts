@@ -3,9 +3,6 @@ import { Router } from '@angular/router';
 import { Assignment } from '../../../../resources/models/assignment';
 import { AsyncPipe, DatePipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { DropdownMenuContainerComponent } from '../../../../components/dropdown-menu-container/dropdown-menu-container.component';
-import { WithDropdownItemsTempCache } from '../../../../resources/mixins/dropdown-items-temp-cache.mixin';
-import { Subscription } from 'rxjs';
-import { NAVIGATION_ROUTES } from '../../../../resources/constants/app-routes';
 import { TextTruncateDirective } from '../../../../directives/text-truncate.directive';
 import { AssignmentStatusComponent } from '../assignment-status/assignment-status.component';
 import { SharedModule } from 'src/app/modules/shared/shared.module';
@@ -31,18 +28,14 @@ import { AssignmentBookmarkComponent } from '../assignment-bookmark/assignment-b
   ],
   standalone: true,
 })
-export class AssignmentCardComponent extends WithDropdownItemsTempCache() implements OnInit {
+export class AssignmentCardComponent implements OnInit {
   @Input() assignment: Assignment;
   isMenuOpened = false;
   pastDue = false;
   image = '';
   titleRows: number;
 
-  bookmarksSubscription: Subscription;
-
-  constructor(private router: Router) {
-    super();
-  }
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.setPastDue();
@@ -55,17 +48,17 @@ export class AssignmentCardComponent extends WithDropdownItemsTempCache() implem
 
   private setPastDue() {
     const today = new Date();
-    const due = new Date(this.assignment.dueDate);
+    const due = new Date(this.assignment?.dueDate);
 
-    this.pastDue = this.assignment.dueDate && due < today;
+    this.pastDue = this.assignment?.dueDate && due < today;
   }
 
   private setImage() {
-    this.image = this.assignment.course?.imageUrl || this.assignment.learningPath?.imageUrl;
+    this.image = this.assignment?.course?.imageUrl || this.assignment?.learningPath?.imageUrl;
   }
 
   resume() {
-    this.router.navigate(['/content/learning-path', this.assignment.learningPath?.id], {
+    this.router.navigate(['/content/learning-path', this.assignment?.learningPath?.id], {
       queryParams: {
         r: true,
       },

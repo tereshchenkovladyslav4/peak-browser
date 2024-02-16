@@ -45,7 +45,7 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
   }
 
   protected override constructDropdownItems() {
-    const { id } = this.assignment.learningPath;
+    const id: string = this.assignment?.learningPath?.id || '';
     return this.dropdownMenuService
       .addResume({ action: () => this.resume() })
       .addViewDetails({ action: () => this.goToLearningPath() })
