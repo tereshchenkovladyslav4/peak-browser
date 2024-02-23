@@ -13,7 +13,7 @@
               iconUri="assets/images/libraries-dark.svg"
               [routerLink]="['/', APP_ROUTES.libraries]"
             >
-              {{ 'content-container.browse-libraries' | Translate }}
+              {{ "content-container.browse-libraries" | Translate }}
             </button>
             <button
               ep-button
@@ -21,7 +21,7 @@
               iconUri="assets/images/search-results/search.svg"
               [routerLink]="['/', APP_ROUTES.search]"
             >
-              {{ 'assignments.search-for-content' | Translate }}
+              {{ "assignments.search-for-content" | Translate }}
             </button>
           </ng-container>
         </ep-no-result>
@@ -42,8 +42,9 @@
 </ng-template>
 
 <ng-template #filteredData>
-  <p-table [columns]="columns" 
-    [value]="tableData$ | async" 
+  <p-table
+    [columns]="columns"
+    [value]="tableData$ | async"
     [scrollable]="true"
     scrollHeight="calc(100vh - 274px)"
     selectionMode="single"
@@ -54,7 +55,8 @@
     (onLazyLoad)="getData($event)"
     [(selection)]="selectedRow"
     dataKey="id"
-    (onRowSelect)="onRowSelect($event)">
+    (onRowSelect)="onRowSelect($event)"
+  >
     <ng-template pTemplate="header" let-columns>
       <tr>
         <ng-container *ngFor="let column of columns">
@@ -63,7 +65,7 @@
               {{ column.header | Translate }}
               <p-sortIcon *ngIf="column.sortable" [field]="column.field"></p-sortIcon>
             </div>
-              </th>
+          </th>
           <th *ngIf="!column.sortable">
             {{ column.header | Translate }}
           </th>
@@ -77,7 +79,7 @@
           <ng-container *ngSwitchCase="'name'">
             <div class="name-wrap">
               {{ rowData[col.field] }}
-              <ep-assignment-bookmark [learningPathId]="rowData?.learningPathId" [isWhite]="false"/>
+              <ep-assignment-bookmark [contentId]="rowData?.courseId" [isWhite]="false" />
             </div>
           </ng-container>
           <ng-container *ngSwitchCase="'statusDate'">
@@ -87,11 +89,13 @@
             {{ rowData[col.field] }}
           </ng-container>
         </td>
-        <td style="display: flex; justify-content: center;">
+        <td style="display: flex; justify-content: center">
           <div class="actions-wrap">
-            <ep-dropdown-menu-container [dropdownItems]="dropdownMenusMap.get(rowData?.id)"
+            <ep-dropdown-menu-container
+              [dropdownItems]="dropdownMenusMap.get(rowData?.id)"
               [enableBoxShadow]="false"
-              [enableBgColor]="false"></ep-dropdown-menu-container>
+              [enableBgColor]="false"
+            ></ep-dropdown-menu-container>
           </div>
         </td>
       </tr>

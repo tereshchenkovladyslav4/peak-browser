@@ -3,9 +3,13 @@ import { BehaviorSubject, Observable, combineLatest, filter, map } from 'rxjs';
 import { CourseViewContent } from "src/app/modules/content/components/learning-path/models/course-view-content";
 import { CourseViewData, hasFailedAnyQuiz, hasRequiredQuizAttemptsRemaining, hasToDropCourse } from "src/app/modules/content/components/learning-path/models/course-view-data";
 import { AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
-import { ContentDetails } from 'src/app/resources/models/content';
+import { ContentDetails, ContentType } from 'src/app/resources/models/content';
 import { nameof, selectFrom } from 'src/app/resources/functions/state/state-management';
-import { QuizStatus } from 'src/app/resources/models/content/quiz';
+import { QuizSession, QuizStatus } from 'src/app/resources/models/content/quiz';
+import { Content } from '../../services/apiService/classFiles/class.content';
+import { getLocaleDateTimeFormat } from '@angular/common';
+import { Enrollment } from '../../services/apiService/classFiles/class.enrollments';
+import { NumericLiteral } from 'typescript';
 
 export enum FinishCourseState {
   Completed = "Completed",
@@ -25,16 +29,6 @@ export interface CachedContent {
   courseId: string
 }
 
-interface CourseContentTracking {
-  startTime: Date;
-  isComplete: boolean;
-  // VIDEO
-  hasPlayedVideo: boolean;
-  isExternalVideo: boolean;
-  videoLength: number; // seconds
-  lastVideoPosition: number; // seconds
-}
-
 interface LearningPathState {
   learningPathId: string;
   isLearningPathOpen: boolean;
@@ -42,30 +36,95 @@ interface LearningPathState {
   activeEnrolledCourseIndex: number;
   activeContentIndex: number;
   activeCourseContentDetails: ContentDetails;
-  courseContentTracking: CourseContentTracking;
   cachedContentToMarkComplete: CachedContent; // cached content progress data that will be applied to the relevant content obj in state after user navigates away from the related piece of content
   isCourseSummaryOpen: boolean;
 }
 
-export const DEFAULT_COURSE_CONTENT_TRACKING: CourseContentTracking = {
-  startTime: new Date(),
-  isComplete: false,
-  hasPlayedVideo: false,
-  isExternalVideo: false,
-  videoLength: 0,
-  lastVideoPosition: 0
-};
 
-const DEFAULT_STATE: LearningPathState = {
-  learningPathId: null,
-  isLearningPathOpen: false,
-  courses: null,
-  activeEnrolledCourseIndex: -1,
-  activeContentIndex: -1,
-  activeCourseContentDetails: null,
-  courseContentTracking: DEFAULT_COURSE_CONTENT_TRACKING,
-  cachedContentToMarkComplete: null,
+export class DEFAULT_STATE implements LearningPathState {
+  learningPathId: null;
+  isLearningPathOpen: false;
+  courses: null;
+  activeEnrolledCourseIndex: -1;
+  activeContentIndex: -1;
+  activeCourseContentDetails: null;
+  cachedContentToMarkComplete: null;
   isCourseSummaryOpen: false
+}
+
+export class EnrollmentContentTracking {
+  contentId: string;
+  contentType: ContentType;
+  courseId: string;
+  enrollmentId: string;
+  startTime: Date;
+  endTime: Date;
+  isComplete: boolean;
+
+  constructor(contentId: string, contentType: ContentType, courseId: string, enrollmentId: string) {
+    this.contentId = contentId;
+    this.courseId = courseId;
+    this.contentType = contentType;
+    this.enrollmentId = enrollmentId;
+    this.isComplete = false;
+    this.startTime = new Date();
+  }
+}
+
+export class EnrollmentQuizTracking extends EnrollmentContentTracking {
+  quizSessionItem: QuizSession;
+
+  constructor(contentId: string, courseId: string, enrollmentId: string, quizSessionItem: QuizSession) {
+    super(contentId, ContentType.Quiz, courseId, enrollmentId);
+
+    this.quizSessionItem = quizSessionItem;
+  }
+}
+
+export class EnrollmentVideoTracking extends EnrollmentContentTracking {
+  canUpdateProgress: boolean;
+  isExternalVideo: boolean;
+  overrideRequiredToWatchPercentage: boolean;
+  requiredToWatchPercentage: number;
+  watchedPercentage: number;
+  videoLength: number;
+
+  private _lastVideoPosition: number;
+
+  constructor(contentId: string, courseId: string, enrollmentId: string,
+    isExternalVideo: boolean, overrideRequiredToWatchPercentage: boolean,
+    requiredToWatchPercentage: number, videoLength: number) {
+
+    super(contentId, ContentType.Video, courseId, enrollmentId);
+
+    this.contentType = ContentType.Video;
+    this.isExternalVideo = isExternalVideo;
+    this.overrideRequiredToWatchPercentage = overrideRequiredToWatchPercentage;
+    this.requiredToWatchPercentage = requiredToWatchPercentage;
+    this.videoLength = Math.floor(videoLength); // remove decimals (ms) from value (180.34 (180s 340ms) => 180 (180s 0ms))
+  }
+
+  get isRequiredToWatchVideo(): boolean {
+    return this.overrideRequiredToWatchPercentage && this.requiredToWatchPercentage > 0;
+  }
+
+  get lastVideoPosition(): number {
+    return this._lastVideoPosition;
+  }
+
+  updateLastVideoPosition(newPosition: number, courseProgress: number) {
+    this._lastVideoPosition = Math.floor(newPosition); // remove decimals (MS) from value (180.34 (180s 340ms) => 180 (180s 0ms));
+
+    this.canUpdateProgress = false; // only want to update progress if watch % is greater than current progress val
+    if (this.isRequiredToWatchVideo && this.videoLength > 0) {
+      this.watchedPercentage = this._lastVideoPosition / this.videoLength * 100;
+      this.canUpdateProgress = this.watchedPercentage > courseProgress
+
+      if (this.watchedPercentage >= this.requiredToWatchPercentage && !this.isComplete) {
+        this.isComplete = true;
+      }
+    }
+  }
 }
 
 @Injectable({
@@ -73,7 +132,7 @@ const DEFAULT_STATE: LearningPathState = {
 })
 export class LearningPathStateService {
 
-  private state$ = new BehaviorSubject<LearningPathState>(DEFAULT_STATE);
+  private state$ = new BehaviorSubject<LearningPathState>(new DEFAULT_STATE());
 
   // state selectors
   isLearningPathOpen$: Observable<boolean> = selectFrom(this.state$, nameof<LearningPathState>('isLearningPathOpen'));
@@ -81,7 +140,6 @@ export class LearningPathStateService {
   activeContentIndex$: Observable<number> = selectFrom(this.state$, nameof<LearningPathState>('activeContentIndex'));
   courses$: Observable<CourseViewData[]> = selectFrom(this.state$, nameof<LearningPathState>('courses'));
   activeCourseContentDetails$: Observable<ContentDetails> = selectFrom(this.state$, nameof<LearningPathState>('activeCourseContentDetails'));
-  courseContentTracking$: Observable<CourseContentTracking> = selectFrom(this.state$, nameof<LearningPathState>('courseContentTracking'));
   cachedContentToMarkComplete$: Observable<CachedContent> = selectFrom(this.state$, nameof<LearningPathState>('cachedContentToMarkComplete'));
   isCourseSummaryOpen$: Observable<boolean> = selectFrom(this.state$, nameof<LearningPathState>('isCourseSummaryOpen'));
 
@@ -154,7 +212,7 @@ export class LearningPathStateService {
   isLoading$ = new BehaviorSubject<boolean>(false);
 
   reset() {
-    this.state$.next(DEFAULT_STATE);
+    this.state$.next(new DEFAULT_STATE());
   }
 
   // SNAPSHOT
@@ -223,13 +281,6 @@ export class LearningPathStateService {
     this.state$.next({
       ...this.snapshot,
       activeCourseContentDetails: contentDetails
-    })
-  }
-
-  updateCourseContentTracking(courseContentTracking: CourseContentTracking) {
-    this.state$.next({
-      ...this.snapshot,
-      courseContentTracking: courseContentTracking
     })
   }
 

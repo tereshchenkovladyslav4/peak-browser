@@ -8,9 +8,10 @@
     line-height: 1.5;
 }
 .buttonFlex {
-    display: flex;
-    column-gap: 8px;
-    justify-content: center;
+  display: flex;
+  column-gap: 8px;
+  justify-content: center;
+  font-family: var(--font-family) !important;
 }
 
 :host(.btn-primary) {

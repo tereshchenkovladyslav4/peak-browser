@@ -1,7 +1,14 @@
-<div class='buttonFlex'
-  [style.flex-direction]="iconPosition === 'left' ? 'row' : 'row-reverse'"
-  [style.gap.px]="gap">
-  <img *ngIf="iconUri && buttonShape !=='pilldropdown'" [src]="iconUri" alt="" />
-  <ng-content></ng-content>
-  <img *ngIf="buttonShape==='pilldropdown'" [src]="iconUri?.length ? iconUri : 'assets/images/down-caret.svg'" />
+<div class="buttonFlex" [style.flex-direction]="iconPosition === 'left' ? 'row' : 'row-reverse'" [style.gap.px]="gap">
+  <ng-container *ngIf="svgTemplate; else useImgElement">
+    <ng-container [ngTemplateOutlet]="svgTemplate"></ng-container>
+  </ng-container>
+  <ng-template #useImgElement>
+    <img #iconImg *ngIf="iconUri && buttonShape !== 'pilldropdown'" [src]="iconUri" alt="" />
+    <ng-content></ng-content>
+    <img
+      #pillImg
+      *ngIf="buttonShape === 'pilldropdown'"
+      [src]="iconUri?.length ? iconUri : 'assets/images/down-caret.svg'"
+    />
+  </ng-template>
 </div>

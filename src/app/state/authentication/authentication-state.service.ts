@@ -84,8 +84,6 @@ export class AuthenticationStateService {
   }
 
   setRedirectUrl(url: string) {
-    const segments = url?.split("/");
-    if (segments?.length)
-      this.redirectUrl = segments.filter(s => s !== '').slice(1).join("/");
+    this.redirectUrl = url
   }
 }

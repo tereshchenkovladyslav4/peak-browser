@@ -27,6 +27,10 @@
             </div>
             <!-- ANSWERS OUTLET -->
             <ng-container *ngTemplateOutlet="questionAnswers; context: {$implicit: questionData?.question}"></ng-container>
+
+            <div class="quiz-actions">
+              <ep-quiz-buttons />
+            </div>
           </div>
         </div>
       </ng-container>

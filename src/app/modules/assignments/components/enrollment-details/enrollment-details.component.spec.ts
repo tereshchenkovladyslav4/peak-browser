@@ -33,6 +33,7 @@ describe('EnrollmentDetailsComponent', () => {
     enrollmentServiceMock = {
       getCertificate: jest.fn().mockReturnValue(of({})),
       getQuizSessions: jest.fn().mockReturnValue(of({})),
+      getCourseViewDuration: jest.fn().mockReturnValue(of({})),
     } as unknown as jest.Mocked<EnrollmentService>;
 
     contentServiceMock = {
@@ -224,7 +225,7 @@ describe('EnrollmentDetailsComponent', () => {
         sequence: null,
       },
       {
-        id: '2',
+        id: '3',
         type: ContentType.Video,
         documentType: null,
         name: 'Not quiz',

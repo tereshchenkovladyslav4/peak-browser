@@ -5,11 +5,14 @@
 }
 
 .assignment-cards-container {
+  margin-top: 24px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
   width: 100%;
+  height: calc(100vh - 308px);
+  overflow-y: auto;
 }
 
 .table-container {
@@ -27,7 +30,6 @@
 }
 
 .sort-by-name {
-  font-family: Roboto, 'sans-serif';
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;

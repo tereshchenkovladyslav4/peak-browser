@@ -1,14 +1,13 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {ProdGenApi} from '../../services/apiService/prodgen.api';
-import {Setting} from '../../services/apiService/classFiles/class.organizations';
-import {combineLatest, mergeMap, Observable, of} from "rxjs";
-import {filter, map, take, tap} from "rxjs/operators";
-import {AuthenticationStateService, GUID_EMPTY} from "../../state/authentication/authentication-state.service";
-import {DEFAULT_NAV_ITEMS, getManagementNavItems} from "./navigation-items";
-import {UserService} from "../../services/user.service";
-import {NavigationMenuItem} from "../../resources/models/navigation-menu-item";
-import {UserFull} from "../../resources/models/user";
-import {NavigationImageType} from "../../resources/enums/navigation-image-type.enum";
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ProdGenApi } from '../../services/apiService/prodgen.api';
+import { combineLatest, mergeMap, Observable, of, Subject } from 'rxjs';
+import { filter, map, take, takeUntil, tap } from 'rxjs/operators';
+import { AuthenticationStateService, GUID_EMPTY } from '../../state/authentication/authentication-state.service';
+import { DEFAULT_NAV_ITEMS, getManagementNavItems } from './navigation-items';
+import { UserService } from '../../services/user.service';
+import { NavigationMenuItem } from '../../resources/models/navigation-menu-item';
+import { UserFull } from '../../resources/models/user';
+import { NavigationImageType } from '../../resources/enums/navigation-image-type.enum';
 import { NavigationEnd, Router } from '@angular/router';
 import { NAVIGATION_ROUTES } from 'src/app/resources/constants/app-routes';
 import { TranslationService } from 'src/app/services/translation.service';
@@ -16,6 +15,8 @@ import { LayoutStateService } from 'src/app/state/layout/layout-state.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { UserStateService } from '../../state/user/user-state.service';
 import { AclService } from '../../services/acl/acl.service';
+import { Select } from '@ngxs/store';
+import { ThemeState } from 'src/app/state/themes/themes.state';
 
 @Component({
   selector: 'app-navigation-menu',
@@ -23,19 +24,23 @@ import { AclService } from '../../services/acl/acl.service';
   styleUrls: ['./navigation-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default,
 })
-
 export class NavigationMenuComponent implements OnInit {
   @Output() navigateMenuEvent = new EventEmitter<NavigationMenuItem>();
 
+  @Select(ThemeState.menuLogoUrl) menuLogoUrl$: Observable<string>;
+  @Select(ThemeState.menuLogoImage) menuLogoImage$: Observable<string>;
+  @Select(ThemeState.menuLogoImageCollapsed) menuLogoImageCollapsed$: Observable<string>;
+
   // obs
   isFullScreen$: Observable<boolean>;
+  private destroy$ = new Subject<void>();
 
   navItems: NavigationMenuItem[] = [];
   navigationImageType = NavigationImageType;
   logoLarge: string = 'assets/images/nav-menu/peak-logo-lg.svg';
-  logoSmall: string = "assets/images/nav-menu/peak-logo-sm.svg";
-  logoUrl: string = "";
-  logoUrlTarget: string = "_blank";
+  logoSmall: string = 'assets/images/nav-menu/peak-logo-sm.svg';
+  logoUrl: string = '';
+  logoUrlTarget: string = '_blank';
   displayLogo: boolean = false;
   navItemsMaster: NavigationMenuItem[] = [];
   filterText: string;
@@ -48,7 +53,6 @@ export class NavigationMenuComponent implements OnInit {
   responsiveMode: boolean = false;
   responsiveMode$: Observable<boolean>;
 
-
   constructor(
     private prodGenApiService: ProdGenApi,
     private authState: AuthenticationStateService,
@@ -59,9 +63,7 @@ export class NavigationMenuComponent implements OnInit {
     private layoutState: LayoutStateService,
     private responsive: BreakpointObserver,
     private aclService: AclService
-  ) {
-
-  }
+  ) {}
 
   initUrl: string;
 
@@ -78,26 +80,26 @@ export class NavigationMenuComponent implements OnInit {
 
   private setInitUrl() {
     if (!this.initUrl) {
-      this.getUrl().subscribe(url => {
+      this.getUrl().subscribe((url) => {
         this.initUrl = url;
         this.setDefaultActivatedItem();
-      })
+      });
     }
   }
 
   getIconColor(imageName: HTMLElement): string {
-    let matches = document.getElementsByClassName("active");
+    let matches = document.getElementsByClassName('active');
 
     for (let index = 0; index < matches.length; index++) {
       if (matches.item(index).contains(imageName)) {
-        return "var(--navbar-active-icon-color)";
+        return 'var(--primary-color)';
       }
     }
-    return "var(--navbar-icon-color)";
+    return 'var(--high-contrast-navigation-color)';
   }
 
   getSubitemLineIconColor(isActive: boolean): string {
-    return isActive ? "var(--navbar-active-icon-color)" : "#636D7B";
+    return isActive ? 'var(--primary-color)' : 'var(--high-contrast-navigation-color)';
   }
 
   onFilterTextChanged(event) {
@@ -110,46 +112,39 @@ export class NavigationMenuComponent implements OnInit {
   }
 
   loadLogo() {
-    combineLatest([
-      this.authState.getCurrentUserId(),
-      this.authState.getCurrentTenantId(),
-      this.userState.currentUser
-    ]).pipe(
-      tap(([userId, tenantId, user]: [string, string, UserFull]) => this.loadMenu(userId, tenantId, user)),
-      mergeMap(([userId, tenantId, ...rest]: [string, string, UserFull]) => {
-        return this.isUserAndTenantLoaded(userId, tenantId)
-          ? this.prodGenApiService.GetCurrentTenantSettings()
-          : of(null)
-      })
-    ).subscribe(s => {
-      let logoSetting = s.find(v => v.name == "COMPANY_LOGO_PEAK_LARGE");
-      let showLogoSetting = s.find(v => v.name == "COMPANY_LOGO_PEAK_DISPLAY");
+    combineLatest([this.authState.getCurrentUserId(), this.authState.getCurrentTenantId(), this.userState.currentUser])
+      .pipe(
+        tap(([userId, tenantId, user]: [string, string, UserFull]) => this.loadMenu(userId, tenantId, user)),
+        mergeMap(([userId, tenantId, ...rest]: [string, string, UserFull]) => {
+          return this.isUserAndTenantLoaded(userId, tenantId)
+            ? this.prodGenApiService.GetCurrentTenantSettings()
+            : of(null);
+        })
+      )
+      .subscribe();
 
-      if (showLogoSetting) {
-        this.displayLogo = showLogoSetting.settingValue.toString().toLowerCase() == "true";
-      } else {
-        this.displayLogo = true;
-      }
-
-
-      if (logoSetting != null && logoSetting.settingValue.toString().trim() != "") {
-        this.logoLarge = logoSetting.settingValue as string;
-      }
-
-      let logoNavigateURLSetting: Setting = s.find(l => l.name == "COMPANY_LOGO_NAVIGATE_URL");
-      if (logoNavigateURLSetting != null && logoNavigateURLSetting.settingValue.toString().trim() != "") {
-        this.logoUrl = logoNavigateURLSetting.settingValue.toString();
-        if (this.logoUrl.includes(window.location.hostname) == true) {
-          this.logoUrlTarget = "_self";
-        } else {
-          this.logoUrlTarget = "_blank";
-        }
-      } else {
-        this.logoUrl = "";
-      }
-
-
-    })
+    combineLatest([this.menuLogoUrl$, this.menuLogoImage$, this.menuLogoImageCollapsed$])
+      .pipe(
+        tap(([menuLogoUrl, menuLogoImage, menuLogoImageCollapsed]: [string, string, string]) => {
+          this.displayLogo = true;
+          if (menuLogoUrl && menuLogoUrl.toString().trim() != '') {
+            this.logoUrl = menuLogoUrl;
+          }
+          if (menuLogoImage && menuLogoImage.toString().trim() != '') {
+            this.logoLarge = menuLogoImage;
+          }
+          if (menuLogoImageCollapsed && menuLogoImageCollapsed.toString().trim() != '') {
+            this.logoSmall = menuLogoImageCollapsed;
+          }
+          if (menuLogoUrl && menuLogoUrl.includes(window.location.hostname) == true) {
+            this.logoUrlTarget = '_self';
+          } else {
+            this.logoUrlTarget = '_blank';
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private setManagementTranslation() {
@@ -159,16 +154,16 @@ export class NavigationMenuComponent implements OnInit {
   private setMenuCollapsed() {
     combineLatest([
       this.userService.getUserSettings(this.authState.state$.getValue().currentUserId),
-      this.isResponsiveModeOn()
+      this.isResponsiveModeOn(),
     ])
-    .pipe(
-      tap(([res, isResponsiveModeOn]) => {
-        this.userPeakSidebarCollapsed = res?.userSettings?.peakSidebarCollapsed === 'True' ?? false
-        this.isMenuCollapsed = this.userPeakSidebarCollapsed || isResponsiveModeOn;
-      }),
-      take(1)
-    )
-    .subscribe()
+      .pipe(
+        tap(([res, isResponsiveModeOn]) => {
+          this.userPeakSidebarCollapsed = res?.userSettings?.peakSidebarCollapsed === 'True' ?? false;
+          this.isMenuCollapsed = this.userPeakSidebarCollapsed || isResponsiveModeOn;
+        }),
+        take(1)
+      )
+      .subscribe();
   }
 
   private manageLayout() {
@@ -176,28 +171,22 @@ export class NavigationMenuComponent implements OnInit {
   }
 
   private setResponsiveMode() {
-    this.responsiveMode$ = this
-      .isResponsiveModeOn()
-      .pipe(
-        tap(isResponsiveModeOn => {
-          this.responsiveMode = isResponsiveModeOn;
+    this.responsiveMode$ = this.isResponsiveModeOn().pipe(
+      tap((isResponsiveModeOn) => {
+        this.responsiveMode = isResponsiveModeOn;
 
-          if (isResponsiveModeOn) {
-            this.closeMenu();
-          } else {
-            this.isMenuCollapsed = this.userPeakSidebarCollapsed;
-          }
-        })
-      );
+        if (isResponsiveModeOn) {
+          this.closeMenu();
+        } else {
+          this.isMenuCollapsed = this.userPeakSidebarCollapsed;
+        }
+      })
+    );
   }
 
   private isResponsiveModeOn(): Observable<boolean> {
     const key = '(max-width: 1400px)';
-    return this.responsive
-    .observe([key])
-    .pipe(
-      map(breakpointState => !!breakpointState?.breakpoints[key])
-    )
+    return this.responsive.observe([key]).pipe(map((breakpointState) => !!breakpointState?.breakpoints[key]));
   }
 
   updateMenuItems() {
@@ -208,16 +197,16 @@ export class NavigationMenuComponent implements OnInit {
       let items = JSON.parse(JSON.stringify(this.navItemsMaster));
 
       // first go through any items that have children and filter the submenus
-      items.forEach(item => {
+      items.forEach((item) => {
         // see if any children match
-        let filteredChildren = item.children?.filter(f =>
-          f.title.toLowerCase().indexOf(this.filterText.toLowerCase()) !== -1) || [];
+        let filteredChildren =
+          item.children?.filter((f) => f.title.toLowerCase().indexOf(this.filterText.toLowerCase()) !== -1) || [];
 
         // found at least 1 matching child, we must keep the parent also
         let keep = !!filteredChildren.length;
 
         if (!keep) {
-          keep = (item.title.toLowerCase().indexOf(this.filterText.toLowerCase()) !== -1);
+          keep = item.title.toLowerCase().indexOf(this.filterText.toLowerCase()) !== -1;
         }
 
         if (keep) {
@@ -228,23 +217,24 @@ export class NavigationMenuComponent implements OnInit {
       });
     }
 
-    this.hasManagementItems = !!this.navItems.filter(r => r.isManagement).length;
+    this.hasManagementItems = !!this.navItems.filter((r) => r.isManagement).length;
   }
 
   loadMenu(userId: string, tenantId: string, user: UserFull) {
-    this.navItemsMaster = (this.isUserAndTenantLoaded(userId, tenantId) ? [...DEFAULT_NAV_ITEMS, ...getManagementNavItems( false)] : [])
-      .filter((item) => this.aclService.checkRoles(item.roles) && this.aclService.checkPermission(item.permission));
+    this.navItemsMaster = (
+      this.isUserAndTenantLoaded(userId, tenantId) ? [...DEFAULT_NAV_ITEMS, ...getManagementNavItems(false)] : []
+    ).filter((item) => this.aclService.checkRoles(item.roles) && this.aclService.checkPermission(item.permission));
 
-    if (!this.navItemsMaster.filter(r => r.isManagement).length) {
+    if (!this.navItemsMaster.filter((r) => r.isManagement).length) {
       this.canViewManagementItems = false;
       this.hasManagementItems = false;
     } else {
       this.canViewManagementItems = true;
     }
 
-    this.navItems = [...this.navItemsMaster].map(item => ({
+    this.navItems = [...this.navItemsMaster].map((item) => ({
       ...item,
-      children: item?.children?.map(subitem => {
+      children: item?.children?.map((subitem) => {
         let abr = '';
         const itemTitleSplit = subitem.title.split(' ');
         if (itemTitleSplit?.length) {
@@ -255,28 +245,29 @@ export class NavigationMenuComponent implements OnInit {
         }
         return {
           ...subitem,
-          abbreviation: abr
-        }
+          abbreviation: abr,
+        };
       }),
       isExpanded: false,
-      isActive: false
+      isActive: false,
     }));
 
     this.setDefaultActivatedItem();
   }
 
-  private setDefaultActivatedItem()
-  {
+  private setDefaultActivatedItem() {
     if (!this.initUrl) {
       this.initUrl = NAVIGATION_ROUTES.home;
     }
 
-    this.navItems = this.updateNavItems(this.navItems, (item: NavigationMenuItem) => this.initUrl?.startsWith(item.navValue));
+    this.navItems = this.updateNavItems(this.navItems, (item: NavigationMenuItem) =>
+      this.initUrl?.startsWith(item.navValue)
+    );
   }
 
   // TODO - may want to tidy up or refactor active + expand of nav items as recursive way may be too expensive in the long run
   private updateNavItems(navItems: NavigationMenuItem[], searchFunction): NavigationMenuItem[] {
-    return navItems.map(item => {
+    return navItems.map((item) => {
       if (!item?.children?.length) {
         if (searchFunction(item)) {
           item.isActive = true;
@@ -286,19 +277,19 @@ export class NavigationMenuComponent implements OnInit {
           item.isExpanded = false;
         }
       } else {
-        item.children = this.updateNavItems(item?.children, searchFunction);;
-        item.isActive = item.isActive || item.children.some(child => child.isActive);
-        item.isExpanded = item.isExpanded || item.children.some(child => child.isExpanded);
+        item.children = this.updateNavItems(item?.children, searchFunction);
+        item.isActive = item.isActive || item.children.some((child) => child.isActive);
+        item.isExpanded = item.isExpanded || item.children.some((child) => child.isExpanded);
       }
 
       return item;
-    })
+    });
   }
 
   private getUrl(): Observable<string> {
     return this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map((event: NavigationEnd) => event.urlAfterRedirects),
+      filter((event) => event instanceof NavigationEnd),
+      map((event: NavigationEnd) => event.urlAfterRedirects)
     );
   }
 
@@ -312,14 +303,14 @@ export class NavigationMenuComponent implements OnInit {
 
   setItem(item: NavigationMenuItem) {
     // order of operations for this function is important due to activating/deactivating system in place
-    item.isExpanded = !!item.children?.length && !item.isExpanded || false;
+    item.isExpanded = (!!item.children?.length && !item.isExpanded) || false;
 
     if (item.children?.length) return;
 
-    this.navItems.forEach(navItem => {
+    this.navItems.forEach((navItem) => {
       navItem.isActive = false;
       if (navItem.children?.length) {
-        navItem.children?.forEach(subItem => subItem.isActive = false);
+        navItem.children?.forEach((subItem) => (subItem.isActive = false));
       }
       // only close previously expanded nav items if the newly selected navItem has no children
       if (!item.children) {
@@ -330,14 +321,14 @@ export class NavigationMenuComponent implements OnInit {
   }
 
   isChildActive(item: NavigationMenuItem): boolean {
-    return item.children?.some(subItem => subItem.isActive);
+    return item.children?.some((subItem) => subItem.isActive);
   }
 
   onSubitemClick(parentItem: NavigationMenuItem, subItem: NavigationMenuItem) {
-    this.navItems.forEach(navItem => {
+    this.navItems.forEach((navItem) => {
       navItem.isActive = false; // deactivate any non-children menu options
       if (navItem.children?.length) {
-        navItem.children?.forEach(subItem => subItem.isActive = false);
+        navItem.children?.forEach((subItem) => (subItem.isActive = false));
       }
       if (navItem !== parentItem) {
         navItem.isExpanded = false;
@@ -374,7 +365,9 @@ export class NavigationMenuComponent implements OnInit {
     // update user setting when NOT in responsive mode
     if (!this.responsiveMode) {
       this.userService
-        .modifyUserSettings(this.authState.state$.getValue().currentUserId, { peakSidebarCollapsedNewValue: this.isMenuCollapsed })
+        .modifyUserSettings(this.authState.state$.getValue().currentUserId, {
+          peakSidebarCollapsedNewValue: this.isMenuCollapsed,
+        })
         .pipe(take(1))
         .subscribe();
     }
@@ -392,7 +385,6 @@ export class NavigationMenuComponent implements OnInit {
   }
 
   tryGetNavMenuItemByNavValue(navValue) {
-    return this.navItems.find(item => item.navValue == navValue);
+    return this.navItems.find((item) => item.navValue == navValue);
   }
 }
-

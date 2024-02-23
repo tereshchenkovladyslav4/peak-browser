@@ -26,6 +26,10 @@ export class LearningPathUserAssignmentsResponse {
   courseAssignments: CourseAssignment[];
 }
 
+export class CanMarkAssignmentAsCompletedResponse {
+  completionStatus: AssignmentCompletionStatus;
+}
+
 export enum AssignmentStatusFilter {
   All,
   CurrentlyEnrolled,
@@ -39,7 +43,8 @@ export enum AssignmentEnrollmentStatus {
   In_Progress,
   Completed,
   Dropped,
-  Expired
+  Expired,
+  Enrolled
 }
 
 export interface AssignmentAssignor {
@@ -47,6 +52,14 @@ export interface AssignmentAssignor {
   imageUrl: string;
   displayName: string;
   email: string
+}
+
+export enum AssignmentCompletionStatus {
+  Completed,
+  Failed_Quiz_No_Retakes,
+  Failed_Quiz_Retakes_Available,
+  Not_Viewed_Completely,
+  Unexpected_Error
 }
 
 export interface Assignment {
@@ -162,3 +175,9 @@ export interface CreateAssignmentOfContentResponse {
   userContentIdsAdded: CreateAssignmentOfContentResult[];
   userContentIdsNotAdded: CreateAssignmentOfContentResult[];
 }
+
+export const HISTORICAL_STATUSES = [
+  AssignmentEnrollmentStatus.Expired,
+  AssignmentEnrollmentStatus.Dropped,
+  AssignmentEnrollmentStatus.Completed,
+];

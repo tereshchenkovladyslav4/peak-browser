@@ -23,7 +23,7 @@ export class HorizontalTabsComponent implements OnInit, OnDestroy {
   @Input() tabBackgroundColor: string = '';
   @Input() activeTabKey: string = null;
   @Input() underlineAlways: boolean = false;
-
+  @Input() pointerOnHover: boolean = false;
   @Output() onTabChange: EventEmitter<any> = new EventEmitter<any>();
 
   activeTabIndex: number = 0;

@@ -7,7 +7,7 @@
 
 
 .p-component {
-  font-family: Roboto, sans-serif;
+  font-family: var(--font-family) !important;
   font-size: 16px;
 }
 

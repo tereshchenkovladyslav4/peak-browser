@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SecurityContext} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
-import { take, Subscription } from 'rxjs';
+import { take, Subscription, Observable, Subject } from 'rxjs';
 import { ContentDifficulty } from 'src/app/resources/enums/content-difficulty.enum';
 import { ContentType } from 'src/app/resources/models/content';
 import { SearchResult } from 'src/app/resources/models/search-result';
@@ -10,12 +10,15 @@ import { ContentTypesService } from 'src/app/services/content-types.service';
 import { SearchService } from 'src/app/services/search/search.service';
 import { TranslationService } from 'src/app/services/translation.service';
 import { NAVIGATION_ROUTES} from "../../../../resources/constants/app-routes";
-import {filter} from "rxjs/operators";
+import {filter, takeUntil, tap} from "rxjs/operators";
 import { DropdownItem } from 'src/app/resources/models/dropdown-item';
 import { DropdownMenuService } from 'src/app/services/dropdown-menu.service';
 import { formatDurationShort } from 'src/app/resources/functions/content/content';
 import { BookmarksStateService } from 'src/app/state/bookmarks/bookmarks-state.service';
-
+import { Select } from '@ngxs/store';
+import { AssignmentsState } from '../../../../state/assignments/assignments.state';
+import { Assignment, AssignmentEnrollmentStatus } from '../../../../resources/models/assignment';
+import { navigateToLPConsumptionPage } from '../../../../resources/functions/routing/router';
 const DURATION_CONTENT_TYPES: ContentType[] = [ContentType.LearningPath, ContentType.Video];
 const DROPDOWN_MENU_HEIGHT = 280;
 
@@ -28,8 +31,9 @@ const DROPDOWN_MENU_HEIGHT = 280;
 export class SearchResultsCardComponent implements OnInit, OnDestroy {
   @Input() searchResult: SearchResult;
   @Output() onDropdownOpen: EventEmitter<any> = new EventEmitter();
+  @Select(AssignmentsState.getStackedActiveAssignments) stackedActiveAssignments$: Observable<Assignment[]>;
   bookmarksSubscription: Subscription;
-
+  unsubscribe$ = new Subject<void>();
 
   contentType = ContentType;
   isExpandable: boolean;
@@ -52,12 +56,12 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
   dropdownText: string;
   topicSubtopicPairs: TopicSubtopicPair[];
   progress: number;
-
   dropdownItems: DropdownItem[];
   openDropdownMenuContentId: string = '';
   dropdownTop: number;
   dropdownLeft: number;
-
+  currentAssignment: Assignment = null; 
+  status: AssignmentEnrollmentStatus = null;
   constructor(
     private cdr: ChangeDetectorRef,
     private searchService: SearchService,
@@ -67,13 +71,23 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private router: Router,
     private dropdownMenuService: DropdownMenuService,
-    private bookmarksState: BookmarksStateService
+    private bookmarksState: BookmarksStateService,
   ) { }
 
   ngOnInit() {
+    this.stackedActiveAssignments$.pipe(
+      filter(assignments => assignments?.length > 0),
+      tap(assignments => {
+        this.currentAssignment = assignments.find(assignment => assignment.learningPath.id === this.searchResult.contentId);
+        if (this.currentAssignment) {
+          this.status = AssignmentEnrollmentStatus.Enrolled;
+        }
+      }),
+      takeUntil(this.unsubscribe$)
+    ).subscribe();
+
     this.isExpandable = this.searchResult?.contentType === ContentType.LearningPath && !!this.searchResult.children?.length;
     this.showDuration = DURATION_CONTENT_TYPES.includes(this.searchResult?.contentType) && this.searchResult.duration != 0;
-
     this.setSearchTerm();
     this.contentName = this.getContentName();
     this.contentDescription = this.sanitizer.sanitize(SecurityContext.HTML, this.searchResult?.description ?? '');
@@ -87,7 +101,6 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
     this.setDropdownText();
     this.topicSubtopicPairs = this.getDisplayTopics();
     this.progress = this.getProgress();
-
     this.getIsBookmarked();
 
     this.router.events.pipe(
@@ -95,13 +108,16 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
       take(1),
     ).subscribe(() => this.searchService.removeAllFilters());
 
-    this.buildDropdownMenu(this.searchResult, false, this.bookmarksState.isContentBookmarked(this.searchResult?.contentId) );
+    this.buildDropdownMenu(this.searchResult, this.bookmarksState.isContentBookmarked(this.searchResult?.contentId) );
   }
 
   ngOnDestroy() {
     if (this.bookmarksSubscription) {
       this.bookmarksSubscription.unsubscribe();
     }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+
   }
 
   private setSearchTerm() {
@@ -236,21 +252,25 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
     return topicSubtopicPairs;
   }
 
-  private buildDropdownMenu(content: SearchResult, isEnrolled = false, isBookmarked = false) {
+  private buildDropdownMenu(content: SearchResult, isBookmarked = false) {
     const contentId = content.contentId;
     const contentType = content.contentType;
+    const isEnrolled = this.status === AssignmentEnrollmentStatus.Enrolled;
+    const hasStartedAssignment = this.currentAssignment?.progress > 0;
+
     this.dropdownItems = this.dropdownMenuService
       .addEnroll({
         visible:
           !isEnrolled &&
           (contentType === ContentType.Course || contentType === ContentType.LearningPath),
       })
-      .addResume({ visible: isEnrolled })
+      .addResume({ action: () => this.resumeLPConsumption(), visible: isEnrolled && hasStartedAssignment })
+      .addStart({ action: () => this.resumeLPConsumption(), visible: isEnrolled && !hasStartedAssignment })
       .addView({ action: () => this.navigateToContent(contentId) })
       .addBookmarkItem(isBookmarked, contentId)
       .addDivider()
-      .addShareNotification({})
-      .addShareWorkGroup({})
+      //.addShareNotification({})
+      //.addShareWorkGroup({})
       .addCopyLinkFormatted({})
       .addCopyLinkUnformatted({})
       .getItems();
@@ -284,5 +304,9 @@ export class SearchResultsCardComponent implements OnInit, OnDestroy {
 
   closeDropdownMenu() {
     this.openDropdownMenuContentId = '';
+  }
+
+  private resumeLPConsumption() {
+    navigateToLPConsumptionPage(this.router, this.currentAssignment.learningPath.id);
   }
 }

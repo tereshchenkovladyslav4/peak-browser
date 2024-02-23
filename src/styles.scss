@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 /* Imports */
-@import '@angular/cdk/overlay-prebuilt.css';
+@import "@angular/cdk/overlay-prebuilt.css";
 @import "styles/base.scss";
 @import "styles/borders.scss";
 @import "styles/color.scss";
@@ -13,44 +13,76 @@
 @import "styles/global-search.scss";
 @import "styles/primeng/primeng.scss";
 
+
+@font-face {
+  font-family: "Source Serif Pro";
+  src: url('./assets/fonts/Source_Serif/SourceSerif.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: "Quicksand";
+  src: url('./assets/fonts/Quicksand/Quicksand-VariableFont_wght.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: "Eczar";
+  src: url('./assets/fonts/Eczar/Eczar.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: "Josefin Sans";
+  src: url('./assets/fonts/Josefin-Sans/Josefin-Sans.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  src: url('./assets/fonts/Playfair-Display/Playfair-Display.ttf') format('truetype')
+}
+
 :root {
-  --navbar-color: hsl(var(--navbar-color-hue), var(--navbar-color-saturation), var(--navbar-color-lightness));
-  --navbar-color-hue: 222;
-  --navbar-color-saturation: 21%;
-  --navbar-color-lightness: 21%;
-  --primary-color: hsl(var(--primary-color-hue), var(--primary-color-saturation), var(--primary-color-lightness));
+  // Theme Vars
+  // ensure changes to names here are reflected in ALL associated .scss and theme-vars.ts files
+  --navigation-color-hue: 222;
+  --navigation-color-saturation: 21%;
+  --navigation-color-lightness: 21%;
+  --navigation-color: hsl( var(--navigation-color-hue), var(--navigation-color-saturation), var(--navigation-color-lightness) );
+  --high-contrast-navigation-color: white;
   --primary-color-hue: 149;
   --primary-color-saturation: 58%;
   --primary-color-lightness: 53%;
-  --primary-text-color: white;
-  --secondary-color: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), var(--secondary-color-lightness));
+  --primary-color: hsl(var(--primary-color-hue), var(--primary-color-saturation), var(--primary-color-lightness));
+  --high-contrast-primary-color: white;
   --secondary-color-hue: 222;
   --secondary-color-saturation: 100%;
   --secondary-color-lightness: 69%;
-  --secondary-text-color: white;
-  --page-background-color: hsl(var(--navbar-color-hue), var(--navbar-color-saturation), 98%);
-  --table-select-clor: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), 95%);
-  --color-1-mint-1: #41CC84;
-  --color-1-blue-1: #1F283A;
-  --color-1-blue-2: #2B3242;
+  --secondary-color: hsl( var(--secondary-color-hue), var(--secondary-color-saturation), var(--secondary-color-lightness) );
+  --high-contrast-secondary-color: white;
+  --font-family: sans-serif;
+  --active-nav-item-background: hsl( var(--navigation-color-hue), var(--navigation-color-saturation), calc(var(--navigation-color-lightness) * 0.75) );
+  --page-background-color: hsl(var(--navigation-color-hue), var(--navigation-color-saturation), 98%);
+  --selected-item-highlight-color: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), 95%);
+  // Generic Colors
+  --color-1-mint-1: #41cc84;
+  --color-1-blue-1: #1f283a;
+  --color-1-blue-2: #2b3242;
   --color-1-blue-3: #485674;
-
-  --color-1-grey-1: #636D7B;
-  --color-1-grey-2: #87919F;
-  --color-1-grey-3: #AFB6BF;
-  --color-1-grey-4: #D7DADF;
-  --color-1-royal-1: #6391FF;
+  --color-1-grey-1: #636d7b;
+  --color-1-grey-2: #87919f;
+  --color-1-grey-3: #afb6bf;
+  --color-1-grey-4: #d7dadf;
+  --color-1-royal-1: #6391ff;
   --color-1-highlight-border: #80bdff;
-
-  --color-1-red-1: #F86161;
+  --color-1-red-1: #f86161;
   --zoom: 0.87;
+  --zoom-ignore: 1.14942528736; // 1 / 0.87
 }
 
 * {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -58,7 +90,7 @@ html, body {
 }
 
 body {
-  font-family: Roboto, sans-serif !important;
+  font-family: var(--font-family) !important;
   font-size: 14px !important;
   font-weight: 400 !important;
   overflow: hidden;
@@ -86,7 +118,7 @@ body {
   background-color: transparent;
 }
 
-.actual-scale{
+.actual-scale {
   zoom: 1.149;
 }
 
@@ -110,7 +142,6 @@ body {
   height: 35px;
   padding: 5px;
   font-size: 0.875rem;
-  font-family: 'Roboto';
 }
 
 .form-select {
@@ -124,7 +155,7 @@ body {
 .form-control:focus,
 .form-select:focus {
   outline: none !important;
-  border:1px solid #bbb;
+  border: 1px solid #bbb;
   box-shadow: 0 0 8px #bbb;
 }
 /* TEMP OVERRIDE ANY OLD BOOTSTRAP TILL IT'S ALL REMOVED*/
@@ -164,4 +195,17 @@ body {
     height: unset;
     transition: all 300ms 500ms;
   }
+}
+
+.e-rte-table {
+  border-collapse: collapse;
+  empty-cells: show;
+}
+
+.e-rte-table td, .e-rte-table th {
+  border: 1px solid #bdbdbd;
+  height: 20px;
+  min-width: 20px;
+  padding: 2px 5px;
+  vertical-align: middle;
 }

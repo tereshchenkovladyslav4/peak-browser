@@ -20,3 +20,8 @@ export class PostEnrollmentTrackingItemRequest {
 export class PostEnrollmentTrackingItemResponse {
   courseContentDetails: CourseContentAssignmentEnrollment;
 }
+
+export class CourseViewDuration {
+  viewDurationTotalSeconds: number;
+  viewDurationDisplay: string;
+}

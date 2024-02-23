@@ -1,0 +1,16 @@
+<div>
+  <ep-section-header [sectionTitle]="'user-profile.download-add-ons' | Translate" />
+
+  <div class="section-container">
+    <div *ngFor="let item of recommendedAddons" class="addon-wrap">
+      <div>
+        <div class="title" (click)="download(item.linkUrl)">
+          {{ item.name | Translate }}
+        </div>
+        <div class="subtitle">{{ item.updateMsg | Translate }}</div>
+      </div>
+
+      <img src="assets/images/download-black.svg" class="download-icon" />
+    </div>
+  </div>
+</div>

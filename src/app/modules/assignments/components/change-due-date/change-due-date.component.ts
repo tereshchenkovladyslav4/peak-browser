@@ -18,6 +18,7 @@ import { AssignmentsActions } from '../../../../state/assignments/assignments.ac
   standalone: true,
 })
 export class ChangeDueDateComponent extends DialogBaseComponent implements OnInit {
+  originalDueDate: Date;
   dueDate: Date;
   subtitle: string;
 
@@ -34,11 +35,12 @@ export class ChangeDueDateComponent extends DialogBaseComponent implements OnIni
   ngOnInit() {
     this.subtitle = this.translationService
       .getTranslationFileData('assignments.change-due-date-subtitle')
-      ?.replace('[NAME]', this.data?.assignment?.learningPath?.name);
+      ?.replace('[NAME]', this.data?.assignment?.course?.name);
 
-    this.dueDate = this.data?.assignment?.dueDate ? new Date(this.data.assignment.dueDate) : null;
-    console.log(this.data.assignment);
+    this.originalDueDate = this.data?.assignment?.dueDate ? new Date(this.data.assignment.dueDate) : null;
+    this.dueDate = this.originalDueDate;
   }
+
 
   save() {
     const assignors: string[] = (this.data.assignment?.assignors || []).map((item: AssignmentAssignor) => item.userId);

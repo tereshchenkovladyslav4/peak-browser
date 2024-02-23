@@ -24,5 +24,7 @@
 }
 
 .tab-active-border {
-  border-bottom: 3px solid #6391FF;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--secondary-color);
 }

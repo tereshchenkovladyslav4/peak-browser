@@ -1,51 +1,54 @@
 <div class="currently-assigned-container">
-  <ng-container *ngIf="(sortedAssignments$ | async)?.length < 1; else data">
-    <div class="no-result-container">
-      <ep-no-result
-        [title]="'assignments.no-assignments-title' | Translate"
-        [subTitle]="'assignments.no-assignments-subtitle' | Translate"
-      >
-        <ng-container actions>
-          <button
-            ep-button
-            buttonShape="pill"
-            iconUri="assets/images/libraries-dark.svg"
-            [routerLink]="['/', APP_ROUTES.libraries]"
-          >
-            {{ 'content-container.browse-libraries' | Translate }}
-          </button>
-          <button
-            ep-button
-            buttonShape="pill"
-            iconUri="assets/images/search-results/search.svg"
-            [routerLink]="['/', APP_ROUTES.search]"
-          >
-            {{ 'assignments.search-for-content' | Translate }}
-          </button>
-        </ng-container>
-      </ep-no-result>
-    </div>
-  </ng-container>
+  <ep-loading [isLoaded]="!(isAssignmentsLoading$ | async)">
+    <ng-container *ngIf="(sortedGridViewAssignments$ | async)?.length < 1; else data">
+      <div class="no-result-container">
+        <ep-no-result
+          [title]="'assignments.no-assignments-title' | Translate"
+          [subTitle]="'assignments.no-assignments-subtitle' | Translate"
+        >
+          <ng-container actions>
+            <button
+              ep-button
+              buttonShape="pill"
+              iconUri="assets/images/libraries-dark.svg"
+              [routerLink]="['/', APP_ROUTES.libraries]"
+            >
+              {{ "content-container.browse-libraries" | Translate }}
+            </button>
+            <button
+              ep-button
+              buttonShape="pill"
+              iconUri="assets/images/search-results/search.svg"
+              [routerLink]="['/', APP_ROUTES.search]"
+            >
+              {{ "assignments.search-for-content" | Translate }}
+            </button>
+          </ng-container>
+        </ep-no-result>
+      </div>
+    </ng-container>
+  </ep-loading>
 </div>
 
 <ng-template #data>
-  <div class="assignment-cards-container">
-    <ng-container *ngIf="viewMode === ViewMode.GRID; else listView">
-      <ng-container *ngFor="let assignment of sortedAssignments$ | async">
+  <ng-container *ngIf="viewMode === ViewMode.GRID; else listView">
+    <ep-sort-selector />
+    <div class="assignment-cards-container">
+      <ng-container *ngFor="let assignment of sortedGridViewAssignments$ | async">
         <ep-assignment-card [assignment]="assignment"></ep-assignment-card>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
+  </ng-container>
 </ng-template>
 
 <ng-template #listView>
   <div class="table-container">
     <p-table
-      [value]="sortedAssignments$ | async"
+      [value]="sortedListViewAssignments$ | async"
       [scrollable]="true"
       scrollHeight="calc(100vh - 274px)"
-      [sortField]="DEFAULT_SORT_FIELD"
-      [sortOrder]="DEFAULT_SORT_ORDER"
+      [sortField]="sortService.sortField"
+      [sortOrder]="sortService.sortOrder"
       [lazy]="true"
       [lazyLoadOnInit]="false"
       (onLazyLoad)="getData($event)"
@@ -69,25 +72,26 @@
         <tr>
           <td>
             <div class="name-wrap">
-              {{ assignment.learningPath?.name }}
-              <ep-assignment-bookmark [learningPathId]="assignment?.learningPath?.id" [isWhite]="false"/>
+              {{ assignment.course?.name }}
+              <ep-assignment-bookmark [contentId]="assignment?.course?.id" [isWhite]="false" />
               <div class="assignment-banner" *ngIf="isPastDue(assignment)">
-                <span class="assignment-banner-label">{{ 'assignments.past-due' | Translate }}</span>
+                <span class="assignment-banner-label">{{ "assignments.past-due" | Translate }}</span>
               </div>
             </div>
           </td>
+          <td>{{ assignment.learningPath?.name }}</td>
           <td>{{ assignment?.contentType }}</td>
           <td>
             <span *ngIf="assignment?.dueDate">{{ assignment?.dueDate | epDate }}</span>
           </td>
           <td>
             <div class="status-wrap">
-              <ep-assignment-status [assignment]="assignment"/>
+              <ep-assignment-status [assignment]="assignment" />
             </div>
           </td>
           <td>
             <div class="actions-wrap">
-              <ep-assignment-menu [assignment]="assignment" [isTransparent]="true"/>
+              <ep-assignment-menu [assignment]="assignment" [isTransparent]="true" />
             </div>
           </td>
         </tr>

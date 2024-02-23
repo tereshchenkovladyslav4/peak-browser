@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit} from '@ang
 import {Library} from "../../../../resources/models/library";
 import {LibraryContent} from "../../../../resources/models/content";
 import {LibraryContentService} from "../../../../services/library-content/library-content.service";
-import {filter, map} from "rxjs/operators";
-import {combineLatest, Observable, take} from "rxjs";
+import {filter, map, takeUntil} from "rxjs/operators";
+import {combineLatest, Observable, Subject, take} from "rxjs";
 import {CardViewComponent, TableRow} from "../../../../components/card-view/card-view.component";
 import {AsyncPipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {SharedModule} from "../../../shared/shared.module";
@@ -14,8 +14,9 @@ import {WithDropdownItemsTempCache} from "../../../../resources/mixins/dropdown-
 import {SpinnerComponent} from "../../../../components/spinner/spinner.component";
 import {FilterStateService} from "../../../../state/filter/filter-state";
 import {ASC, SORT_BY_TOKEN, SortableService} from "../../../../services/sortable/sortable.service";
-import {BookmarksService} from "../../../../services/bookmarks/bookmarks.service";
 import { BookmarksStateService } from 'src/app/state/bookmarks/bookmarks-state.service';
+import { Select } from '@ngxs/store';
+import { ThemeState } from 'src/app/state/themes/themes.state';
 const DEFAULT_SORT = {
   name: {
     order: ASC,
@@ -52,11 +53,13 @@ interface TableRowWithDropdownItems {
 })
 export class LibraryContentsComponent extends WithDropdownItemsTempCache() implements OnInit, OnChanges {
   @Input() library: Library;
+  private destroy$ = new Subject<void>();
   filteredData$: Observable<TableRowWithDropdownItems[]>;
   libraryContentsCount$: Observable<number>;
   isNoDataResults$: Observable<boolean>;
   shouldShowSort$: Observable<boolean>;
   isNoFilteredDataResults$: Observable<boolean>;
+  @Select(ThemeState.libraryImage) libraryImage$: Observable<string>;
   bannerStyle = this.getBannerStyle('assets/images/default-library-image-2.png');
 
   constructor(
@@ -102,6 +105,14 @@ export class LibraryContentsComponent extends WithDropdownItemsTempCache() imple
     // set count
     this.libraryContentsCount$ = this.libraryContentService.libraryContentsCount$;
 
+    this.libraryImage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(libraryImage => {
+        if (libraryImage && libraryImage.toString().trim() != '') {
+          this.bannerStyle = this.getBannerStyle(libraryImage);
+        }
+      });
+
     // reset filter on nav
     this.router.events.pipe(
       filter(event => event instanceof NavigationStart),
@@ -126,8 +137,8 @@ export class LibraryContentsComponent extends WithDropdownItemsTempCache() imple
       .addView({action: this.dropdownMenuService.getNavigateToContentAction(data?.contentId)})
       .addBookmarkItem(this.bookmarksState.isContentBookmarked(data?.contentId), data?.contentId)
       .addDivider()
-      .addShareNotification({})
-      .addShareWorkGroup({})
+      //.addShareNotification({})
+      //.addShareWorkGroup({})
       .addCopyLinkFormatted({})
       .addCopyLinkUnformatted({})
       .getItems();

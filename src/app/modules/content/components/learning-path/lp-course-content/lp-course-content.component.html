@@ -13,7 +13,7 @@
     
       <div class="lp-content-body">
         <ng-container [ngSwitch]="courseContent?.type">
-          <ep-document-view *ngSwitchCase="contentType.Document" [content]="courseContent"></ep-document-view>
+          <ep-document-view *ngSwitchCase="contentType.Document" [content]="courseContent" [enableEnrollmentTracking]="true"></ep-document-view>
           <ep-video-view *ngSwitchCase="contentType.Video" 
             class="course-content-video"
             [videoContent]="courseContent | as : Video"
@@ -21,8 +21,9 @@
             (playEvent)="onPlay($event)"
             (timeUpdateEvent)="onTimeUpdate($event)"
             (pauseEvent)="onPause($event)"
-            (endEvent)="onEnded($event)"></ep-video-view>
-          <ep-workflow-view *ngSwitchCase="contentType.Workflow" [workflowContent]="courseContent | as : Workflow"></ep-workflow-view>
+            (endEvent)="onEnded($event)"
+            (destroyedEvent)="onVideoDestroyed()"></ep-video-view>
+          <ep-workflow-view *ngSwitchCase="contentType.Workflow" [workflowContent]="courseContent | as : Workflow" [enableEnrollmentTracking]="true"></ep-workflow-view>
           <ep-quiz-view *ngSwitchCase="contentType.Quiz" [quizContent]="courseContent | as : Quiz"></ep-quiz-view>
         </ng-container>
       </div>

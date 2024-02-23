@@ -116,12 +116,16 @@ export class QuizActionsService {
       }))
       this.learningPathState.updateCourses(mutatedCourses);
 
-      // update quiz session      
+      // update quiz session
       quizSession.endDatetime = new Date();
       quizSession.isComplete = true;
       quizSession.quizStatus = quizSession.quizAnswersCorrect >= quizSession.quizAnswersPass ? QuizStatus.Pass : QuizStatus.Fail;
-      this.quizEffects.updateQuizSession(quizSession);
+      // Quiz Session should be updated to reflect the quiz status immediately if it happens to be the last question.
+      this.quizState.updateQuizSession(quizSession);
     }
+
+    // Should call the function updateQuizSession to store quizAnswersCorrect, even if the quiz isn't complete yet.
+    this.quizEffects.updateQuizSession(quizSession);
 
     // quiz is considered finished when question index === num of questions
     this.incrementQuestionIndex();

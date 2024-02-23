@@ -89,24 +89,10 @@ export class BookmarkCardComponent extends WithDropdownItemsTempCache() {
       .addView({ action: this.dropdownMenuService.getNavigateToContentAction(this.bookmark?.content?.id) })
       .addBookmarkItem(this.bookmarksState.isContentBookmarked(this.bookmark?.content?.id), this.bookmark?.content?.id)
       .addDivider()
-      .addShareNotification({})
-      .addShareWorkGroup({})
+      //.addShareNotification({})
+      //.addShareWorkGroup({})
       .addCopyLinkFormatted({})
       .addCopyLinkUnformatted({})
-      .getItems();
-
-    return this.dropdownMenuService
-      .addResume({action: () => this.resume()})
-      .addMarkAsCompleted({})
-      .addBookmarkItem(this.bookmarksState.isContentBookmarked(this.bookmark?.content?.id), this.bookmark?.content?.id)
-      .addDivider()
-      .addShareNotification({})
-      .addShareWorkGroup({})
-      .addCopyLinkFormatted({})
-      .addCopyLinkUnformatted({})
-      .addDivider()
-      .addDropCourse({})
-      .addDropLearningPath({})
       .getItems();
   }
 

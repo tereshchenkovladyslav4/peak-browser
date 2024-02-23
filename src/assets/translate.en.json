@@ -113,7 +113,8 @@
     "completed": "Completed",
     "not-enrolled": "Not Enrolled",
     "not-started": "Not Started",
-    "dropped": "Dropped"
+    "dropped": "Dropped",
+    "enrolled": "Enrolled"
   },
   "ep-search-results-card": {
     "past-due": "PAST DUE!",
@@ -176,7 +177,21 @@
     "invalid-file-type": "Invalid image type. Please use .gif, .png, .jpg, or .jpeg.",
     "invalid-file-type-2-no-gif": "Invalid image type. Please use .png, .jpg, or .jpeg.",
     "img-upload-success": "Image updated successfully.",
-    "img-upload-failure": "Error upload: Error uploading image"
+    "img-upload-failure": "Error upload: Error uploading image",
+    "download-add-ons": "Download Add-Ons",
+    "apply-language": "Apply Language",
+    "commands-in-autodesk": "Commands in Autodesk Products",
+    "autodesk-commands-description": "Automatically display Related Topics when executing commands in Revit and AutoCAD-based products.",
+    "activate-autodesk-commands": "Activate on this Device",
+    "deactivate-autodesk-commands": "Deactivate on this Device",
+    "autodesk-commands-activated": "This feature has been activated",
+    "autodesk-commands-deactivated": "This feature has been deactivated",
+    "account-info-tab": "Account Info"
+  },
+  "add-ons": {
+    "cmd-launcher-name": "Pinnacle User Tools",
+    "cmd-launcher-update-msg": "Updated 01/2024",
+    "cmd-launcher-downloaded": "Pinnacle User Tools downloaded."
   },
   "view-certificate": {
     "title": "Congratulations",
@@ -225,6 +240,8 @@
     "mark-course-as-completed-title": "Mark Course as Complete?",
     "mark-course-as-completed-description": "Are you sure you want to mark '[COURSE_NAME]' as complete?",
     "mark-course-as-completed-success": "Assignment marked as complete.",
+    "cannot-mark-course-as-complete-title": "You Cannot Mark As Complete!",
+    "cannot-mark-course-as-complete-description": "It seems you haven't met the quiz or course requirements for this assignment. To mark this assignment as complete, please complete the quiz or course requirement.",
     "complete-without-certificate-title": "Complete Without Certificate?",
     "complete-without-certificate-description": "You have only completed [PROGRESS]% of all requirements for this assignment. If you move forward you will not receive a certificate.",
     "complete-without-certificate-success": "Assignment marked  as complete. Certificate was not generated.",
@@ -233,6 +250,7 @@
     "assigned-by": "Assigned By",
     "percent-reviewed": "Percent Reviewed",
     "certificate-status": "Certificate Status",
+    "certificate-loading": "Loading...",
     "view-time": "View Time",
     "quiz-overview": "Quiz Overview",
     "no-quizzes": "No Quizzes to Review",
@@ -245,6 +263,7 @@
     "highest-score": "Highest Score",
     "most-recent-completion": "Most Recent Completion",
     "review-quiz-results": "Review Quiz Results",
+    "skipped": "Skipped",
     "quiz-result": "Quiz Result",
     "you-passed": "You Passed!",
     "you-failed": "You Failed!",
@@ -257,7 +276,15 @@
     "your-answer": "Your Answer",
     "change-due-date": "Change Due Date",
     "change-due-date-subtitle": "You are about to update the due date for '[NAME]'. This will overwrite any previously set due date.",
-    "due-date": "Due Date"
+    "due-date": "Due Date",
+    "acceptable-answers": "Acceptable Answers",
+    "resume-content": "Resume Content",
+    "certificate-not-available-friction-title": "Certificate Unavailable",
+    "certificate-not-available-friction-body": "A certificate of completion is not offered by this course.",
+    "certificate-not-available-course-dropped-friction-body": "Certificates was not provided because you dropped this course. Re-enroll and complete to receive certificate.",
+    "certificate-not-available-course-incomplete-friction-body": "Certificates was not provided because you skipped content in this course. Re-enroll and complete to receive certificate.",
+    "re-enroll-in-course": "Re-Enroll in Course",
+    "due": "Due"
   },
   "bookmark-card": {
     "summary-courses": " Courses",
@@ -275,5 +302,14 @@
   "user-profile-menu": {
     "switch-tenant-friction-title": "Switch Tenant?",
     "switch-tenant-friction-body": "Are you sure you want to change your tenant from [FROM_TENANT_NAME] to [TO_TENANT_NAME]?"
+  },
+  "home-section": {
+    "subtitle-part-1": "You have",
+    "subtitle-part-2": "Assignments",
+    "libraries-title": "Explore your libraries",
+    "view-all": "View All",
+    "no-results-title": "Uh-oh, No Libraries In Sight!",
+    "no-results-subtitle": "If the shelves are bare, reach out to our support team or your system admin for help.",
+    "contact-support": "Contact Support"
   }
 }

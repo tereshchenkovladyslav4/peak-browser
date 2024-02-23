@@ -21,7 +21,7 @@ export class ManagementPortalComponent implements OnInit, OnDestroy {
   constructor(private authState: AuthenticationStateService, private apiV1Service: ProdGenApi, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
     globalThis = this;
     // we will launch off the new window then waith for a notification that it is created (look in the app constructor for this callback)
-      let url = window.location.protocol + "//" + window.location.host;
+      let url = window.location.protocol + "//" + window.location.host;      
       url = url.replace("4202", "4201");
     url += "/administration";
     this.adminPortalUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -42,21 +42,23 @@ export class ManagementPortalComponent implements OnInit, OnDestroy {
   eventListener(event) {
     var eventData = event.data as string;
     // console.log(eventData);
-
-    if (eventData && eventData.indexOf("admin-resize|") == 0) {
-      eventData = eventData.replace("admin-resize|", "");
-      var elm = document.getElementById("managementFrame");
-      if (elm) {
-        globalThis.resizeIframe(elm, eventData);
+    if (eventData) {
+      let eventDataStr = eventData.toString();
+      if (eventDataStr.indexOf("admin-resize|") == 0) {
+        eventDataStr = eventDataStr.replace("admin-resize|", "");
+        var elm = document.getElementById("managementFrame");
+        if (elm) {
+          globalThis.resizeIframe(elm, eventDataStr);
+        }
       }
-    }
-    else if (eventData && eventData.indexOf("administration_opened") == 0) {
-      // handshake from opening iframe view
-      // console.log("iframe handshake");
-      // console.log(this);
-      var elm = document.getElementById("managementFrame");
-      if (elm) {
-        globalThis.openManagementPage(elm as HTMLIFrameElement);
+      else if (eventDataStr.indexOf("administration_opened") == 0) {
+        // handshake from opening iframe view
+        // console.log("iframe handshake");
+        // console.log(this);
+        var elm = document.getElementById("managementFrame");
+        if (elm) {
+          globalThis.openManagementPage(elm as HTMLIFrameElement);
+        }
       }
     }
   }

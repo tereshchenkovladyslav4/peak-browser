@@ -1,20 +1,29 @@
-<div class="cursor-pointer"
-  [ngClass]="{'scale-up': scaleUpClassCondition, 'scale-down': scaleDownClassCondition}"
-  style="position: absolute;"
+<div
+  class="cursor-pointer"
+  [ngClass]="{ 'scale-up': scaleUpClassCondition, 'scale-down': scaleDownClassCondition }"
+  style="position: absolute"
   [style.top.px]="top"
   [style.right.px]="right"
   [style.left.px]="left"
-  (click)="onClicked()">
-  <svg width="30"
-    height="38" 
-    viewBox="0 -4 30 38" 
-    fill="none"
-    [class.rotate]="reverseIcon">
+  (click)="onClicked()"
+>
+  <svg width="30" height="38" viewBox="0 -4 30 38" fill="none" [class.rotate]="reverseIcon">
     <g filter="url(#filter0_d_3728_94456)">
-      <path d="M4 10C4 4.47715 8.47715 0 14 0H30V30H14C8.47715 30 4 25.5228 4 20V10Z"
-        fill="var(--navbar-color)"/>
+      <path d="M4 10C4 4.47715 8.47715 0 14 0H30V30H14C8.47715 30 4 25.5228 4 20V10Z" fill="var(--navigation-color)" />
     </g>
-    <path d="M21.3257 11L17.2891 15.0366L21.3257 19.0732" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M17.0366 11L13 15.0366L17.0366 19.0732" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path
+      d="M21.3257 11L17.2891 15.0366L21.3257 19.0732"
+      stroke="var(--high-contrast-navigation-color)"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M17.0366 11L13 15.0366L17.0366 19.0732"
+      stroke="var(--high-contrast-navigation-color)"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
   </svg>
 </div>

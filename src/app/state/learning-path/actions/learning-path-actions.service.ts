@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable, mergeMap, of, take } from 'rxjs';
+import { EMPTY, Observable, mergeMap, of, take, concatMap } from 'rxjs';
 import { AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
 import { SessionStorageService } from 'src/app/services/storage/services/session-storage.service';
 import { ContentDetails, ContentType } from 'src/app/resources/models/content';
 import { LayoutStateService } from '../../layout/layout-state.service';
 import { LearningPathEffectsService } from '../effects/learning-path-effects.service';
-import { DEFAULT_COURSE_CONTENT_TRACKING, LearningPathStateService } from '../learning-path-state.service';
+import { LearningPathStateService, EnrollmentContentTracking, EnrollmentVideoTracking, EnrollmentQuizTracking } from '../learning-path-state.service';
 import { QuizStatus } from 'src/app/resources/models/content/quiz';
 import { CourseViewContent } from "src/app/modules/content/components/learning-path/models/course-view-content";
 import { CourseViewData, getContentIndexToResume } from 'src/app/modules/content/components/learning-path/models/course-view-data';
 import { getCourseAssignmentStatusText } from 'src/app/resources/functions/content/course';
 import { TranslationService } from 'src/app/services/translation.service';
+import { Store } from '@ngxs/store';
+import { Content } from '../../../resources/models/managed-content/content';
 
 const ACTIVE_COURSE_KEY = 'activeCourseIndex';
 const ACTIVE_CONTENT_KEY = 'activeContentIndex';
@@ -26,6 +28,7 @@ export class LearningPathActionsService {
     private sessionStorage: SessionStorageService,
     private layoutState: LayoutStateService,
     private translationService: TranslationService,
+    private store: Store
   ) { 
     this.layoutState.selectIsFullScreen$.subscribe(isFullscreen => {
       // lp closed after leaving full screen
@@ -56,7 +59,6 @@ export class LearningPathActionsService {
   openLearningPathFromOverviewAction(courseIndex: number, contentIndex: number) {
     // set index in storage when opening from overview as fallback from page load func
     const enrolledCourseIndex = this.convertCourseIndexToEnrolledCourseIndex(courseIndex);
-
     this.setActiveEnrolledCourseIndexInSession(enrolledCourseIndex);
     this.setActiveContentIndexInSession(contentIndex);
   }
@@ -78,20 +80,21 @@ export class LearningPathActionsService {
     this.learningPathEffects.getLearningPathCourseEnrollmentsEffect(learningPathId).pipe(
       mergeMap(courses => {
         // get last piece of content and it's course's index from web storage
-        const enrolledCourseSessionIndex = Number(this.sessionStorage.getItem(ACTIVE_COURSE_KEY));
-        const enrolledContentSessionIndex = Number(this.sessionStorage.getItem(ACTIVE_CONTENT_KEY));
-
-        if (enrolledContentSessionIndex === -1) {
-          this.learningPathState.updateIsCourseSummaryOpen(true);
+        const enrolledCourseSessionIndex = this.sessionStorage.getItem(ACTIVE_COURSE_KEY);
+        const enrolledContentSessionIndex = this.sessionStorage.getItem(ACTIVE_CONTENT_KEY);
+        //is all content within a course complete?
+        if (Number(enrolledContentSessionIndex) === -1) {
+          this.learningPathState.updateIsCourseSummaryOpen(true);          
         }
-        
-        if (!isNaN(enrolledCourseSessionIndex) && !isNaN(enrolledContentSessionIndex)) {
-          return this.openLearningPath(enrolledCourseSessionIndex, enrolledContentSessionIndex);
+        //if both aren't null, then we should convert to a number. Otherwise, if we convert null to a number, it sets it to 0
+        if (enrolledCourseSessionIndex && enrolledContentSessionIndex) {
+          return this.openLearningPath(Number(enrolledCourseSessionIndex), Number(enrolledContentSessionIndex));
         } else {
-          // FALLBACK if course or content in session has been corrupted
+          //Either get most recent non-completed content OR a quiz that has been taken and failed but has retakes
           const courseIndex = courses.findIndex(c => !!c?.enrollmentId && c.status !== AssignmentEnrollmentStatus.Completed);
-          const contentIndex = courses[courseIndex].content.findIndex(c => c.status !== AssignmentEnrollmentStatus.Completed);
+          const contentIndex = getContentIndexToResume(courses[courseIndex]);
 
+          // FALLBACK if course or content in session has been corrupted
           const enrolledCourseIndex = this.convertCourseIndexToEnrolledCourseIndex(courseIndex);
           return this.openLearningPath(enrolledCourseIndex, contentIndex);
         }
@@ -188,7 +191,6 @@ export class LearningPathActionsService {
     const contentIndex = getContentIndexToResume(course);
 
     this.updateActiveContentIndex(contentIndex);
-    this.learningPathState.updateCourseContentTracking(DEFAULT_COURSE_CONTENT_TRACKING)
 
     // call effect
     this.learningPathEffects
@@ -196,59 +198,14 @@ export class LearningPathActionsService {
       .subscribe(res => this.learningPathState.isLoading$.next(false));
   }
 
-  onVideoLoadedTrackingAction(videoLength: number, isExternalVideo: boolean) {
-    this.learningPathState.updateCourseContentTracking({
-      ...this.learningPathState.snapshot.courseContentTracking,
-      isExternalVideo: isExternalVideo,
-      videoLength: Math.floor(videoLength), // remove decimals (ms) from value (180.34 (180s 340ms) => 180 (180s 0ms))
-    });
-  }
-
-  onVideoPlayTrackingAction() {
-    const overrideReqVidWatchPct = this.learningPathState.activeEnrolledCourse.settings.overrideReqVidWatchPct;
-    const reqWatchPercentage = this.learningPathState.activeEnrolledCourse.settings.reqVidWatchPct;
-    const isRequiredToWatchVideos = overrideReqVidWatchPct && reqWatchPercentage > 0;
-
-    // only mark videos complete onPlay when required watch length is NOT set
-    if (!isRequiredToWatchVideos && !this.learningPathState.snapshot.courseContentTracking.isComplete) {
-      this.learningPathState.updateCourseContentTracking({
-        ...this.learningPathState.snapshot.courseContentTracking,
-        isComplete: true
-      });
-
-      this.markVideoCompleteAction();
-    }
-  }
-
-  updateVideoTrackingAction(lastVideoPosition: number, videoLength: number) {
-    // check if video watch requirements have been met (IF APPLICABLE)
-    let isComplete = true;
-    const overrideReqVidWatchPct = this.learningPathState.activeEnrolledCourse.settings.overrideReqVidWatchPct;
-    const reqWatchPercentage = this.learningPathState.activeEnrolledCourse.settings.reqVidWatchPct;
-    const vidLength = Math.floor(videoLength);
-    const isRequiredToWatchVideos = overrideReqVidWatchPct && reqWatchPercentage > 0;
-    let watchPercentage = 0;
-    let canUpdateProgress = false; // only want to update progress if watch % is greater than current progress val
-    if (isRequiredToWatchVideos && vidLength > 0) {
-      watchPercentage = lastVideoPosition / vidLength * 100;
-      canUpdateProgress = watchPercentage > this.learningPathState.activeEnrolledCourseContent.progress
-      isComplete = watchPercentage >= reqWatchPercentage;
-    }
-
-    this.learningPathState.updateCourseContentTracking({
-      ...this.learningPathState.snapshot.courseContentTracking,
-      hasPlayedVideo: true,
-      lastVideoPosition: Math.floor(lastVideoPosition), // remove decimals (MS) from value (180.34 (180s 340ms) => 180 (180s 0ms))
-      isComplete: isComplete
-    });
-
+  updateVideoTrackingAction(tracking: EnrollmentVideoTracking) {
     // update this videos course/content progress when required vid watch length is set so ui progress bar is updated accordingly
-    if (isRequiredToWatchVideos && vidLength > 0 && canUpdateProgress) {
+    if (tracking.isRequiredToWatchVideo && tracking.videoLength > 0 && tracking.canUpdateProgress) {
       const { activeEnrolledCourseContent } = this.learningPathState;
       this.updateCourseContentDetails(this.learningPathState.activeEnrolledCourse?.courseId, {
         ...activeEnrolledCourseContent,
-        progress: watchPercentage,
-        status: isComplete ? AssignmentEnrollmentStatus.Completed : activeEnrolledCourseContent?.status,
+        progress: tracking.watchedPercentage,
+        status: tracking.isComplete ? AssignmentEnrollmentStatus.Completed : activeEnrolledCourseContent?.status,
         quizData: {
           ...activeEnrolledCourseContent.quizData,
           status: QuizStatus.None 
@@ -257,38 +214,22 @@ export class LearningPathActionsService {
     }
   }
 
-  markDocumentCompleteAction() {
-    this.markInstantContentComplete();
-  }
-
-  markVideoCompleteAction() {
-    this.postContentTracking();
-  }
-
-  markWorkflowCompleteAction() {
-    this.markInstantContentComplete();
-  }
-
-  markQuizCompleteAction() {
-    this.markInstantContentComplete();
-
-    // apply cached tracking data to lp state so quiz pass/fail shows up in courses-list as soon as quiz is submitted
-    this.applyCachedContentToCourse();
-  }
-
   /**
    * update permanently tracked quiz data when an answer is submitted
    * @param quizSession 
    */
   submitQuizAnswer() {
     const { activeEnrolledCourseContent } = this.learningPathState;
+    const { totalQuestionsComplete, totalQuizQuestions } = activeEnrolledCourseContent.quizData.progress;
+    //when on last question and submitted quiz, numerator (questions answered) isn't greater than denominator (questions amt in quiz)
+    const onFinalQuestion = totalQuestionsComplete === totalQuizQuestions - 1;
     this.updateCourseContentDetails(this.learningPathState.activeEnrolledCourse?.courseId, {
       ...activeEnrolledCourseContent,
       quizData: {
         ...activeEnrolledCourseContent.quizData,
         progress: {
           ...activeEnrolledCourseContent.quizData.progress,
-          totalQuestionsComplete: activeEnrolledCourseContent?.quizData.progress?.totalQuestionsComplete + 1
+          totalQuestionsComplete: activeEnrolledCourseContent?.quizData.progress?.totalQuestionsComplete + (onFinalQuestion ? 0 : 1)
         }
       }
     })
@@ -326,12 +267,10 @@ export class LearningPathActionsService {
         && c?.quizData?.status !== QuizStatus.Pass
         && c?.quizData?.totalAttempts < activeEnrolledCourse?.settings?.maxQuizAttempts);
     }
-    
     if (quizIndex > 0 && quizIndex < activeEnrolledCourse?.content?.length) {
       this.learningPathState.updateIsCourseSummaryOpen(false);
 
       this.updateActiveContentIndex(quizIndex);
-      this.learningPathState.updateCourseContentTracking(DEFAULT_COURSE_CONTENT_TRACKING)
 
       // call effect
       this.learningPathEffects
@@ -358,6 +297,14 @@ export class LearningPathActionsService {
   }
 
   private openLearningPath(enrolledCourseIndex: number, contentIndex: number): Observable<ContentDetails> {
+    //ngxs way
+    //this.store.dispatch([
+    //  new LearningPathActions.UpdateActiveEnrolledCourseIndex(enrolledCourseIndex),
+    //  new LearningPathActions.UpdateActiveContentIndex(contentIndex),
+    //  new LearningPathActions.ToggleLearningPathOpenStatus(true)
+    //])
+
+    //Old way of updating course index, content, and is LP open. REMOVE LATER
     this.learningPathState.updateActiveEnrolledCourseIndex(enrolledCourseIndex);
     this.learningPathState.updateActiveContentIndex(contentIndex);
     this.learningPathState.updateIsLearningPathOpen(true);
@@ -367,18 +314,7 @@ export class LearningPathActionsService {
   }
 
   private openNewCourseContent(contentIndex: number) {
-    // post quiz tracking data when switching away from quiz in courses list
-    if (this.learningPathState.activeEnrolledCourseContent?.contentType === ContentType.Quiz) {
-      this.postContentTracking();
-    }
-
     this.changeActiveContentIndex(contentIndex);
-
-    // set start time for content tracking purposes
-    this.learningPathState.updateCourseContentTracking({
-      ...this.learningPathState.snapshot.courseContentTracking,
-      startTime: new Date()
-    })
   }
 
   private changeActiveContentIndex(contentIndex: number) {
@@ -424,22 +360,24 @@ export class LearningPathActionsService {
     this.learningPathState.updateActiveContentIndex(contentIndex);
   }
 
-  /**
-   * Documents & Workflows are marked the same (instant after action)
-   */
-  private markInstantContentComplete() {
-    this.learningPathState.updateCourseContentTracking({
-      ...this.learningPathState.snapshot.courseContentTracking,
-      isComplete: true,
-    });
-
-    this.postContentTracking();
+  postEnrollmentContentTracking(documentTracking: EnrollmentContentTracking) {
+    this.learningPathEffects.postEnrollmentContentTracking(documentTracking);
+    this.applyCachedContentToCourse();
   }
 
-  private postContentTracking() {
-    const currCourseIndex = this.learningPathState.snapshot.activeEnrolledCourseIndex;
-    const currContentIndex = this.learningPathState.snapshot.activeContentIndex;
-    this.learningPathEffects.postEnrollmentTrackingItemEffect(currCourseIndex, currContentIndex); // subscription handled in effect
+  postEnrollmentQuizTracking(quizTracking: EnrollmentQuizTracking) {
+    this.learningPathEffects.postEnrollmentQuizTracking(quizTracking);
+    this.applyCachedContentToCourse();
+  }
+
+  postEnrollmentVideoTracking(videoTracking: EnrollmentVideoTracking) {
+    // Do not post tracking if we have no video info:
+    if (videoTracking.videoLength === 0) {
+      return;
+    }
+
+    this.learningPathEffects.postEnrollmentVideoTracking(videoTracking);
+    this.applyCachedContentToCourse();
   }
 
   private applyCachedContentToCourse() {

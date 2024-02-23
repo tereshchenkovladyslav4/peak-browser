@@ -1,4 +1,3 @@
-
 .global-search-container {
   position: relative;
   display: inline-block;
@@ -13,16 +12,17 @@
 }
 
 .global-search-field {
+  font-family: var(--font-family) !important;
   padding: 20px 8px 17px;
   width: 323px;
   height: 40px;
-  background: #FFFFFF;
-  border: 1px solid #D7DADF;
+  background: #ffffff;
+  border: 1px solid #d7dadf;
   border-radius: 10px;
   text-indent: 2rem;
 }
 
 .global-search-field:focus {
   outline: none;
-  border: 1px solid #80bdff;
+  border: 1px solid var(--secondary-color);
 }

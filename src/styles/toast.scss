@@ -37,7 +37,6 @@
 
 /*Titles are not currently used, but left this style in here in case this would change.*/
 .toast-title {
-  font-family: "Roboto", sans-serif !important;
   font-weight: 400 !important;
   font-size: 16px !important;
 }
@@ -78,8 +77,6 @@
   width: 25px !important;
   font-size: 24px !important;
   border-left: 1px solid #FFFFFF !important;
-  padding-top: 14px !important;
-  padding-bottom: 14px !important;
 }
 
 /*This will show our version of the "X" button on right side of toast. It overrides the version from toastr.css*/
@@ -105,6 +102,6 @@
 
 /*To limit the toast message from going into the vertical bar and X button on right. Padding left sets distance from icon to start of text.*/
 .toast-message {
-  width: 245px !important;
+  width: 250px !important;
   padding-left: 10px !important;
 }

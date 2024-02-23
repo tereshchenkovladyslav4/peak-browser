@@ -6,6 +6,7 @@ import { QuizSession, QuizStatus, TrackedQuestion } from 'src/app/resources/mode
 import { LearningPathActionsService } from '../../learning-path/actions/learning-path-actions.service';
 import { LearningPathStateService } from '../../learning-path/learning-path-state.service';
 import { CourseViewContent } from "src/app/modules/content/components/learning-path/models/course-view-content";
+import { Quiz } from '../../../services/apiService/classFiles/class.content';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class QuizEffectsService {
       switchMap((quizSessions: QuizSession[]) => {
         const mostRecentlyPassedQuizSession = quizSessions?.find(qs => qs.quizStatus === QuizStatus.Pass)
         const hasUserPassQuiz = !!mostRecentlyPassedQuizSession
-        this.quizState.updateTotalUserAttempts(quizSessions?.length);
+        const completedQuizSessionCount = quizSessions?.filter(qs => qs.quizStatus === QuizStatus.Pass || qs.quizStatus === QuizStatus.Fail).length;
+        this.quizState.updateTotalUserAttempts(completedQuizSessionCount);
         this.quizState.updateHasUserPassed(hasUserPassQuiz);
         
         const mostRecentQuizSession = quizSessions[0];

@@ -1,0 +1,28 @@
+:host {
+  position: relative;
+}
+
+.sort-selector {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.sort-field {
+  color: var(--color-1-blue-2);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.sort-arrow {
+  height: 15px;
+  width: 15px;
+  cursor: pointer;
+
+  &.up {
+    transform: rotate(180deg);
+  }
+}

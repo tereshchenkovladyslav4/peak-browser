@@ -9,6 +9,7 @@
     [class.cursor-pointer]="tabs?.length > 1"
     [style.font-size]="tabFontSize"
     [style.font-weight]="tabFontWeight"
+    [style.cursor]="pointerOnHover ? 'pointer' : 'default'"
     (click)="onTabClick(i)">
     {{tab?.label}}
   </div>

@@ -123,8 +123,8 @@ export class QuizStateService {
 
   get canQuizBeRetaken(): boolean {
     const { allowQuizRetakes, maxQuizAttempts } = this.learningPathState.activeEnrolledCourse?.settings
-    const { totalUserAttempts } = this.snapshot;
-    return allowQuizRetakes && totalUserAttempts < maxQuizAttempts
+    const { totalUserAttempts, hasUserPassed } = this.snapshot;
+    return allowQuizRetakes && totalUserAttempts < maxQuizAttempts && !hasUserPassed;
   }
 
   isQuizFinished(questionIndex: number): boolean {

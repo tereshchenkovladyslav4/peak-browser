@@ -7,6 +7,8 @@ import {NAVIGATION_ROUTES} from "../../../../resources/constants/app-routes";
 import {Router} from "@angular/router";
 import {filter} from "rxjs/operators";
 import {FilterStateService} from "../../../../state/filter/filter-state";
+import { Store } from '@ngxs/store';
+import { AssignmentsActions } from '../../../../state/assignments/assignments.actions';
 
 @Component({
   selector: 'ep-search-results',
@@ -37,10 +39,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   constructor(private searchService: SearchService,
               private router: Router,
               private fb: FormBuilder,
-              private filterState: FilterStateService) {
+              private filterState: FilterStateService, private store: Store) {
   }
 
   ngOnInit() {
+    this.store.dispatch(new AssignmentsActions.CurrentAssignmentsFromApi());
     this.isLoaded$ = this.searchService.isLoaded$;
     this.isNoFilteredDataResults$ = this.filterState.selectIsNoFilteredDataResults();
     this.isNoDataResults$ = this.filterState.selectIsNoDataResults();

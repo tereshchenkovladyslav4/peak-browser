@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CourseViewData } from "../../models/course-view-data";
-import { Observable, Subject, combineLatest, filter, map, mergeMap, takeUntil } from 'rxjs';
+import { Observable, Subject, combineLatest, filter, map, mergeMap, takeUntil, first } from 'rxjs';
 import { LearningPathStateService } from 'src/app/state/learning-path/learning-path-state.service';
 import { AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
 import { DialogService } from 'src/app/services/dialog/dialog.service';
@@ -11,6 +11,7 @@ import { BreakpointObserver } from '@angular/cdk/layout'
 import { LayoutStateService } from 'src/app/state/layout/layout-state.service';
 import { ContentType } from 'src/app/resources/models/content';
 import { QuizStatus } from 'src/app/resources/models/content/quiz';
+import { QuizStateService } from '../../../../../../state/quiz/quiz-state.service';
 
 @Component({
   selector: 'ep-courses-list',
@@ -42,7 +43,8 @@ export class CoursesListComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private workflowState: WorkflowStateService,
     private responsive: BreakpointObserver,
-    private layoutState: LayoutStateService
+    private layoutState: LayoutStateService,
+    private quizState: QuizStateService
   ) {
 
   }
@@ -193,8 +195,14 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   openCourseContent(contentIndex: number) {
     this.learningPathActions.openCourseContentAction(contentIndex);
   }
-  
+
   openFinishCourse() {
     this.learningPathActions.openCourseSummary();
+    // Should reset quiz if it's open when clicking "Finish Course"
+    this.quizState.isQuizOpen$.pipe(first(), takeUntil(this.unsubscribe$)).subscribe((isQuizOpen) => {
+      if (isQuizOpen) {
+        this.quizState.reset();
+      }
+    });
   }
 }

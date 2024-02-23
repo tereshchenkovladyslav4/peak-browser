@@ -29,7 +29,7 @@
   <ng-container actions>
     <div class="button-container ep-mt-5">
       <button ep-button (click)="close()">{{ 'common.cancel' | Translate }}</button>
-      <button ep-button buttonType="green" (click)="save()">{{ 'common.save' | Translate }}</button>
+      <button ep-button buttonType="green" (click)="save()" [disabled]="(dueDate | epDate) === (originalDueDate | epDate)">{{ 'common.save' | Translate }}</button>
     </div>
   </ng-container>
 </ep-dialog-base>

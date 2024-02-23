@@ -8,7 +8,6 @@
 }
 
 .comment-label {
-  font-family: Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 35px;
@@ -21,7 +20,6 @@
 }
 
 .comment-label-active {
-  font-family: Roboto, sans-serif;
   font-size: 10px;
   font-weight: 400;
   line-height: 14px;
@@ -46,7 +44,7 @@
 
 .comment-input:focus {
   outline: none;
-  border: 1px solid #80bdff;
+  border: 1px solid var(--secondary-color);
 }
 
 .post-button {
@@ -93,7 +91,6 @@
 }
 
 .author {
-  font-family: Roboto, sans-serif;
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;
@@ -103,7 +100,6 @@
 }
 
 .publish-date {
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
@@ -122,7 +118,6 @@
 }
 
 .delete {
-  font-family: Roboto, sans-serif;
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;

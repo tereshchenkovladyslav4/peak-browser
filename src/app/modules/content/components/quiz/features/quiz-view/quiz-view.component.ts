@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
-import { Observable, Subscription, filter, take, tap } from 'rxjs';
+import { Observable, Subscription, filter, take, tap, Subject, takeUntil } from 'rxjs';
 import { Quiz, QuizAnswer, QuizQuestionType } from 'src/app/resources/models/content';
 import { LayoutStateService } from 'src/app/state/layout/layout-state.service';
 import { QuizActionsService } from 'src/app/state/quiz/actions/quiz-actions.service';
@@ -7,6 +7,8 @@ import { QuestionData, QuizStateService } from 'src/app/state/quiz/quiz-state.se
 import { QuizResults } from '../../ui/quiz-results/quiz-results.component';
 import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { ImageViewerComponent } from 'src/app/components/dialog/image-viewer/image-viewer.component';
+import { EnrollmentQuizTracking, LearningPathStateService } from '../../../../../../state/learning-path/learning-path-state.service';
+import { LearningPathActionsService } from '../../../../../../state/learning-path/actions/learning-path-actions.service';
 
 @Component({
   selector: 'ep-quiz-view',
@@ -31,20 +33,25 @@ export class QuizViewComponent implements OnInit, OnDestroy {
   // multi q answers local state
   usersSelectedMultiAnswersIndices: { [key: number]: boolean };
 
-  // textarea local state
+  // textarea local stateS
   isTextareaFocused: boolean = false;
   isTextareaValueEmpty: boolean = true;
 
   totalCheckboxSelected: number = 0;
 
+  tracking: EnrollmentQuizTracking;
+
   private subscription = new Subscription();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private layoutState: LayoutStateService,
     private quizState: QuizStateService,
     private quizActions: QuizActionsService,
     private dialogService: DialogService,
-    private renderer2: Renderer2
+    private renderer2: Renderer2,
+    private learningPathState: LearningPathStateService,
+    private learningPathActions: LearningPathActionsService,
   ) {
     
   }
@@ -57,11 +64,26 @@ export class QuizViewComponent implements OnInit, OnDestroy {
     this.setQuestionData();
     this.setQuizResults();
     this.resetTextarea();
+
+    this.isQuizLoaded$.pipe(
+      takeUntil(this.unsubscribe$)      
+    ).subscribe(loaded => this.initialiseTracking(loaded));
+
+    this.isQuizFinished$.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(finished => this.onQuizFinished(finished));
   }
 
   ngOnDestroy(): void {
-    this.quizActions.endQuiz();
+    // Record the time spent on this quiz:
+    if (this.tracking) {
+      this.tracking.endTime = new Date();
+      this.learningPathActions.postEnrollmentQuizTracking(this.tracking);
+    }
+
     this.subscription.unsubscribe();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   private setIsQuizLoaded() {
@@ -94,6 +116,24 @@ export class QuizViewComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  private initialiseTracking(loaded) {
+    if (loaded) {
+      // Initialise the tracking state for this new content item but don't save it till we're destroyed:
+      this.tracking = new EnrollmentQuizTracking(
+        this.quizState.snapshot.quizSession?.quizId,
+        this.learningPathState.activeEnrolledCourse.courseId,
+        this.learningPathState.activeEnrolledCourse.enrollmentId,
+        this.quizState.snapshot.quizSession
+      )
+    }
+  }
+
+  private onQuizFinished(finished) {
+    if (finished) {
+      this.tracking.isComplete = true;
+    }
   }
 
   private setQuizResults() {

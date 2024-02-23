@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, filter, map, Observable, Subject, takeUntil } from 'rxjs';
+import { concatMap, Subject } from 'rxjs';
 import { DialogConfig } from '../../../../components/dialog/dialog-base/dialog-base.component';
 import { EditProfilePicComponent, UserImgAndDisplayName } from '../../../../components/dialog/edit-profile-pic/edit-profile-pic.component';
 import { EditUsernameComponent } from '../../../../components/dialog/edit-username/edit-username.component';
@@ -8,7 +8,6 @@ import { UserFull } from '../../../../resources/models/user';
 import { DialogService } from '../../../../services/dialog/dialog.service';
 import { TranslationService } from '../../../../services/translation.service';
 import { UserService } from '../../../../services/user.service';
-import { UserStateService } from '../../../../state/user/user-state.service';
 
 @Component({
   selector: 'ep-user-details-header',
@@ -17,13 +16,14 @@ import { UserStateService } from '../../../../state/user/user-state.service';
 })
 export class UserDetailsHeaderComponent implements OnDestroy, OnInit {
   private unsubscribe$ = new Subject<void>();
+
   @Input('currentUser') currentUser: UserFull;
   @Input('currentTenantDetails') currentTenantDetails: TenantMini;
+  @Input() headerStyles: {[klass: string]: any};
 
   constructor(private dialogService: DialogService,
             private translationService: TranslationService,
-            private userService: UserService,
-            private userState: UserStateService  ) { }
+            private userService: UserService) { }
 
   ngOnInit() {
   }

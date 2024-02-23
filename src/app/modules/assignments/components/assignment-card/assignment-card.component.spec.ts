@@ -9,6 +9,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { BookmarksService } from '../../../../services/bookmarks/bookmarks.service';
 import { Router } from '@angular/router';
 import { Assignment } from '../../../../resources/models/assignment';
+import {AssignmentsService} from "../../../../services/assignments/assignments.service";
 
 describe('AssignmentCardComponent', () => {
   let component: AssignmentCardComponent;
@@ -17,6 +18,7 @@ describe('AssignmentCardComponent', () => {
   let toastrServiceMock: jest.Mocked<ToastrService>;
   let storeMock: jest.Mocked<Store>;
   let bookmarksServiceMock: jest.Mocked<BookmarksService>;
+  let assignmentsServiceMock: jest.Mocked<AssignmentsService>;
 
   beforeEach(async () => {
     translationServiceMock = {
@@ -31,6 +33,8 @@ describe('AssignmentCardComponent', () => {
 
     bookmarksServiceMock = {} as unknown as jest.Mocked<BookmarksService>;
 
+    assignmentsServiceMock = {} as unknown as jest.Mocked<AssignmentsService>;
+
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [CommonModule, SharedModule],
@@ -39,6 +43,7 @@ describe('AssignmentCardComponent', () => {
         { provide: ToastrService, useValue: toastrServiceMock },
         { provide: Store, useValue: storeMock },
         { provide: BookmarksService, useValue: bookmarksServiceMock },
+        { provide: AssignmentsService, useValue: assignmentsServiceMock },
       ],
     }).compileComponents();
 

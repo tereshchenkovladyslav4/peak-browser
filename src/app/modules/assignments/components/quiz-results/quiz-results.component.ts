@@ -4,7 +4,7 @@ import { DialogRef } from '../../../../services/dialog/dialog-ref';
 import { DIALOG_DATA } from '../../../../services/dialog/dialog-tokens';
 import { EnrollmentService } from '../../../../services/enrollment.service';
 import { SharedModule } from '../../../shared/shared.module';
-import { QuizSession, QuizStatus, QuizSummary } from '../../../../resources/models/content/quiz';
+import { QuizStatus, QuizSummary } from '../../../../resources/models/content/quiz';
 import { CircleProgressComponent } from '../../../../components/circle-progress/circle-progress.component';
 import { CommonModule } from '@angular/common';
 import { Quiz, QuizQuestionType } from '../../../../resources/models/content';

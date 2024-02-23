@@ -1,0 +1,18 @@
+<ng-container *ngIf="!isLoading else loading">
+  <ep-section-header sectionTitle="app-login-component.language-label">
+  </ep-section-header>
+  <app-select-dropdown heading="app-login-component.language-label"
+                       [options]="languageNames"
+                       [dropdownStyles]="dropdownStyles"
+                       [selectedOption]="selectedLanguage"
+                       (onOptionChange)="selectedLanguage = $event">
+  </app-select-dropdown>
+  <button class="apply-button"
+          ep-button
+          (click)="applyLanguage()">
+    {{'user-profile.apply-language' | Translate}}
+  </button>
+</ng-container>
+<ng-template #loading>
+  <ep-loading></ep-loading>
+</ng-template>

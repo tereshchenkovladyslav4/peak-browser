@@ -1,0 +1,15 @@
+.description-and-actions {
+  margin-top: 25px;
+
+  & .description {
+    color: #87919F;
+    line-height: 20px;
+  }
+
+  & .actions {
+      margin-top: 26px;
+      display: flex;
+      gap: 20px;
+      flex-wrap:wrap;
+  }
+}

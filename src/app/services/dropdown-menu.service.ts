@@ -68,9 +68,9 @@ export class DropdownMenuService {
   // -- Preset menus
 
   buildShareMenu(): DropdownItem[] {
-    return this.addShareNotification({})
-      .addShareWorkGroup({})
-      .addCopyLinkFormatted({})
+    //return this.addShareNotification({})
+    //  .addShareWorkGroup({})
+      return this.addCopyLinkFormatted({})
       .addCopyLinkUnformatted({})
       .getItems();
   }
@@ -138,7 +138,7 @@ export class DropdownMenuService {
   }
 
   addBookmarkItem(isBookmarked: boolean, contentId: string) {
-    let menuItem: DropdownItem = {
+    const menuItem: DropdownItem = {
       iconUrl: 'assets/images/dropdown-menu-icons/bookmark-hollow.svg',
       text: this.translationService.getTranslationFileData('dropdown-menu.add-to-bookmarks'),
       visible: true,
@@ -189,25 +189,25 @@ export class DropdownMenuService {
   }
 
 
-  addShareNotification({visible = true, action = () => console.log('Share via Notification')}): DropdownMenuService {
-    this.menuItems.push({
-      iconUrl: 'assets/images/dropdown-menu-icons/bell-hollow.svg',
-      text: 'Share via Notification',
-      visible: visible,
-      action: action
-    });
-    return this;
-  }
+  //addShareNotification({visible = true, action = () => console.log('Share via Notification')}): DropdownMenuService {
+  //  this.menuItems.push({
+  //    iconUrl: 'assets/images/dropdown-menu-icons/bell-hollow.svg',
+  //    text: 'Share via Notification',
+  //    visible: visible,
+  //    action: action
+  //  });
+  //  return this;
+  //}
 
-  addShareWorkGroup({visible = true, action = () => console.log('Share to Work Group')}): DropdownMenuService {
-    this.menuItems.push({
-      iconUrl: 'assets/images/dropdown-menu-icons/work-group-silhouette.svg',
-      text: 'Share to Work Group',
-      visible: visible,
-      action: action
-    });
-    return this;
-  }
+  //addShareWorkGroup({visible = true, action = () => console.log('Share to Work Group')}): DropdownMenuService {
+  //  this.menuItems.push({
+  //    iconUrl: 'assets/images/dropdown-menu-icons/work-group-silhouette.svg',
+  //    text: 'Share to Work Group',
+  //    visible: visible,
+  //    action: action
+  //  });
+  //  return this;
+  //}
 
   addCopyLinkFormatted({visible = true, action = () => console.log('Copy Link (Formatted)')}): DropdownMenuService {
     this.menuItems.push({

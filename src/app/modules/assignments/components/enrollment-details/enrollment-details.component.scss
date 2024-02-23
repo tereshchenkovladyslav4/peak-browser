@@ -32,31 +32,58 @@
   .row {
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
     color: var(--color-1-grey-1);
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
     margin-bottom: 8px;
+    gap: 16px;
+
+    .left-wrap {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .right-wrap {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      flex-direction: column;
+    }
   }
 }
 
-.learning-path-name {
-  overflow: hidden;
-  color: var(--color-1-blue-1);
-  text-overflow: ellipsis;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
+.name-wrap {
+  margin-right: 4px;
 
-.course-name {
-  color: var(--color-1-blue-1);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
+  .learning-path-name-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .learning-path-name {
+      overflow: hidden;
+      color: var(--color-1-blue-1);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+    }
+  }
+
+  .course-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-1-blue-1);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
 }
 
 .status-chip {
@@ -66,6 +93,7 @@
   gap: 8px;
   border-radius: 44px;
   padding: 0 10px;
+  margin-bottom: 16px;
 }
 
 .quiz-overview {

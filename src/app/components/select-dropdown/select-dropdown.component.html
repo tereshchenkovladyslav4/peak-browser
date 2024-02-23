@@ -1,0 +1,26 @@
+<div #dropdownWrapper
+     class="dropdown-wrapper"
+     [ngStyle]="dropdownStyles">
+  <div (click)="toggleOpenMenu()"
+       class="dropdown-select-toggle"
+       [style.margin-top.px]="19.59">
+    <div>
+      <span class="dropdown-title">
+        {{heading | Translate}}
+      </span>
+      <span class="selected-language">{{selectedOption}}</span>
+    </div>
+    <img src="assets/images/droparrow-black.svg" />
+  </div>
+  <div class="dropdown-menu" *ngIf="isMenuOpen">
+    <ul class="dropdown-items">
+      <li class="dropdown-row" *ngFor="let option of options" (click)="selectOption(option)">
+        <div class="image-wrapper">
+          <img *ngIf="option === selectedOption" src="assets/images/check-green.svg" />
+        </div>
+      {{option}}
+      </li>
+    </ul>
+  </div>
+</div>
+

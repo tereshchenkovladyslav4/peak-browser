@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
+import { catchError, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { LanguageSetResponse } from "../resources/models/language";
 import { LocalStorageService } from './storage/services/local-storage.service';
@@ -14,6 +14,21 @@ export class TranslationService {
 
   dataLoaded: boolean = false;
   data: Object;
+  translationDataChangeTrigger$ = new Subject<void>()
+  translationData$: Observable<Object> = this.translationDataChangeTrigger$.pipe(
+    map(() => {
+      if (!this.dataLoaded) {      
+        let v_SessionData = this.localStorage.getItem<Object[]>("translationDataPeak");
+        if (v_SessionData != null) {
+          this.data = v_SessionData;
+          this.dataLoaded = true;
+        }
+      }
+      return this.data;
+    }),
+    shareReplay(1),
+    startWith(this.localStorage.getItem<Object[]>("translationDataPeak"))
+  )
 
   constructor(
       private http: HttpClient, 
@@ -67,13 +82,8 @@ export class TranslationService {
   loadTranslationFileData(languageCode:string) {
     this.loadTranslationFile(languageCode).subscribe({
       next: res => {
-        console.log("Translation file loaded");
-        console.log(res);
         if (res != null) {
-          this.data = this.flattenJSONFile(res);
-          console.log(this.data);
-          this.dataLoaded = true;
-          this.localStorage.setItem("translationDataPeak", this.data);
+          this.loadTranslationFileDataFromVariable(res);
         } else {
           this.loadTranslationFileLocal().subscribe(local => {
               this.loadTranslationFileDataFromVariable(local);
@@ -99,12 +109,13 @@ export class TranslationService {
         this.localStorage.setItem("translationDataPeak", this.data);
       } else {
         this.loadTranslationFileLocal().subscribe(res => this.loadTranslationFileDataFromVariable(res));
-      }
+    }
+    this.translationDataChangeTrigger$.next();
   }
 
   private loadTranslationFileLocal(): Observable<Array<Object>> {
       let v_Headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      let v_TranslationData = this.http.get("./assets/translate.en.json", { headers: v_Headers })
+      let v_TranslationData = this.http.get("./assets/translate.en.json?" + Date.now().toString(), { headers: v_Headers })
         .pipe(catchError(this.errorHandler.bind(this)));
       return v_TranslationData;
   }

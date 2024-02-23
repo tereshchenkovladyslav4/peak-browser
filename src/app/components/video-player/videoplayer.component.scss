@@ -1,0 +1,5 @@
+// The body currently has a zoom of 0.87, which is causing issues with the video player style.
+// Therefore, we need to reset the zoom to its default value in fullscreen mode.
+.video-player-wrap.fullscreen {
+  zoom: var(--zoom-ignore);
+}

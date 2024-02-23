@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { ChangePasswordComponent } from '../../../../components/dialog/change-password/change-password.component';
 import { DialogConfig } from '../../../../components/dialog/dialog-base/dialog-base.component';
 import { SectionHeaderComponent } from '../../../../components/section-header/section-header.component';
@@ -14,7 +14,7 @@ import { TranslationService } from '../../../../services/translation.service';
   styleUrls: ['./update-password-section.component.scss']
 })
 export class UpdatePasswordSectionComponent implements OnInit, OnDestroy {
-  readonly passwordSectionTitle = this.translationService.getTranslationFileData("app-login-component.password-label");
+
   private unsubscribe$ = new Subject<void>();
   private passwordSettings: PasswordSettings;
   constructor(private translationService: TranslationService,

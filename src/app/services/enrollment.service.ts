@@ -6,7 +6,7 @@ import { ContentDetails, GetContentDetailsResponse } from '../resources/models/c
 import { HttpClient } from '@angular/common/http';
 import { TranslationService } from './translation.service';
 import { QuizSession, TrackedQuestion } from '../resources/models/content/quiz';
-import { PostEnrollmentTrackingItemRequest, PostEnrollmentTrackingItemResponse } from '../resources/models/enrollment';
+import { CourseViewDuration, PostEnrollmentTrackingItemRequest, PostEnrollmentTrackingItemResponse } from '../resources/models/enrollment';
 import { Certificate } from '../resources/models/certificate';
 
 @Injectable({
@@ -87,6 +87,27 @@ export class EnrollmentService {
       .get<{ certificate: Certificate }>(url, { headers })
       .pipe(
         map(res => res.certificate),
+        catchError(this.errorHandler.bind(this))
+      )
+  }
+
+  getCertificateAvailable(enrollId: string, courseId: string): Observable<Certificate> {
+    const headers = this.authorizationService.getHeaders();
+    const url = `${this.apiUrl}/enrollments/${enrollId}/${courseId}/certificateAvailable`;
+    return this.httpClient
+      .get<{ certificate: Certificate }>(url, { headers })
+      .pipe(
+        map(res => res.certificate),
+        catchError(this.errorHandler.bind(this))
+      )
+  }
+
+  getCourseViewDuration(enrollId: string, courseId: string): Observable<CourseViewDuration> {
+    const headers = this.authorizationService.getHeaders();
+    const url = `${this.apiUrl}/enrollments/${enrollId}/${courseId}/viewDuration`;
+    return this.httpClient
+      .get<{ viewDuration: CourseViewDuration }>(url, { headers })
+      .pipe(
         catchError(this.errorHandler.bind(this))
       )
   }

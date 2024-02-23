@@ -44,6 +44,7 @@
                         src="assets/images/search-results/bookmark-with-spacing.svg" />
                     <ep-content-progress *ngIf="searchResult?.contentType === contentType.LearningPath"
                         [progress]="progress"
+                        [status]="status"
                     ></ep-content-progress>
                 </div>
                 <div epTooltip [epTooltipText]="searchResult?.publisher?.name" [epTooltipRestrictWidth]="true" 

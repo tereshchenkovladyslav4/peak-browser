@@ -1,9 +1,4 @@
 :host {
-  --navbar-active-color: hsl(var(--navbar-color-hue), var(--navbar-color-saturation), calc(var(--navbar-color-lightness)*.75));
-  --navbar-icon-color: #ffffff;
-  --navbar-active-icon-color: var(--primary-color);
-  --navbar-text-color: #87919f;
-  --navbar-active-text-color: #ffffff;
   user-select: none;
 }
 
@@ -24,9 +19,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  color: var(--navbar-text-color);
+  color: var(--high-contrast-navigation-color);
   width: 277px;
-  background: var(--navbar-color);
+  background-color: var(--navigation-color);
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
   min-height: 115vh;
   height: 100%;
   padding-top: 5px;
@@ -43,7 +39,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .left-panel a {
-  color: var(--navbar-text-color);
+  color: var(--high-contrast-navigation-color);
 }
 
 .icon-container {
@@ -148,6 +144,11 @@ div::-webkit-scrollbar-thumb {
   width: 65px;
 }
 
+.management-title {
+  opacity: 0.75;
+  color: var(--high-contrast-navigation-color);
+}
+
 .menu-section .ca-body ul li a {
   padding: 5px 15px;
   display: inline-block;
@@ -156,12 +157,12 @@ div::-webkit-scrollbar-thumb {
 }
 
 .menu-section .active {
-  background-color: var(--navbar-active-color);
+  background-color: var(--active-nav-item-background);
   color: white;
 }
 
 .menu-section ul .active a {
-  color: var(--navbar-active-text-color);
+  color: var(--high-contrast-navigation-color);
 }
 
 .menu-section li .item-link span {
@@ -170,11 +171,11 @@ div::-webkit-scrollbar-thumb {
 }
 
 .menu-section .activeDropDown .dropdown-toggle[aria-expanded="false"] {
-  color: var(--navbar-text-color);
+  color: var(--high-contrast-navigation-color);
 }
 
 .menu-section .activeDropDown .dropdown-toggle[aria-expanded="false"] {
-  color: var(--navbar-text-color);
+  color: var(--high-contrast-navigation-color);
 }
 
 .menu-section .dropdown-toggle::after {
@@ -186,25 +187,47 @@ div::-webkit-scrollbar-thumb {
   transition: all ease 0.4s;
 }
 
+.logo {
+  display: flex;
+  flex-direction: column;
+  height: 98px;
+  justify-content: space-between;
+  margin: 0 20px;
+}
+
+.logo.fullscreen-mode-active {
+  display: none;
+}
+
+.logo.small-logo-active.responsive-mode-active {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .logo-img {
   display: flex;
   justify-content: center;
   margin-top: 10px;
-  padding: 3px 10px;
-  height: 48px;
+  padding: 0 10px;
 }
 
-.logo-collapsed {
+.logo-img.collapsed {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
-  margin: 0;
+  margin-top: calc(27px * var(--zoom));
 }
 
 .logo img {
-  width: inherit;
-  height: 100%
+  width: calc(250px * var(--zoom));
+  height: calc(75px * var(--zoom));
+  transition: all 100ms 50ms;
+}
+
+.logo.small-logo-active img {
+  width: 35px;
+  height: 35px;
 }
 
 .logoText {
@@ -220,15 +243,11 @@ div::-webkit-scrollbar-thumb {
 
 .logohr {
   border-top: 1px solid #636d7b;
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-top: 16px;
-  margin-bottom: 0;
+  margin: 0;
   width: auto;
 }
 
 .peak-experience {
-  font-family: Roboto, sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -273,17 +292,18 @@ a:hover {
 
 .search-icon {
   position: relative;
+  top: 0;
   left: 25px;
   height: 15px;
   width: 15px;
-  filter: invert(44%) sepia(9%) saturate(725%) hue-rotate(175deg) brightness(92%) contrast(86%);
+  // filter: invert(44%) sepia(9%) saturate(725%) hue-rotate(175deg) brightness(92%) contrast(86%);
 }
 
 .search-input {
   background-color: transparent;
-  border: 1px solid #636D7B;
+  border: 1px solid var(--high-contrast-navigation-color);
   border-radius: 55px;
-  color: var(--navbar-text-color);
+  color: var(--high-contrast-navigation-color);
   font-size: 12px;
   height: 32px;
   padding: 0 10px 0 35px;
@@ -291,14 +311,25 @@ a:hover {
   width: 100%;
 }
 
+.search-input::placeholder {
+  color: var(--high-contrast-navigation-color);
+}
+
 .search-input:focus {
   outline: none !important;
+}
+
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-results-button,
+.search-input::-webkit-search-results-decoration {
+  display: none;
 }
 
 .search-cancel-icon {
   position: absolute;
   right: 25px;
-  background-color: var(--navbar-color);
+  background-color: var(--navigation-color);
 }
 
 .nav-separator {
@@ -306,19 +337,13 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   padding-left: 25px;
-  color: var(--navbar-active-text-color);
+  color: var(--high-contrast-navigation-color);
   cursor: pointer;
 }
 
-.nav-menuitem>a.menu-collapsed {
+.nav-menuitem > a.menu-collapsed {
   width: 65px;
 }
-
-/* .nav-menuitem > ul.subitem-collapsed-expanded {
-    background-color: var(--navbar-color);
-    padding: 10px 25px 10px 0;
-    width: 250px;
-} */
 
 /* DROPDOWN ICON */
 .setting-arrow {
@@ -342,8 +367,8 @@ a:hover {
 }
 
 .subitem-link-active svg path {
-  stroke: var(--navbar-active-icon-color);
-  fill: var(--navbar-active-icon-color);
+  stroke: var(--primary-color);
+  fill: var(--primary-color);
 }
 
 .subitem-link-active span {
@@ -351,7 +376,7 @@ a:hover {
 }
 
 .subitem-link-active a {
-  color: var(--navbar-active-icon-color);
+  color: var(--primary-color);
 }
 
 .subitem-link svg {
@@ -373,7 +398,7 @@ a:hover {
   position: absolute;
   padding: 5px 20px 0 0 !important;
   /* override .menu-section padding */
-  background-color: var(--navbar-color);
+  background-color: var(--navigation-color);
   z-index: 10;
   /* going high with this to make sure it is always overlaying other elements */
 }

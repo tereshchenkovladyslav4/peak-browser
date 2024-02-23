@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   formStatus: FormStatus = FormStatus.GettingEmail;
   language: Language;
   allLanguages: Array<Language>;
-
+  
   emailLabel = "Email";
   langLabel = "Language";
   langSelect = "Select a language";
@@ -54,11 +54,16 @@ export class LoginComponent implements OnInit {
       password: [''],
       rememberMe: [true],
       tenant: [null, Validators.required],
-      language: ["en"]
+      language: ['']
     });
 
     this.translationService.getLanguages().subscribe(response => {
       this.allLanguages = response.languageSet;
+      const currentLanguage: string = this.apiV1Service.getCurrentLanguage();
+      //updates formgroup with current language
+      this.loginForm.get('language').setValue(currentLanguage);
+      //updates session storage with language to convert text to
+      this.apiV1Service.setCurrentLanguage(currentLanguage);
     });
 
     if (window.location.href.includes("localhost")) {
@@ -158,37 +163,21 @@ export class LoginComponent implements OnInit {
       this.loginForm.value.password,
       this.loginForm.value.tenant.id,
       this.loginForm.value.language.toLowerCase(),
-      false).subscribe(r => {
-
+      false).subscribe((r) => {
         if (r.userAccessKey.length > 0) {
-
-          this.localStorage.setItem("DefaultTenant", r.tenantid);
-          this.sessionStorage.setItem("currentTenant", r.tenantid);
-          this.localStorage.setItem("lastUsedTenant", r.tenantid);
-
           let tempUserAccessKey = r.userAccessKey as string;
-          let tempAPIV2AccessKey = r.apiV2AccessKey;
-          let tempRememberMeToken = r.longLivedToken as string;
 
           ProdGenApi.setUserIsExternal(r.isExternalUser);
 
+          this.authorizationService.saveAuthData(r.tenantid, r.apiV2AccessKey);
+
+          this.tenantService.getTenantDetails(r.apiV2AccessKey.orgID, r.apiV2AccessKey.tenantid).subscribe();
 
           if (tempUserAccessKey != null && tempUserAccessKey != "") {
             //save email
             this.localStorage.setItem("userEmail", this.loginForm.value.email);
 
             ProdGenApi.setUserAccessKey(tempUserAccessKey as string);
-            ProdGenApi.setAPIV2BearerToken(tempAPIV2AccessKey);
-            this.sessionStorage.setItem('tenantInformation', tempAPIV2AccessKey);
-
-            // Clear the typed token because it will
-            // be recalculated the next time it is fetched.
-            // If it's not cleared, the cached version will
-            // be fetched and could be out of date if the
-            // user just switched tenants.
-            this.authorizationService.setUserToken(tempAPIV2AccessKey);
-
-            //this._sharedService.setV2BearerToken(tempAPIV2AccessKey);
 
             // Allow the webpage to scroll again and navigate
             // to the home component. This will eventually

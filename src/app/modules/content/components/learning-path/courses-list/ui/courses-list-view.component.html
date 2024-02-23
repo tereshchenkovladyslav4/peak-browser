@@ -45,7 +45,7 @@
           <div>
             <span class="two-line-overflow-text" epTooltip>{{course?.name}}</span>
             <span class="view-course-desc"
-              [style.display]="course?.plainDesc?.length || course?.htmlDesc?.length ? 'inline' : 'none'"
+              [style.display]="course?.hasDesc ? 'inline' : 'none'"
               (click)="openCourseDescModal($event, course)">View Course Description</span>
           </div>
           <img class="course-dropdown-arrow" 

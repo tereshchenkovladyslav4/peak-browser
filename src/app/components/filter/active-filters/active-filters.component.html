@@ -1,12 +1,14 @@
 <div class="pill-container">
   <ng-container *ngFor="let filter of filters">
     <div class="pill">
-      <span>{{filter?.label}}</span>
-      <img src="assets/images/search-results/cross-x.svg"
-           alt="remove"
-           class="remove-icon cursor-pointer"
-           [style.margin-left]="'0.3rem'"
-           (click)="onRemoveFilter(filter)">
+      <span>{{ filter?.label }}</span>
+      <img
+        src="assets/images/search-results/cross-x.svg"
+        alt="remove"
+        class="remove-icon cursor-pointer"
+        [style.margin-left]="'0.3rem'"
+        (click)="onRemoveFilter(filter)"
+      />
     </div>
   </ng-container>
 </div>

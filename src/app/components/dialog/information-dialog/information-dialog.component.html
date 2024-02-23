@@ -1,0 +1,28 @@
+<ep-dialog-base>
+  <ng-container title>
+    <div class="header-container">
+      <div class="left-header"></div>
+      <div class="center-header">
+        {{ data?.config?.title }}
+      </div>
+      <div class="right-header">
+        <img
+          class="dropdown img-sm cursor-pointer close-icon"
+          src="assets/images/close.svg"
+          alt="close"
+          (click)="close(false)"
+        />
+      </div>
+    </div>
+  </ng-container>
+  <ng-container content>
+    <div class="content-body">
+      {{ data?.config?.content }}
+    </div>
+  </ng-container>
+  <ng-container actions>
+    <button class="action-button" ep-button [buttonType]="data?.config?.buttonType" (click)="close(true)">
+      {{ data?.config?.positiveButton }}
+    </button>
+  </ng-container>
+</ep-dialog-base>

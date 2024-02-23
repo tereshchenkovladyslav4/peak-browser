@@ -56,6 +56,7 @@ import { FinishCourseComponent } from './components/learning-path/finish-course/
 import { CourseDropdownMenuComponent } from './components/learning-path/course-dropdown-menu/course-dropdown-menu.component';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DropdownMenuContainerComponent } from '../../components/dropdown-menu-container/dropdown-menu-container.component';
+import { QuizButtonsComponent } from './components/quiz/ui/quiz-buttons/quiz-buttons.component';
 
 const CONTENT_ROUTES: Routes = [
   {
@@ -112,6 +113,7 @@ const CONTENT_ROUTES: Routes = [
     CoursesListViewComponent,
     QuizImageComponent,
     CourseDropdownMenuComponent,
+    QuizButtonsComponent,
   ],
   imports: [
     CommonModule,

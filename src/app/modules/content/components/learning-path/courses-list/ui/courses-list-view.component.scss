@@ -76,7 +76,7 @@
 
 .view-course-desc {
   font-weight: 700;
-  color: #6391ff;
+  color: var(--secondary-color);
   font-size: 0.625rem;
   cursor: pointer;
   text-align: center;
@@ -115,7 +115,7 @@
 }
 
 .course-content.active {
-  background-color: #d8e4ff69;
+  background-color: var(--selected-item-highlight-color);
 }
 
 .course-content.active > span {

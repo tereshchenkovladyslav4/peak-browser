@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { VideoInfo } from '../../../../resources/models/video-info/video-info';
 import { Video } from '../../../../resources/models/content';
 import { VideoPlayerStateService } from '../../../../state/video-player/video-player-state.service'
@@ -17,7 +17,7 @@ import {NgStyle} from "@angular/common";
   ],
   standalone: true
 })
-export class VideoViewComponent implements OnInit, AfterViewInit, OnChanges {
+export class VideoViewComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   @Input() videoContent: Video = null;
   @Input() customStyles?: any = {};
   @ViewChild('videoPlayerViewPage') videoPlayer: VideoPlayerComponent
@@ -27,6 +27,7 @@ export class VideoViewComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() pauseEvent = new EventEmitter<any>();
   @Output() endEvent = new EventEmitter<any>();
   @Output() timeUpdateEvent = new EventEmitter<any>();
+  @Output() destroyedEvent = new EventEmitter<any>();
 
   videoInfo: VideoInfo;
 
@@ -49,6 +50,11 @@ export class VideoViewComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  @HostListener('window:beforeunload', ['$event']) // Ensure this runs in all situations: https://wesleygrimes.com/angular/2019/03/29/making-upgrades-to-angular-ngondestroy
+  ngOnDestroy(): void {
+    this.onDestroyed();
+  }
+
   private setVideoInfo() {
     this.videoInfo = new VideoInfo();
     this.videoInfo.url = this.videoContent.videoUrl;
@@ -56,6 +62,7 @@ export class VideoViewComponent implements OnInit, AfterViewInit, OnChanges {
     this.videoInfo.chaptersUrl =  this.videoContent.chaptersUrl;
     this.videoInfo.contentType = "video/mp4";
     this.videoInfo.isExternalVideo = !this.videoInfo.url.toLowerCase().includes('http') || !this.videoInfo.url.toLowerCase().includes('.mp4');
+    this.videoInfo.durationSeconds = this.videoContent.duration;
   }
 
   onLoaded(event) {
@@ -76,5 +83,9 @@ export class VideoViewComponent implements OnInit, AfterViewInit, OnChanges {
 
   onEnded(event) {
     this.endEvent.emit(event);
+  }
+
+  onDestroyed() {
+    this.destroyedEvent.emit();
   }
 }

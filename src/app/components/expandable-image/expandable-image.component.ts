@@ -18,7 +18,6 @@ export class ExpandableImageComponent {
   imageLoaded: boolean = false;
 
   constructor(private dialogService: DialogService) {
-    console.log(this.name, this.url);
   }
 
   openImageDialog() {

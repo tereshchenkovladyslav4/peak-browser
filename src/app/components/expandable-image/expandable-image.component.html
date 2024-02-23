@@ -1,5 +1,5 @@
 <ng-container *ngIf="!!url">
-  <img style="max-width: 100%;" [ngStyle]="imgStyles" [src]="url" (load)="onImageLoaded()"/>
+  <img style="max-width: 500px; max-height: 425px" [ngStyle]="imgStyles" [src]="url" (load)="onImageLoaded()"/>
   <div *ngIf="imageLoaded" class="expand-icon-container" (click)="openImageDialog()">
     <img height="16" width="16" src="assets/images/expand-large-white.svg" />
   </div>

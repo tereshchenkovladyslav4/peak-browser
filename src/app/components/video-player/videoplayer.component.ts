@@ -41,7 +41,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
 
   ablePlayerTranscriptDiv: string = "video-transcript-new";
   isPlaying: boolean = false;
-  autoscrollTranscript: boolean = false;
 
   ablePlayer: any = null;
   durationSeconds: number = 0;
@@ -170,7 +169,7 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
               data-able-player 
               data-skin="2020" 
               data-speed-icons="arrows" 
-              style="width: 100%; max-height: 75vh; aspect-ratio: 16/9;" 
+              style="width: 100%; aspect-ratio: 16/9;" 
               data-hide-controls
               data-captions-position="overlay"
               preload="auto"
@@ -282,8 +281,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
       return;
     }
 
-
-    this.autoscrollTranscript = this.ablePlayer.autoScrollTranscript;
 
     // adjust the look of the transcript window
     if (this.videoInfo.transcriptUrl.length > 0) {
@@ -407,14 +404,16 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
   }
 
   setTranscriptAutoScroll(scroll: boolean) {
-    this.autoscrollTranscript = scroll;
     if (this.ablePlayer) {
       this.ablePlayer.handleTranscriptLockToggle(scroll);
     }
   }
 
   getTranscriptAutoScroll(): boolean {
-    return this.autoscrollTranscript;
+    if (this.ablePlayer) {
+      return this.ablePlayer.autoScrollTranscript;
+    }
+    return false;
   }
 
   onPlay(event: any) {

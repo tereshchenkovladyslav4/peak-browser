@@ -1,4 +1,4 @@
-import { CourseViewData } from "src/app/modules/content/components/learning-path/models/course-view-data";
+import { CourseViewData } from 'src/app/modules/content/components/learning-path/models/course-view-data';
 
 export namespace CourseActions {
   export class GetCourses {
@@ -8,7 +8,7 @@ export namespace CourseActions {
 
   export class EnrollCourse {
     static readonly type = '[Enroll Single Content Component] Enroll in course';
-    constructor(public course: CourseViewData, public dueDate: Date) {}
+    constructor(public learningPathId: string, public courseId: string, public dueDate: Date) {}
   }
 
   export class EnrollCourses {

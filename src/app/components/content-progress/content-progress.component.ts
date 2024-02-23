@@ -8,7 +8,7 @@ import { AssignmentEnrollmentStatus } from '../../resources/models/assignment';
   imports: [CommonModule],
   selector: 'ep-content-progress',
   templateUrl: './content-progress.component.html',
-  styleUrls: ['./content-progress.component.scss']
+  styleUrls: ['./content-progress.component.scss'],
 })
 export class ContentProgressComponent implements OnInit {
   readonly AssignmentEnrollmentStatus = AssignmentEnrollmentStatus;
@@ -21,7 +21,7 @@ export class ContentProgressComponent implements OnInit {
   containerBgClass: string = '';
   textColorClass: string = '';
 
-  constructor(private translationService: TranslationService) { }
+  constructor(private translationService: TranslationService) {}
 
   ngOnInit(): void {
     this.setStatusIconUrl();
@@ -34,31 +34,32 @@ export class ContentProgressComponent implements OnInit {
     const iconStates = {
       [AssignmentEnrollmentStatus.In_Progress]: 'assets/images/search-results/content-status.svg',
       [AssignmentEnrollmentStatus.Completed]: 'assets/images/search-results/check-green.svg',
-      [AssignmentEnrollmentStatus.Dropped]: 'assets/images/remove-red.svg'
-    }
+      [AssignmentEnrollmentStatus.Dropped]: 'assets/images/remove-red.svg',
+    };
 
     this.statusIconUrl = iconStates[this.status] || '';
   }
 
   private setStatusText(): void {
-    if (this.status === undefined) {
-      this.statusText = this.translationService.getTranslationFileData('ep-content-progress.not-enrolled');
-      return;
-    }
-
-    switch(this.status) {
+    switch (this.status) {
       case AssignmentEnrollmentStatus.Not_Started:
         this.statusText = this.translationService.getTranslationFileData('ep-content-progress.not-started');
         break;
       case AssignmentEnrollmentStatus.In_Progress:
       case AssignmentEnrollmentStatus.Completed:
         const completedText = this.translationService.getTranslationFileData('ep-content-progress.completed');
-        this.statusText = `${this.status === AssignmentEnrollmentStatus.In_Progress ? this.progress + '% ' : ''}${completedText}`;
+        this.statusText = `${
+          this.status === AssignmentEnrollmentStatus.In_Progress ? this.progress + '% ' : ''
+        }${completedText}`;
         break;
       case AssignmentEnrollmentStatus.Dropped:
-        this.statusText = this.translationService.getTranslationFileData('ep-content-progress.dropped')
+        this.statusText = this.translationService.getTranslationFileData('ep-content-progress.dropped');
+        break;
+      case AssignmentEnrollmentStatus.Enrolled:
+        this.statusText = this.translationService.getTranslationFileData('ep-content-progress.enrolled');
         break;
       default:
+        this.statusText = this.translationService.getTranslationFileData('ep-content-progress.not-enrolled');
         break;
     }
   }
@@ -66,8 +67,8 @@ export class ContentProgressComponent implements OnInit {
   private setContainerBgClass() {
     const bgClasses = {
       [AssignmentEnrollmentStatus.Completed]: 'completed-bg-green',
-      [AssignmentEnrollmentStatus.Dropped]: 'dropped-bg-red'
-    }
+      [AssignmentEnrollmentStatus.Dropped]: 'dropped-bg-red',
+    };
 
     this.containerBgClass = bgClasses[this.status] || 'bg-grey';
   }
@@ -75,8 +76,8 @@ export class ContentProgressComponent implements OnInit {
   private setTextColorClass() {
     const bgClasses = {
       [AssignmentEnrollmentStatus.Completed]: 'completed-text-green',
-      [AssignmentEnrollmentStatus.Dropped]: 'dropped-text-red'
-    }
+      [AssignmentEnrollmentStatus.Dropped]: 'dropped-text-red',
+    };
 
     this.textColorClass = bgClasses[this.status] || 'text-grey';
   }

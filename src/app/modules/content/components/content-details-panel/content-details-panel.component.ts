@@ -183,17 +183,12 @@ export class ContentDetailsPanelComponent implements OnInit, OnDestroy {
     ).subscribe();
   }
 
-  private setAutoScrollTranscript() {
-    this.contentDetails$.pipe(
-      filter(contentDetails => contentDetails?.type === ContentType.Video),
-      mergeMap(_ => this.videoPlayerStateService
-        .getViewPagePlayer()
-        .pipe(
-          tap(res => this.autoscrollTranscript = res?.getTranscriptAutoScroll())
-        )
-      ),
-      takeUntil(this.destroy$)
-    );
+  private setAutoScrollTranscript(): void {
+    this.videoPlayerStateService.getViewPagePlayer().pipe(takeUntil(this.destroy$)).subscribe(
+        res => {
+          this.autoscrollTranscript = res?.getTranscriptAutoScroll();
+        }
+      );
   }
 
   
@@ -306,7 +301,7 @@ export class ContentDetailsPanelComponent implements OnInit, OnDestroy {
 
   onToggleAutoscroll() {
     this.autoscrollTranscript = !this.autoscrollTranscript;
-    this.videoPlayerStateService.getViewPagePlayer().subscribe(res => {
+    this.videoPlayerStateService.getViewPagePlayer().pipe(take(1)).subscribe(res => {
       res?.setTranscriptAutoScroll(this.autoscrollTranscript);
     });
 

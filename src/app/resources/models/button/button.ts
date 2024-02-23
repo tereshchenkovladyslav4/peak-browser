@@ -34,17 +34,17 @@ export const NextBtn: ButtonOptions = {
 
 export const NextQuestionButton: ButtonOptions = {
   label: 'Next Question',
-  type: 'primary',
-  shape: 'normal',
-  iconUri: '',
-  iconPosition: 'left',
+  type: 'secondary',
+  shape: 'pill',
+  iconUri: RIGHT_BUTTON_ICON_URL,
+  iconPosition: 'right',
   disabled: false
 }
 
 export const SubmitQuizBtn: ButtonOptions = {
-  label: 'Submit Quiz',
+  label: 'Finish Quiz',
   type: 'primary',
-  shape: 'normal',
+  shape: 'pill',
   iconUri: '',
   iconPosition: 'right',
   disabled: false

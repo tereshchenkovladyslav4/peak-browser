@@ -121,6 +121,7 @@ export class ContentContainerComponent implements OnInit, OnDestroy {
       this.workflowState.getInitialWorkflowData(this.route.snapshot.params["id"]);
     } else if (this.route.snapshot.url.find(seg => seg.path === 'learning-path')) {
       this.workflowState.reset();
+      this.learningPathState.reset();
 
       const layoutMsg = this.translationService.getTranslationFileData('content-container.exit-learning-path');
       this.layoutState.setLayout('full-screen', layoutMsg);

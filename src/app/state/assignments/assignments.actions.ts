@@ -1,4 +1,3 @@
-import { Assignment } from "src/app/resources/models/assignment";
 
 export namespace AssignmentsActions {
 

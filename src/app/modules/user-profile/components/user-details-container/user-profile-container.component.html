@@ -1,15 +1,27 @@
 <div class="my-account-background" *ngIf="currentUser$ | async as currentUser else isLoading">
-  <ep-user-details-header [style.margin-bottom.px]="82"
+  <ep-user-details-header [headerStyles]="headerStyles"
                           [currentUser]="currentUser"
                           [currentTenantDetails]="currentTenantDetails">
   </ep-user-details-header>
-  <div class="main-container">
-    <div class="left-container">
-      Info like managers, areas of expertise, commands in autodesk products will go here.
-    </div>
-    <div class="right-container">
-      <ep-update-password-section></ep-update-password-section>
-    </div>
+  <ep-horizontal-tabs [tabs]="tabs"
+                      [activeTabKey]="activeTabKey"
+                      [underlineAlways]="true"
+                      [pointerOnHover]="true"
+                      (onTabChange)="activeTabKey = $event">
+  </ep-horizontal-tabs>
+  <div class="main-container" [ngSwitch]="activeTabKey">
+    <ng-container *ngSwitchCase="'accountInfo'">
+      <div class="left-container">
+        <ep-autodesk-product-commands *ngIf="areUserToolsInstalled"
+                                      [currentUserId]="currentUser.userId"
+                                      [currentTenantDetails]="currentTenantDetails" />
+      </div>
+      <div class="right-container">
+        <ep-update-language-section />
+        <ep-update-password-section />
+        <ep-download-add-ons />
+      </div>
+  </ng-container>
   </div>
 </div>
 <ng-template #isLoading>

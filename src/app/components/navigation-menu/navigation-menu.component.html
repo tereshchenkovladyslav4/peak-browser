@@ -13,7 +13,7 @@
   >
     <!-- COLLAPSE BUTTON -->
     <ep-collapse-button
-      [top]="48"
+      [top]="67"
       [right]="-15"
       [scaleUpClassCondition]="!(isFullScreen$ | async) || (!!(responsiveMode$ | async) && !isMenuCollapsed)"
       [scaleDownClassCondition]="!!(isFullScreen$ | async) || (!!(responsiveMode$ | async) && isMenuCollapsed)"
@@ -24,7 +24,7 @@
     <!-- EXPAND BUTTON -->
     <ep-expand-button
       *ngIf="!!(responsiveMode$ | async) && !(isFullScreen$ | async)"
-      [top]="48"
+      [top]="67"
       [right]="-29"
       [scaleUpClassCondition]="isMenuCollapsed"
       [scaleDownClassCondition]="!isMenuCollapsed"
@@ -33,8 +33,13 @@
     ></ep-expand-button>
 
     <!-- LOGO -->
-    <div class="logo" [style.display]="(isFullScreen$ | async) ? 'none' : 'block'">
-      <div class="logo-img" [class.logo-collapsed]="isMenuCollapsed">
+    <div
+      class="logo"
+      [class.fullscreen-mode-active]="isFullScreen$ | async"
+      [class.small-logo-active]="isMenuCollapsed"
+      [class.responsive-mode-active]="responsiveMode$ | async"
+    >
+      <div class="logo-img" [class.collapsed]="isMenuCollapsed">
         <a
           *ngIf="logoUrl != null && logoUrl.length > 0; else nologo_url"
           href="{{ logoUrl }}"
@@ -55,7 +60,27 @@
       <!-- SEARCH -->
       <div class="nav-search" [class.search-collapsed]="isMenuCollapsed">
         <div *ngIf="!isMenuCollapsed; else searchCollapsedIcon" class="search-bar">
-          <img class="search-icon" src="assets/images/nav-menu/search.svg" style="top: 0" />
+          <svg
+            class="search-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="9.07021"
+              cy="8.86904"
+              r="6.11904"
+              stroke="var(--high-contrast-navigation-color)"
+              stroke-width="1.5"
+            />
+            <path
+              d="M17.2683 18.5304C17.5612 18.8233 18.0361 18.8233 18.329 18.5304C18.6219 18.2375 18.6219 17.7627 18.329 17.4698L17.2683 18.5304ZM14.0814 15.3436L17.2683 18.5304L18.329 17.4698L15.1421 14.2829L14.0814 15.3436Z"
+              fill="var(--high-contrast-navigation-color)"
+            />
+          </svg>
+
           <input
             type="search"
             class="search-input"
@@ -63,12 +88,45 @@
             [(ngModel)]="filterText"
             (input)="onFilterTextChanged($event)"
           />
-          <img
+
+          <svg
             *ngIf="filterText"
             class="search-cancel-icon cursor-pointer"
-            src="assets/images/nav-menu/search-cancel-x.svg"
+            width="21"
+            height="21"
+            viewBox="0 0 21 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
             (click)="clearFilterText()"
-          />
+          >
+            <circle
+              cx="10.9707"
+              cy="10.3315"
+              r="7.4"
+              stroke="var(--high-contrast-navigation-color)"
+              stroke-width="1.2"
+            />
+            <line
+              x1="7.60439"
+              y1="7.08838"
+              x2="14.3875"
+              y2="13.8715"
+              stroke="var(--high-contrast-navigation-color)"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="7.48145"
+              y1="13.6549"
+              x2="14.2646"
+              y2="6.87176"
+              stroke="var(--high-contrast-navigation-color)"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </div>
         <ng-template #searchCollapsedIcon>
           <div class="icon-container icon-collapsed-margin" (click)="toggleMenu()">
@@ -77,14 +135,12 @@
                 cx="9.07021"
                 cy="8.86904"
                 r="6.11904"
-                [attr.stroke]="'var(--navbar-icon-color)'"
-                stroke="#2B3242"
+                stroke="var(--high-contrast-navigation-color)"
                 stroke-width="1.5"
               />
               <path
                 d="M17.2683 18.5304C17.5612 18.8233 18.0361 18.8233 18.329 18.5304C18.6219 18.2375 18.6219 17.7627 18.329 17.4698L17.2683 18.5304ZM14.0814 15.3436L17.2683 18.5304L18.329 17.4698L15.1421 14.2829L14.0814 15.3436Z"
-                [attr.fill]="'var(--navbar-icon-color)'"
-                fill="#2B3242"
+                fill="var(--high-contrast-navigation-color)"
               />
             </svg>
           </div>
@@ -167,7 +223,7 @@
             class="nav-separator nav-line-item"
             (click)="onManagementClick()"
           >
-            <span style="opacity: 0.25">{{ managementTranslation }}</span>
+            <span class="management-title">{{ managementTranslation }}</span>
             <img
               class="setting-arrow img-xs"
               [ngClass]="{ expanded: isManagementExpanded, 'is-collapsed': !isManagementExpanded }"
@@ -188,9 +244,27 @@
               (click)="onManagementClick()"
             >
               <svg width="5" height="21" viewBox="0 0 6 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="2.89941" cy="2.7373" r="2.5" transform="rotate(90 2.89941 2.7373)" fill="white" />
-                <circle cx="2.89941" cy="10.7373" r="2.5" transform="rotate(90 2.89941 10.7373)" fill="white" />
-                <circle cx="2.89941" cy="18.7373" r="2.5" transform="rotate(90 2.89941 18.7373)" fill="white" />
+                <circle
+                  cx="2.89941"
+                  cy="2.7373"
+                  r="2.5"
+                  transform="rotate(90 2.89941 2.7373)"
+                  fill="var(--high-contrast-navigation-color)"
+                />
+                <circle
+                  cx="2.89941"
+                  cy="10.7373"
+                  r="2.5"
+                  transform="rotate(90 2.89941 10.7373)"
+                  fill="var(--high-contrast-navigation-color)"
+                />
+                <circle
+                  cx="2.89941"
+                  cy="18.7373"
+                  r="2.5"
+                  transform="rotate(90 2.89941 18.7373)"
+                  fill="var(--high-contrast-navigation-color)"
+                />
               </svg>
             </div>
           </ng-template>
@@ -424,7 +498,7 @@
       />
       <path
         d="M20.0708 15.3057C20.0708 17.9471 17.9295 20.0884 15.2882 20.0884C12.6468 20.0884 10.5056 17.9471 10.5056 15.3057C10.5056 12.6644 12.6468 10.5231 15.2882 10.5231C17.9295 10.5231 20.0708 12.6644 20.0708 15.3057Z"
-        fill="#2B3242"
+        [attr.fill]="item?.isActive ? 'var(--active-nav-item-background)' : 'var(--navigation-color)'"
         [attr.stroke]="getIconColor(svgAssignments)"
         stroke-width="1.14783"
       />

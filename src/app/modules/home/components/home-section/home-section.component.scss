@@ -44,12 +44,16 @@
   margin: 8rem auto;
   justify-content: center;
   align-items: center;
+
+  & .contact-support-text {
+    font-weight: 700;
+    color: #1F283A;
+  }
 }
 
 .no-results-title {
   font-size: 28px;
   font-weight: 500;
-  font-family: "Roboto", sans-serif;
   text-align: center;
 }
 
@@ -117,11 +121,7 @@
     bottom: 40px;
     right: 24px;
     width: 134px;
-    background: linear-gradient(
-      270deg,
-      #f8faff 0%,
-      rgba(255, 255, 255, 0) 100%
-    );
+    background: linear-gradient(270deg, #f8faff 0%, rgba(255, 255, 255, 0) 100%);
   }
 
   .p-carousel .p-carousel-indicators .p-carousel-indicator button {
@@ -132,7 +132,7 @@
   }
 
   .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
-    background: #6391ff;
+    background: var(--secondary-color);
   }
 
   .p-carousel-container {
@@ -161,9 +161,7 @@
   }
 
   @media (min-width: 992px) {
-    .p-carousel-items-container
-      .p-carousel-item:not(:first-child).p-carousel-item-start
-      .library-card-container,
+    .p-carousel-items-container .p-carousel-item:not(:first-child).p-carousel-item-start .library-card-container,
     .p-carousel-items-container
       .p-carousel-item:not(:first-child).p-carousel-item-start
       .library-card-container
@@ -173,9 +171,7 @@
       .library-card-container
       .library-image-container
       .library-image,
-    .p-carousel-items-container
-      .p-carousel-item:not(:first-child).p-carousel-item-start
-      .assignment-card-container,
+    .p-carousel-items-container .p-carousel-item:not(:first-child).p-carousel-item-start .assignment-card-container,
     .p-carousel-items-container
       .p-carousel-item:not(:first-child).p-carousel-item-start
       .assignment-card-container

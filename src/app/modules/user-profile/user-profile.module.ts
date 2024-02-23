@@ -9,6 +9,11 @@ import { SectionHeaderComponent } from '../../components/section-header/section-
 import { UpdatePasswordSectionComponent } from './components/update-password-section/update-password-section.component';
 import { SharedModule } from '../shared/shared.module';
 import { DialogBaseComponent } from '../../components/dialog/dialog-base/dialog-base.component';
+import { DownloadAddOnsComponent } from './components/download-add-ons/download-add-ons.component';
+import { UpdateLanguageSectionComponent } from './components/update-language-section/update-language-section.component';
+import { SelectDropdownComponent } from '../../components/select-dropdown/select-dropdown.component';
+import { AutodeskProductCommandsComponent } from './components/autodesk-product-commands/autodesk-product-commands.component';
+import { HorizontalTabsComponent } from '../../components/horizontal-tabs/horizontal-tabs.component';
 
 
 
@@ -18,7 +23,10 @@ import { DialogBaseComponent } from '../../components/dialog/dialog-base/dialog-
     UserProfileContainerComponent,
     UserDetailsHeaderComponent,
     SectionHeaderComponent,
-    UpdatePasswordSectionComponent
+    UpdatePasswordSectionComponent,
+    DownloadAddOnsComponent,
+    UpdateLanguageSectionComponent,
+    AutodeskProductCommandsComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +34,9 @@ import { DialogBaseComponent } from '../../components/dialog/dialog-base/dialog-
     UserProfileRoutingModule,
     LoadingComponent,
     SharedModule,
-    DialogBaseComponent
+    DialogBaseComponent,
+    SelectDropdownComponent,
+    HorizontalTabsComponent
   ]
 })
 export class UserProfileModule { }

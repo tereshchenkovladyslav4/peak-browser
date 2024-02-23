@@ -248,7 +248,6 @@ export class ProdGenApi {
 
     setCurrentLanguage(languageCode: string) {
         sessionStorage.setItem("currentLanguageCode", languageCode);
-        ProdGenApi.languageCode;
     }
 
     getCurrentLanguage(): string {

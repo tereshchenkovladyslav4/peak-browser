@@ -1,9 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { ContentDetails, Document } from '../../../../resources/models/content';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { ContentDetails, ContentType, Document } from '../../../../resources/models/content';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import {ModalHtmlDirective} from "../../../../directives/modal-html.directive";
-import {NgIf, NgStyle} from "@angular/common";
-import { LearningPathStateService } from 'src/app/state/learning-path/learning-path-state.service';
+import { ModalHtmlDirective } from "../../../../directives/modal-html.directive";
+import { NgIf, NgStyle } from "@angular/common";
+import { EnrollmentContentTracking, LearningPathStateService } from 'src/app/state/learning-path/learning-path-state.service';
 import { LearningPathActionsService } from 'src/app/state/learning-path/actions/learning-path-actions.service';
 
 @Component({
@@ -17,14 +17,16 @@ import { LearningPathActionsService } from 'src/app/state/learning-path/actions/
   ],
   standalone: true
 })
-export class DocumentViewComponent implements OnInit {
+export class DocumentViewComponent implements OnInit, OnDestroy {
   @Input() content: ContentDetails = null;
   @Input() customStyles?: any;
+  @Input() enableEnrollmentTracking: boolean;
 
   documentContent: Document;
   externalSourceUrl: SafeResourceUrl;
   externalO365Viewer: string = "https://view.officeapps.live.com/op/embed.aspx?src=";
   isExternalDocument = false;
+  tracking: EnrollmentContentTracking;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -38,21 +40,43 @@ export class DocumentViewComponent implements OnInit {
     this.documentContent = this.content as Document;
     this.isExternalDocument = this.documentContent?.isExternal;
     this.setExternalDocumentUrl();
-    this.markDocumentComplete();
+
+    if (this.enableEnrollmentTracking) {
+      // Initialise the tracking state for this new content item but don't save it till we're destroyed:
+      this.tracking = new EnrollmentContentTracking(
+        this.documentContent.id,
+        ContentType.Document,
+        this.learningPathState.activeEnrolledCourse.courseId,
+        this.learningPathState.activeEnrolledCourse.enrollmentId
+      );
+
+      this.tracking.isComplete = true; // Time spent on documents is not tracked, they are instantly completed.
+    }
+  }
+
+  @HostListener('window:beforeunload', ['$event']) // Ensure this runs in all situations: https://wesleygrimes.com/angular/2019/03/29/making-upgrades-to-angular-ngondestroy
+  ngOnDestroy() {
+    // Record the time spent on this document:
+    if (this.tracking) {
+      this.tracking.endTime = new Date();
+      this.learningPathActions.postEnrollmentContentTracking(this.tracking);
+    }
   }
 
   setExternalDocumentUrl() {
     let docExtension = '';
     try {
       docExtension = this.documentContent?.documentUrl?.split("?")[0].split(".").pop();
-    } catch (error) { }
+    } catch (error) {
+      // Ignore this.
+    }
 
-    switch(docExtension) {
+    switch (docExtension) {
       case "pdf":
       case "html":
       case "htm":
-          this.externalSourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.documentContent?.documentUrl);
-          break;
+        this.externalSourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.documentContent?.documentUrl);
+        break;
       case "doc":
       case "docx":
       case "dotx":
@@ -72,12 +96,6 @@ export class DocumentViewComponent implements OnInit {
         break;
       default:
         break;
-    }
-  }
-
-  private markDocumentComplete() {
-    if (this.learningPathState.snapshot.isLearningPathOpen) {
-      this.learningPathActions.markDocumentCompleteAction();
     }
   }
 }

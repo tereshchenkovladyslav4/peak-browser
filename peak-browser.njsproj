@@ -16,6 +16,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>443cb075-ca50-487a-b219-b64592756881</ProjectGuid>
     <ProjectHome>.</ProjectHome>
+    <ProjectView>ProjectFiles</ProjectView>
     <StartupFile>
     </StartupFile>
     <StartWebBrowser>True</StartWebBrowser>
@@ -83,6 +84,8 @@
     <Content Include="src\app\components\dialog\flexible-friction\flexible-friction.component.html" />
     <Content Include="src\app\components\dialog\image-viewer\image-viewer.component.scss" />
     <Content Include="src\app\components\dialog\image-viewer\image-viewer.component.html" />
+    <Content Include="src\app\components\dialog\information-dialog\information-dialog.component.html" />
+    <Content Include="src\app\components\dialog\information-dialog\information-dialog.component.scss" />
     <Content Include="src\app\components\dialog\view-certificate\view-certificate.component.scss" />
     <Content Include="src\app\components\dialog\view-certificate\view-certificate.component.html" />
     <Content Include="src\app\components\dropdown-menu-container\dropdown-menu-container.component.scss" />
@@ -139,6 +142,8 @@
     <Content Include="src\app\components\no-result\no-result.component.html" />
     <Content Include="src\app\components\section-header\section-header.component.scss" />
     <Content Include="src\app\components\section-header\section-header.component.html" />
+    <Content Include="src\app\components\select-dropdown\select-dropdown.component.html" />
+    <Content Include="src\app\components\select-dropdown\select-dropdown.component.scss" />
     <Content Include="src\app\components\spinner\spinner.component.scss" />
     <Content Include="src\app\components\spinner\spinner.component.html" />
     <Content Include="src\app\components\text-truncate\text-truncate.component.scss" />
@@ -201,6 +206,8 @@
     <Content Include="src\app\modules\content\components\learning-path\lp-course-content\lp-course-content.component.html" />
     <Content Include="src\app\modules\content\components\quiz\features\quiz-view\quiz-view.component.scss" />
     <Content Include="src\app\modules\content\components\quiz\features\quiz-view\quiz-view.component.html" />
+    <Content Include="src\app\modules\content\components\quiz\ui\quiz-buttons\quiz-buttons.component.html" />
+    <Content Include="src\app\modules\content\components\quiz\ui\quiz-buttons\quiz-buttons.component.scss" />
     <Content Include="src\app\modules\content\components\quiz\ui\quiz-image\quiz-image.component.scss" />
     <Content Include="src\app\modules\content\components\quiz\ui\quiz-image\quiz-image.component.html" />
     <Content Include="src\app\modules\content\components\quiz\ui\quiz-results\quiz-results.component.scss" />
@@ -273,6 +280,10 @@
     <Content Include="src\app\modules\search\components\search-results-card\search-results-card.component.html" />
     <Content Include="src\app\modules\search\components\search-results\search-results.component.scss" />
     <Content Include="src\app\modules\search\components\search-results\search-results.component.html" />
+    <Content Include="src\app\modules\user-profile\components\autodesk-product-commands\autodesk-product-commands.component.html" />
+    <Content Include="src\app\modules\user-profile\components\autodesk-product-commands\autodesk-product-commands.component.scss" />
+    <Content Include="src\app\modules\user-profile\components\download-add-ons\download-add-ons.component.html" />
+    <Content Include="src\app\modules\user-profile\components\download-add-ons\download-add-ons.component.scss" />
     <Content Include="src\app\modules\user-profile\components\update-password-section\update-password-section.component.scss" />
     <Content Include="src\app\modules\user-profile\components\update-password-section\update-password-section.component.html" />
     <Content Include="src\app\modules\user-profile\components\user-details-container\user-profile-container.component.scss" />
@@ -393,6 +404,124 @@
     <Content Include="src\assets\ableplayer\translations\sv.js" />
     <Content Include="src\assets\ableplayer\translations\tr.js" />
     <Content Include="src\assets\ableplayer\translations\zh-tw.js" />
+    <Content Include="src\assets\fonts\Eczar\Eczar.ttf" />
+    <Content Include="src\assets\fonts\Eczar\OFL.txt" />
+    <Content Include="src\assets\fonts\Eczar\README.txt" />
+    <Content Include="src\assets\fonts\Eczar\static\Eczar-Bold.ttf" />
+    <Content Include="src\assets\fonts\Eczar\static\Eczar-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Eczar\static\Eczar-Medium.ttf" />
+    <Content Include="src\assets\fonts\Eczar\static\Eczar-Regular.ttf" />
+    <Content Include="src\assets\fonts\Eczar\static\Eczar-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\Josefin-Sans.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\JosefinSans-Italic-VariableFont_wght.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\OFL.txt" />
+    <Content Include="src\assets\fonts\Josefin-Sans\README.txt" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Bold.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-ExtraLight.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-ExtraLightItalic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Italic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Light.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-LightItalic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Medium.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Regular.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-SemiBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-Thin.ttf" />
+    <Content Include="src\assets\fonts\Josefin-Sans\static\JosefinSans-ThinItalic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\OFL.txt" />
+    <Content Include="src\assets\fonts\Playfair-Display\Playfair-Display.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\PlayfairDisplay-Italic-VariableFont_wght.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\README.txt" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-Black.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-BlackItalic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-Bold.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-ExtraBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-Italic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-Medium.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-Regular.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Playfair-Display\static\PlayfairDisplay-SemiBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\OFL.txt" />
+    <Content Include="src\assets\fonts\Quicksand\Quicksand-VariableFont_wght.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\README.txt" />
+    <Content Include="src\assets\fonts\Quicksand\static\Quicksand-Bold.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\static\Quicksand-Light.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\static\Quicksand-Medium.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\static\Quicksand-Regular.ttf" />
+    <Content Include="src\assets\fonts\Quicksand\static\Quicksand-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\OFL.txt" />
+    <Content Include="src\assets\fonts\Source_Serif\README.txt" />
+    <Content Include="src\assets\fonts\Source_Serif\SourceSerif.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\SourceSerif4-Italic-VariableFont_opsz,wght.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Black.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-BlackItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Bold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-ExtraBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-ExtraLight.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-ExtraLightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Italic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Light.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-LightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Medium.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-Regular.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4-SemiBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Black.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-BlackItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Bold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-ExtraBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-ExtraLight.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-ExtraLightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Italic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Light.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-LightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Medium.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-Regular.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_18pt-SemiBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Black.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-BlackItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Bold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-ExtraBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-ExtraLight.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-ExtraLightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Italic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Light.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-LightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Medium.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-Regular.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_36pt-SemiBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Black.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-BlackItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Bold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-BoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-ExtraBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-ExtraBoldItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-ExtraLight.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-ExtraLightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Italic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Light.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-LightItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Medium.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-MediumItalic.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-Regular.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-SemiBold.ttf" />
+    <Content Include="src\assets\fonts\Source_Serif\static\SourceSerif4_48pt-SemiBoldItalic.ttf" />
     <Content Include="src\assets\images\app-bar\notification-bell.svg" />
     <Content Include="src\assets\images\app-bar\search.svg" />
     <Content Include="src\assets\images\arrow.svg" />
@@ -423,6 +552,7 @@
     <Content Include="src\assets\images\content-types\doc-generic.svg" />
     <Content Include="src\assets\images\content-types\learning-path.svg" />
     <Content Include="src\assets\images\content-types\my-document.svg" />
+    <Content Include="src\assets\images\content-types\quiz.svg" />
     <Content Include="src\assets\images\content-types\video.svg" />
     <Content Include="src\assets\images\content-types\workflow.svg" />
     <Content Include="src\assets\images\content\difficulty\advanced-grey.svg" />
@@ -470,6 +600,7 @@
     <Content Include="src\assets\images\down-caret-dark.svg" />
     <Content Include="src\assets\images\down-caret-white.svg" />
     <Content Include="src\assets\images\down-caret.svg" />
+    <Content Include="src\assets\images\download-black.svg" />
     <Content Include="src\assets\images\download-white.svg" />
     <Content Include="src\assets\images\droparrow-black.svg" />
     <Content Include="src\assets\images\dropdown-arrow-circle.svg" />
@@ -605,6 +736,7 @@
     <Folder Include="src\app\components\dialog\enroll-single-content\" />
     <Folder Include="src\app\components\dialog\flexible-friction\" />
     <Folder Include="src\app\components\dialog\image-viewer\" />
+    <Folder Include="src\app\components\dialog\information-dialog\" />
     <Folder Include="src\app\components\dialog\view-certificate\" />
     <Folder Include="src\app\components\dropdown-menu-container\" />
     <Folder Include="src\app\components\dropdown-menu\" />
@@ -638,10 +770,12 @@
     <Folder Include="src\app\components\assignments\" />
     <Folder Include="src\app\components\no-result\" />
     <Folder Include="src\app\components\section-header\" />
+    <Folder Include="src\app\components\select-dropdown\" />
     <Folder Include="src\app\components\spinner\" />
     <Folder Include="src\app\components\text-truncate\" />
     <Folder Include="src\app\components\user-profile-menu\" />
     <Folder Include="src\app\components\view-mode\" />
+    <Folder Include="src\app\guards\" />
     <Folder Include="src\app\modules\assignments\" />
     <Folder Include="src\app\modules\assignments\components\" />
     <Folder Include="src\app\modules\assignments\components\assignment-bookmark\" />
@@ -679,6 +813,7 @@
     <Folder Include="src\app\modules\content\components\quiz\features\quiz-view\" />
     <Folder Include="src\app\modules\content\components\quiz\models\" />
     <Folder Include="src\app\modules\content\components\quiz\ui\" />
+    <Folder Include="src\app\modules\content\components\quiz\ui\quiz-buttons\" />
     <Folder Include="src\app\modules\content\components\quiz\ui\quiz-image\" />
     <Folder Include="src\app\modules\content\components\quiz\ui\quiz-results\" />
     <Folder Include="src\app\modules\content\components\video-chapter-list\" />
@@ -740,6 +875,8 @@
     <Folder Include="src\app\modules\shared\" />
     <Folder Include="src\app\modules\tooltip\" />
     <Folder Include="src\app\modules\user-profile\components\" />
+    <Folder Include="src\app\modules\user-profile\components\autodesk-product-commands\" />
+    <Folder Include="src\app\modules\user-profile\components\download-add-ons\" />
     <Folder Include="src\app\modules\user-profile\components\update-password-section\" />
     <Folder Include="src\app\modules\user-profile\components\user-details-container\" />
     <Folder Include="src\app\modules\user-profile\components\user-details-header\" />
@@ -750,11 +887,16 @@
     <Folder Include="src\app\resources\enums\download-state\" />
     <Folder Include="src\app\resources\functions\" />
     <Folder Include="src\app\resources\functions\async\" />
+    <Folder Include="src\app\resources\functions\colors\" />
     <Folder Include="src\app\resources\functions\content\" />
+    <Folder Include="src\app\resources\functions\debug\" />
     <Folder Include="src\app\resources\functions\files\" />
     <Folder Include="src\app\resources\functions\filter\" />
+    <Folder Include="src\app\resources\functions\fonts\" />
     <Folder Include="src\app\resources\functions\hash\" />
     <Folder Include="src\app\resources\functions\errors\" />
+    <Folder Include="src\app\resources\functions\is-empty-html\" />
+    <Folder Include="src\app\resources\functions\routing\" />
     <Folder Include="src\app\resources\functions\object\" />
     <Folder Include="src\app\resources\functions\state\" />
     <Folder Include="src\app\resources\functions\strings\" />
@@ -813,6 +955,7 @@
     <Folder Include="src\app\state\learning-path\effects\" />
     <Folder Include="src\app\state\library\" />
     <Folder Include="src\app\state\related-content\" />
+    <Folder Include="src\app\state\themes\" />
     <Folder Include="src\app\state\user\" />
     <Folder Include="src\app\state\quiz\" />
     <Folder Include="src\app\state\quiz\actions\" />
@@ -832,6 +975,16 @@
     <Folder Include="src\assets\ableplayer\styles\" />
     <Folder Include="src\assets\ableplayer\thirdparty\" />
     <Folder Include="src\assets\ableplayer\translations\" />
+    <Folder Include="src\assets\fonts\Eczar\" />
+    <Folder Include="src\assets\fonts\Eczar\static\" />
+    <Folder Include="src\assets\fonts\Josefin-Sans\" />
+    <Folder Include="src\assets\fonts\Josefin-Sans\static\" />
+    <Folder Include="src\assets\fonts\Playfair-Display\" />
+    <Folder Include="src\assets\fonts\Playfair-Display\static\" />
+    <Folder Include="src\assets\fonts\Quicksand\" />
+    <Folder Include="src\assets\fonts\Quicksand\static\" />
+    <Folder Include="src\assets\fonts\Source_Serif\" />
+    <Folder Include="src\assets\fonts\Source_Serif\static\" />
     <Folder Include="src\assets\images\" />
     <Folder Include="src\assets\images\app-bar\" />
     <Folder Include="src\assets\images\bookmarks\icons\" />
@@ -848,6 +1001,7 @@
     <Folder Include="src\assets\images\page-placeholders\" />
     <Folder Include="src\assets\images\search-results\" />
     <Folder Include="src\assets\images\toast\" />
+    <Folder Include="src\assets\fonts\" />
     <Folder Include="src\environments\" />
     <Folder Include="src\styles\" />
     <Folder Include="src\styles\primeng\" />
@@ -894,6 +1048,8 @@
     <TypeScriptCompile Include="src\app\components\dialog\flexible-friction\flexible-friction.component.ts" />
     <TypeScriptCompile Include="src\app\components\dialog\image-viewer\image-viewer.component.spec.ts" />
     <TypeScriptCompile Include="src\app\components\dialog\image-viewer\image-viewer.component.ts" />
+    <TypeScriptCompile Include="src\app\components\dialog\information-dialog\information-dialog.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\components\dialog\information-dialog\information-dialog.component.ts" />
     <TypeScriptCompile Include="src\app\components\dialog\view-certificate\view-certificate.component.spec.ts" />
     <TypeScriptCompile Include="src\app\components\dialog\view-certificate\view-certificate.component.ts" />
     <TypeScriptCompile Include="src\app\components\dropdown-menu-container\dropdown-menu-container.component.spec.ts" />
@@ -940,6 +1096,8 @@
     <TypeScriptCompile Include="src\app\components\no-result\no-result.component.ts" />
     <TypeScriptCompile Include="src\app\components\section-header\section-header.component.spec.ts" />
     <TypeScriptCompile Include="src\app\components\section-header\section-header.component.ts" />
+    <TypeScriptCompile Include="src\app\components\select-dropdown\select-dropdown.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\components\select-dropdown\select-dropdown.component.ts" />
     <TypeScriptCompile Include="src\app\components\spinner\spinner.component.ts" />
     <TypeScriptCompile Include="src\app\components\text-truncate\text-truncate.component.spec.ts" />
     <TypeScriptCompile Include="src\app\components\text-truncate\text-truncate.component.ts" />
@@ -952,6 +1110,7 @@
     <TypeScriptCompile Include="src\app\directives\acl.directive.spec.ts" />
     <TypeScriptCompile Include="src\app\directives\acl.directive.ts" />
     <TypeScriptCompile Include="src\app\directives\text-truncate.directive.ts" />
+    <TypeScriptCompile Include="src\app\guards\auth.guard.ts" />
     <TypeScriptCompile Include="src\app\modules\assignments\components\assignment-bookmark\assignment-bookmark.component.spec.ts" />
     <TypeScriptCompile Include="src\app\modules\assignments\components\assignment-bookmark\assignment-bookmark.component.ts" />
     <TypeScriptCompile Include="src\app\modules\assignments\components\assignment-card\assignment-card.component.spec.ts" />
@@ -1001,6 +1160,8 @@
     <TypeScriptCompile Include="src\app\modules\content\components\learning-path\models\right-button-text.ts" />
     <TypeScriptCompile Include="src\app\modules\content\components\quiz\features\quiz-view\quiz-view.component.ts" />
     <TypeScriptCompile Include="src\app\modules\content\components\quiz\models\quiz-settings.ts" />
+    <TypeScriptCompile Include="src\app\modules\content\components\quiz\ui\quiz-buttons\quiz-buttons.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\modules\content\components\quiz\ui\quiz-buttons\quiz-buttons.component.ts" />
     <TypeScriptCompile Include="src\app\modules\content\components\quiz\ui\quiz-image\quiz-image.component.spec.ts" />
     <TypeScriptCompile Include="src\app\modules\content\components\quiz\ui\quiz-image\quiz-image.component.ts" />
     <TypeScriptCompile Include="src\app\modules\content\components\quiz\ui\quiz-results\quiz-results.component.spec.ts" />
@@ -1071,6 +1232,10 @@
     <TypeScriptCompile Include="src\app\modules\search\search.module.ts" />
     <TypeScriptCompile Include="src\app\modules\shared\shared.module.ts" />
     <TypeScriptCompile Include="src\app\modules\tooltip\tooltip.module.ts" />
+    <TypeScriptCompile Include="src\app\modules\user-profile\components\autodesk-product-commands\autodesk-product-commands.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\modules\user-profile\components\autodesk-product-commands\autodesk-product-commands.component.ts" />
+    <TypeScriptCompile Include="src\app\modules\user-profile\components\download-add-ons\download-add-ons.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\modules\user-profile\components\download-add-ons\download-add-ons.component.ts" />
     <TypeScriptCompile Include="src\app\modules\user-profile\components\update-password-section\update-password-section.component.spec.ts" />
     <TypeScriptCompile Include="src\app\modules\user-profile\components\update-password-section\update-password-section.component.ts" />
     <TypeScriptCompile Include="src\app\modules\user-profile\components\user-details-container\user-profile-container.component.spec.ts" />
@@ -1099,21 +1264,30 @@
     <TypeScriptCompile Include="src\app\resources\enums\content-difficulty.enum.ts" />
     <TypeScriptCompile Include="src\app\resources\enums\navigation-image-type.enum.ts" />
     <TypeScriptCompile Include="src\app\resources\enums\navigation-menu-type.enum.ts" />
+    <TypeScriptCompile Include="src\app\resources\enums\theme-type.ts" />
     <TypeScriptCompile Include="src\app\resources\enums\view-mode.enum.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\colors\colors.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\content\assignment.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\async\log.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\content\content.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\content\course.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\content\quiz.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\content\workflow.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\debug\map-properties.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\errors\error-handler.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\app\resources\functions\files\files.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\filter\filter.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\fonts\does-font-exist.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\hash\hash.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\is-empty-html\is-empty-html.spec.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\is-empty-html\is-empty-html.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\object\deep-equals.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\object\to-camel.ts" />
+    <TypeScriptCompile Include="src\app\resources\functions\routing\router.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\app\resources\functions\state\state-management.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\strings\to-title-case.ts" />
     <TypeScriptCompile Include="src\app\resources\functions\track-content-type\track-content-type.util.ts" />
@@ -1123,6 +1297,7 @@
     <TypeScriptCompile Include="src\app\resources\mixins\dropdown-items-temp-cache.mixin.ts" />
     <TypeScriptCompile Include="src\app\resources\mixins\is-loaded.mixin.ts" />
     <TypeScriptCompile Include="src\app\resources\models\assignment.ts" />
+    <TypeScriptCompile Include="src\app\resources\models\authorization.ts" />
     <TypeScriptCompile Include="src\app\resources\models\button\button.ts" />
     <TypeScriptCompile Include="src\app\resources\models\certificate.ts" />
     <TypeScriptCompile Include="src\app\resources\models\content.ts" />
@@ -1137,6 +1312,7 @@
     <TypeScriptCompile Include="src\app\resources\models\filter\filter-state.ts" />
     <TypeScriptCompile Include="src\app\resources\models\group.ts" />
     <TypeScriptCompile Include="src\app\resources\models\groupInfo.ts" />
+    <TypeScriptCompile Include="src\app\resources\models\guid.ts" />
     <TypeScriptCompile Include="src\app\resources\models\label-value.ts" />
     <TypeScriptCompile Include="src\app\resources\models\language.ts" />
     <TypeScriptCompile Include="src\app\resources\models\library.ts" />
@@ -1153,6 +1329,7 @@
     <TypeScriptCompile Include="src\app\resources\models\tenant\tenant.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\app\resources\models\theme.ts" />
     <TypeScriptCompile Include="src\app\resources\models\topic.ts" />
     <TypeScriptCompile Include="src\app\resources\models\user.ts" />
     <TypeScriptCompile Include="src\app\resources\models\UserExpertise.ts" />
@@ -1281,6 +1458,8 @@
     <TypeScriptCompile Include="src\app\state\related-content\related-content.actions.ts" />
     <TypeScriptCompile Include="src\app\state\related-content\related-content.state.ts" />
     <TypeScriptCompile Include="src\app\state\settings\settings-state.service.ts" />
+    <TypeScriptCompile Include="src\app\state\themes\themes.actions.ts" />
+    <TypeScriptCompile Include="src\app\state\themes\themes.state.ts" />
     <TypeScriptCompile Include="src\app\state\user\user-state.service.spec.ts" />
     <TypeScriptCompile Include="src\app\state\user\user-state.service.ts" />
     <TypeScriptCompile Include="src\app\state\user\user.actions.ts" />

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, tap, map, concatMap, forkJoin, combineLatest, of } from 'rxjs';
+import { tap, map, concatMap, forkJoin, of, Observable, BehaviorSubject, take } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { DialogBaseComponent, DialogConfig } from '../../../../components/dialog/dialog-base/dialog-base.component';
 import { DialogRef } from '../../../../services/dialog/dialog-ref';
@@ -16,6 +16,7 @@ import { QuizSummary } from '../../../../resources/models/content/quiz';
 import { LoadingComponent } from '../../../../components/loading/loading.component';
 import { DownloadService } from '../../../../services/download/download.service';
 import { AssignmentBookmarkComponent } from '../assignment-bookmark/assignment-bookmark.component';
+import { CourseViewDuration } from '../../../../resources/models/enrollment';
 
 @Component({
   selector: 'ep-enrollment-details',
@@ -36,7 +37,8 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
   certificate: Certificate;
   certificateUnavailableReason = '';
   quizzes: QuizSummary[];
-  isLoaded$ = new Subject<boolean>();
+  viewDuration$: Observable<CourseViewDuration> = this.enrollmentService.getCourseViewDuration(this.data.enrollId, this.data.courseId);
+  isLoaded$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     protected override dialogRef: DialogRef,
@@ -74,6 +76,9 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
       }),
     );
 
+    // Set this loading immediately and allow the modal to display while it completes in the background as it can be slow:
+    certificate$.subscribe();
+
     const quizzes$ = this.contentService.getContentDetails(this.data.courseId).pipe(
       map((res: Course) => {
         return res.content?.filter((item) => item.type === ContentType.Quiz) || [];
@@ -102,8 +107,8 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
                   courseName: this.data.assignmentHistory.name,
                   name: quiz.name,
                   attempts: quizSessions.length,
-                  quizAnswersPossible: highestSession.quizAnswersPossible,
-                  quizAnswersCorrect: highestSession.quizAnswersCorrect,
+                  quizAnswersPossible: highestSession?.quizAnswersPossible,
+                  quizAnswersCorrect: highestSession?.quizAnswersCorrect,
                   lastCompletionDate: lastCompletionSession?.endDatetime,
                   sessions: quizSessions,
                 };
@@ -116,14 +121,9 @@ export class EnrollmentDetailsComponent extends DialogBaseComponent implements O
       tap((quizzes) => (this.quizzes = quizzes)),
     );
 
-    combineLatest([certificate$, quizzes$]).subscribe(
-      () => {
-        this.isLoaded$.next(true);
-      },
-      () => {
-        this.isLoaded$.next(true);
-      },
-    );
+    forkJoin([quizzes$, this.viewDuration$])
+      .pipe(take(1)).subscribe(() => this.isLoaded$.next(true));
+
   }
 
   downloadCertificate(link: string) {

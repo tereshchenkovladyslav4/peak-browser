@@ -11,6 +11,7 @@ export interface CourseViewData {
   name: string;
   plainDesc: string;
   htmlDesc: string;
+  hasDesc: boolean;
   duration: string;
   content: CourseViewContent[];
   progress: number;
@@ -25,10 +26,12 @@ export function getContentIndexToResume(course: CourseViewData) {
   return course?.content?.findIndex(c => 
     c.status !== AssignmentEnrollmentStatus.Completed
     || (c.contentType === ContentType.Quiz
-      && course?.settings?.mustViewContentInOrder
       && course?.settings?.mustPassQuiz
       && c.quizData?.settings?.requirePassingScore
-      && c.quizData.status !== QuizStatus.Pass));
+      && c.quizData.status !== QuizStatus.Pass
+      && c.quizData.totalAttempts < course?.settings.maxQuizAttempts
+      && (course?.settings?.mustViewContentInOrder
+    || course?.settings.allowQuizRetakes)));
 }
 
 export function hasToDropCourse(course: CourseViewData) {
@@ -42,7 +45,6 @@ export function hasToDropCourse(course: CourseViewData) {
 
 export function hasRequiredQuizAttemptsRemaining(course: CourseViewData) {
   if (!course?.settings?.mustPassQuiz) return false;
-
   return course?.content?.some(c => c?.contentType === ContentType.Quiz 
     && c?.quizData?.settings?.requirePassingScore
     && c?.quizData?.status !== QuizStatus.Pass

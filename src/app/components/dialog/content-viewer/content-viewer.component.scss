@@ -9,10 +9,6 @@
   margin-bottom: 25px;
 }
 
-.center-header {
-  flex-grow: 1;
-}
-
 .left-header {
   display: flex;
   align-items: center;
@@ -21,7 +17,6 @@
 
 .right-header {
   align-items: center;
-  flex-grow: 1;
 }
 
 .content-type-icon {
@@ -38,7 +33,11 @@
   padding-top: 20px;
 }
 
-.course-desc {
-  overflow-y: auto;
-  max-height: 100%;
+.content-wrap {
+  width: 1136px;
+  max-width: 90vw;
+  max-height: 75vh;
+  overflow: auto;
+  // This padding will prevent scrollbar
+  padding-bottom: 4px; 
 }

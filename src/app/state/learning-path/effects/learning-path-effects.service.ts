@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, tap, mergeMap, of, filter, take, takeUntil, Subject } from 'rxjs';
+import { Observable, map, tap, of, filter, take } from 'rxjs';
 import { CourseViewContent } from "src/app/modules/content/components/learning-path/models/course-view-content";
 import { CourseViewData } from "src/app/modules/content/components/learning-path/models/course-view-data";
 import { LearningPathUserAssignmentsResponse, CourseAssignment, AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
-import { ContentDetails, ContentType, Quiz } from 'src/app/resources/models/content';
-import { PostEnrollmentTrackingItemRequest, PostEnrollmentTrackingItemResponse } from 'src/app/resources/models/enrollment';
+import { ContentDetails, ContentType } from 'src/app/resources/models/content';
+import { PostEnrollmentTrackingItemRequest } from 'src/app/resources/models/enrollment';
 import { ContentTypesService } from 'src/app/services/content-types.service';
-import { ContentService } from 'src/app/services/content.service';
 import { EnrollmentService } from 'src/app/services/enrollment.service';
 import { SessionStorageService } from 'src/app/services/storage/services/session-storage.service';
 import { formatDurationShort } from 'src/app/resources/functions/content/content';
 import { TranslationService } from 'src/app/services/translation.service';
 import { LP_WORKFLOW_ENROLL_ID_KEY, LP_WORKFLOW_CONTENT_ID_KEY } from '../../workflow/workflow-state.service';
-import { LearningPathStateService, DEFAULT_COURSE_CONTENT_TRACKING } from '../learning-path-state.service';
+import { LearningPathStateService, EnrollmentContentTracking, EnrollmentVideoTracking, EnrollmentQuizTracking } from '../learning-path-state.service';
 import { QuizActionsService } from '../../quiz/actions/quiz-actions.service';
-import { QuizStateService } from '../../quiz/quiz-state.service';
-import { QuizStatus } from 'src/app/resources/models/content/quiz';
+import { QuizSession } from 'src/app/resources/models/content/quiz';
 import { AssignmentsService } from 'src/app/services/assignments/assignments.service';
 import { getCourseAssignmentStatusText } from 'src/app/resources/functions/content/course';
+import { isEmptyHtml } from '../../../resources/functions/is-empty-html/is-empty-html';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +30,6 @@ export class LearningPathEffectsService {
     private sessionStorage: SessionStorageService,
     private translationService: TranslationService,
     private quizActions: QuizActionsService,
-    private quizState: QuizStateService,
     private assignmentsService: AssignmentsService
   ) { 
 
@@ -51,6 +49,7 @@ export class LearningPathEffectsService {
    * Retrieves the related content details from server
    * @param enrolledCourseIndex index of enrolled course contained in LP State
    * @param contentIndex index of content in active enrolled course
+   * @param retakeQuiz boolean in order to retake quiz
    * @returns content details for the active enrolled courses active piece of content
    */
   getEnrollmentContentItemEffect(enrolledCourseIndex: number, contentIndex: number, retakeQuiz: boolean = false): Observable<ContentDetails> {
@@ -84,58 +83,99 @@ export class LearningPathEffectsService {
     )
   }
 
-  postEnrollmentTrackingItemEffect(courseIndex: number, contentIndex: number) {
-    // get enrollment id
-    const enrolledCourse = this.learningPathState.enrolledCourses[courseIndex];
-    const enrolledCourseContent = enrolledCourse?.content[contentIndex];
+  /**
+   * This function should be called to cache the completion status of the content when invoking the update enrollment tracking API.
+   * The cached status will then be utilized to promptly display a green checkmark in the course list in consumptive state.
+   *
+   * @param contentId ID of a course content item
+   * @param courseId ID of a course
+   * @param quizSession The latest quiz session. This will be passed for only quiz content
+   */
+  private updateCachedContentToMarkComplete(contentId: string, courseId: string, quizSession?: QuizSession) {
+    this.learningPathState.updateCachedContentToMarkComplete({
+      completedContent: {
+        contentId: contentId,
+        progress: 100,
+        assignmentStatus: AssignmentEnrollmentStatus.Completed,
+        quizStatus: quizSession?.quizStatus
+      },
+      courseId: courseId
+    });
+  }
 
-    // don't send tracking request if it is a video and video length is 0
-    if (enrolledCourseContent?.contentType === ContentType.Video && this.learningPathState.snapshot.courseContentTracking.videoLength === 0) {
-      this.learningPathState.updateCourseContentTracking(DEFAULT_COURSE_CONTENT_TRACKING);
-      return;
+  postEnrollmentContentTracking(tracking: EnrollmentContentTracking) {
+ 
+    if (tracking.isComplete) {
+      this.updateCachedContentToMarkComplete(tracking.contentId, tracking.courseId);
     }
-
-    const { 
-      startTime, 
-      isComplete, 
-      videoLength, 
-      lastVideoPosition
-    } = this.learningPathState.snapshot.courseContentTracking;
-    const { quizSession, hasUserPassed } = this.quizState.snapshot;
 
     // create request
-    const request: PostEnrollmentTrackingItemRequest  = {
-      courseId: enrolledCourse?.courseId,
-      contentId: enrolledCourseContent?.contentId,
-      contentType: enrolledCourseContent?.contentType,
-      startDate: startTime,
-      isComplete: isComplete,
-      endDate: new Date(),
+    const request: PostEnrollmentTrackingItemRequest = {
+      courseId: tracking.courseId,
+      contentId: tracking.contentId,
+      contentType: tracking.contentType,
+      startDate: tracking.startTime,
+      isComplete: tracking.isComplete,
+      endDate: tracking.endTime,
       isExternalVideo: false,
-      videoLength: videoLength,
-      lastVideoPosition: lastVideoPosition,
-      quizSessionItem: quizSession
-    }
-
-    if (isComplete) {
-      this.learningPathState.updateCachedContentToMarkComplete({
-        completedContent: {
-          contentId: enrolledCourseContent?.contentId,
-          progress: 100,
-          assignmentStatus: AssignmentEnrollmentStatus.Completed,
-          quizStatus: quizSession // weird logic to keep the quiz status as PASS if the user has passed the quiz at least once
-            ? hasUserPassed
-              ? QuizStatus.Pass
-              : quizSession?.quizStatus
-            : QuizStatus.None
-        },
-        courseId: enrolledCourse?.courseId
-      })
+      videoLength: 0,
+      lastVideoPosition: 0,
+      quizSessionItem: null
     }
 
     this.enrollmentService
-      .postEnrollmentTrackingItem(enrolledCourse?.enrollmentId, request)
-      .subscribe(_ => this.learningPathState.updateCourseContentTracking(DEFAULT_COURSE_CONTENT_TRACKING));
+      .postEnrollmentTrackingItem(tracking.enrollmentId, request)
+      .subscribe();
+  }
+
+  postEnrollmentQuizTracking(tracking: EnrollmentQuizTracking) {
+
+    if (tracking.isComplete) {
+      this.updateCachedContentToMarkComplete(tracking.contentId, tracking.courseId, tracking.quizSessionItem);
+    }
+
+    // create request
+    const request: PostEnrollmentTrackingItemRequest = {
+      courseId: tracking.courseId,
+      contentId: tracking.contentId,
+      contentType: tracking.contentType,
+      startDate: tracking.startTime,
+      isComplete: tracking.isComplete,
+      endDate: tracking.endTime,
+      isExternalVideo: false,
+      videoLength: 0,
+      lastVideoPosition: 0,
+      quizSessionItem: tracking.quizSessionItem
+    }
+
+    this.enrollmentService
+      .postEnrollmentTrackingItem(tracking.enrollmentId, request)
+      .subscribe();
+  }
+
+  postEnrollmentVideoTracking(tracking: EnrollmentVideoTracking) {
+
+    if (tracking.isComplete) {
+      this.updateCachedContentToMarkComplete(tracking.contentId, tracking.courseId);
+    }
+
+    // create request
+    const request: PostEnrollmentTrackingItemRequest = {
+      courseId: tracking.courseId,
+      contentId: tracking.contentId,
+      contentType: tracking.contentType,
+      startDate: tracking.startTime,
+      isComplete: tracking.isComplete,
+      endDate: tracking.endTime,
+      isExternalVideo: tracking.isExternalVideo,
+      videoLength: tracking.videoLength,
+      lastVideoPosition: tracking.lastVideoPosition,
+      quizSessionItem: null
+    }
+
+    this.enrollmentService
+      .postEnrollmentTrackingItem(tracking.enrollmentId, request)
+      .subscribe();
   }
 
   markCourseAsComplete(enrollId: string): Observable<any> {
@@ -198,8 +238,9 @@ export class LearningPathEffectsService {
       name: courseAssignment?.name,
       plainDesc: courseAssignment?.courseDetails?.plainDescription,
       htmlDesc: courseAssignment?.courseDetails?.description,
+      hasDesc: !isEmptyHtml(courseAssignment?.courseDetails?.description) || !!courseAssignment?.courseDetails?.plainDescription,
       duration: formatDurationShort(courseAssignment?.duration),
-      content: courseAssignment?.contentDetails?.map((c, index, arr) => ({
+      content: courseAssignment?.contentDetails?.map((c) => ({
         contentId: c?.id,
         name: c?.name,
         contentType: c?.type,

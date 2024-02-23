@@ -1,0 +1,17 @@
+<div class="sort-selector">
+  <span class="sort-field" (click)="toggleSelectorDropdown()">{{ selectedLabel }}</span>
+  <img
+    class="sort-arrow"
+    [class.up]="(sortService.sortBy$ | async)?.order === -1"
+    src="assets/images/arrow.svg"
+    alt=""
+    (click)="toggleSortDirection()"
+  />
+</div>
+
+<ep-dropdown-menu
+  *ngIf="isSelectorDropdownOpen"
+  [dropdownItems]="dropdownItems"
+  style="top: 35px"
+  (onClickedOut)="closeDropdownMenu()"
+></ep-dropdown-menu>

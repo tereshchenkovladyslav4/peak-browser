@@ -15,6 +15,7 @@ import {
   CreateAssignmentOfContentResponse,
   LearningPathUserAssignmentsResponse,
   AssignmentStatusFilter,
+  CanMarkAssignmentAsCompletedResponse,
 } from '../../resources/models/assignment';
 import { TranslationService } from '../translation.service';
 import { environment } from 'src/environments/environment';
@@ -62,6 +63,14 @@ export class AssignmentsService extends FilterBaseService {
       .get<LearningPathUserAssignmentsResponse>(`${environment.apiUrlV2}/assignments/${learningPathId}`, {
         headers,
       })
+      .pipe(catchError(this.errorHandler.bind(this)));
+  }
+
+  canMarkAssignmentAsCompleted(enrollId: string): Observable<CanMarkAssignmentAsCompletedResponse> {
+    const headersV2 = this.v2Service.getv2AuthHeaders();
+    return this.http
+      .get<CanMarkAssignmentAsCompletedResponse>(`${environment.apiUrlV2}/assignments/enduser/CanMarkAssignmentAsComplete/${enrollId}`,
+        { headers: headersV2 })
       .pipe(catchError(this.errorHandler.bind(this)));
   }
 

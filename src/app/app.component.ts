@@ -1,56 +1,82 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthorizationService } from './components/dev-authorization/authorization.service'
+import { AuthorizationService } from './components/dev-authorization/authorization.service';
 import { ProdGenApi } from './services/apiService/prodgen.api';
-import {AuthenticationStateService} from "./state/authentication/authentication-state.service";
-import {Observable, Subject} from "rxjs";
+import { AuthenticationStateService } from './state/authentication/authentication-state.service';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { TranslationService } from './services/translation.service';
-import {ROUTE_TITLE_MAP} from "./resources/constants/app-routes";
+import { ROUTE_TITLE_MAP } from './resources/constants/app-routes';
 import { SettingsStateService } from './state/settings/settings-state.service';
 import { SessionStorageService } from './services/storage/services/session-storage.service';
-import {BookmarksService} from "./services/bookmarks/bookmarks.service";
-import {takeUntil} from "rxjs/operators";
-import { BookmarksStateService } from './state/bookmarks/bookmarks-state.service';
+import { BookmarksService } from './services/bookmarks/bookmarks.service';
+import { map, takeUntil, tap, timeout } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { Select, Store } from '@ngxs/store';
+import { ThemeActions } from './state/themes/themes.actions';
+import { LoggedInUserData } from './resources/models/authorization';
+import { OrganizationService } from './services/organization/organization.service';
+import { OrganizationInfo } from './resources/models/organization/organization';
+import { ThemeState } from 'src/app/state/themes/themes.state';
+import { TenantMini } from './resources/models/tenant/tenant';
 
 @Component({
   selector: 'ep-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, OnDestroy {
+  @Select(ThemeState.isThemeLoading) isThemeLoading$: Observable<boolean>;
+  @Select(ThemeState.backgroundImage) backgroundImage$: Observable<string>;
+
   title = 'Pinnacle Series';
+  backgroundImage: string = 'assets/images/mountains-bg.png';
 
   public static readonly apiUrl: string = environment.apiUrlV2;
 
   public isIE = false;
-  public isLoggedIn$: Observable<boolean> = this.authState.getIsLoggedIn();
   isMainPage = false;
+  loggedInUserData: LoggedInUserData;
+  tenantDetails: TenantMini;
 
-  private unsubscribe$ = new Subject<void>();
+  isLoggedIn$: Observable<boolean> = this.authState.getIsLoggedIn();
+  isLoadingTheme$: Observable<boolean>;
 
-  constructor(private router: Router,
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private router: Router,
     private authorizationService: AuthorizationService,
     private authState: AuthenticationStateService,
     private translationService: TranslationService,
     private settingsState: SettingsStateService,
     private sessionStorage: SessionStorageService,
     private bookmarksService: BookmarksService,
-    private bookmarksState: BookmarksStateService
-  ) {
-  }
+    private organizationService: OrganizationService,
+    private store: Store
+  ) {}
 
   ngOnInit() {
-    this.isIE = navigator.userAgent.indexOf("MSIE") != -1;
+    this.isLoadingTheme$ = combineLatest([this.isLoggedIn$, this.isThemeLoading$]).pipe(
+      map(([isLoggedIn, isThemeLoading]) => {
+        // ignore theme loading value if user isn't logged in
+        if (!isLoggedIn) {
+          return false;
+        }
+
+        return isThemeLoading;
+      })
+    );
+
+    this.isIE = navigator.userAgent.indexOf('MSIE') != -1;
     if (this.isIE == false) {
-      this.isIE = navigator.userAgent.indexOf("Trident") != -1;
+      this.isIE = navigator.userAgent.indexOf('Trident') != -1;
     }
 
     ProdGenApi.setAPIKey('9d391065-2abe-4681-9ea3-a78557a42a13');
 
     // console.log("api key set");
 
-    this.router.events.subscribe(_ => {
+    this.router.events.subscribe((_) => {
       // USEFUL for debugging route info across whole site
       // console.log(_);
 
@@ -58,127 +84,119 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isMainPage = !!ROUTE_TITLE_MAP[url];
     });
 
-    // get information about the current user
-    const infoTenant = this.sessionStorage.getItem<any>('tenantInformation');
-
-    this.checkLoginStatus();
-
-    this.isLoggedIn$.subscribe(status => {
+    this.isLoggedIn$.subscribe((status) => {
       if (status) {
         this.performSessionSetup();
       }
     });
 
+    window.addEventListener(
+      'message',
+      (event) => {
+        if (this.canAcceptMessage(event.origin) && event.data != null) {
+          if (typeof event.data != 'string') return;
 
-    window.addEventListener("message", (event) => {
+          let token: string = event.data as string;
+          try {
+            var messagePrefix = 'param|:';
+            var lang = 'en';
+            let params = token.split(messagePrefix);
 
-      if (this.canAcceptMessage(event.origin) && event.data != null) {
-        if (typeof (event.data) != "string")
-          return;
+            if (params.length == 4) {
+              let v1Auth = params[1];
+              // console.log(v1Auth);
 
-        let token: string = event.data as string;
-        try {
-          var messagePrefix = "param|:";
-          var lang = "en";
-          let params = token.split(messagePrefix);
+              let v2Auth = JSON.parse(params[2]);
+              // console.log(v2Auth);
 
-          if (params.length == 4) {
-            let v1Auth = params[1];
-            // console.log(v1Auth);
+              let language = params[3];
+              // console.log(language);
 
-            let v2Auth = JSON.parse(params[2]);
-            // console.log(v2Auth);
+              // set the authorization token to give us access
+              ProdGenApi.setUserAccessKey(v1Auth as string);
+              ProdGenApi.setAPIV2BearerToken(v2Auth);
+              this.authorizationService.setUserToken(v2Auth);
 
-            let language = params[3];
-            // console.log(language);
+              this.translationService.loadTranslationFile(language).subscribe((response) => {
+                this.translationService.loadTranslationFileDataFromVariable(response);
+              });
 
-            // set the authorization token to give us access
-            ProdGenApi.setUserAccessKey(v1Auth as string);
-            ProdGenApi.setAPIV2BearerToken(v2Auth);
-            this.authorizationService.setUserToken(v2Auth);
+              this.performSessionSetup();
 
-            this.translationService.loadTranslationFile(language).subscribe(response => {
-              // console.log("loaded translation file");
-              this.translationService.loadTranslationFileDataFromVariable(response);
-            });
-
-            this.performSessionSetup();
-
-
-            this.router.navigate(['/home']);
-          }
-
+              this.router.navigate(['/home']);
+            }
+          } catch {}
         }
-        catch { }
-      }
-
-    }, false);
+      },
+      false
+    );
 
     // let the app that launched this window know we are ready to receive messages
     if (window.opener != null && this.authorizationService.getUserToken() == null) {
-      window.opener.postMessage("peak_opened", "*");
+      window.opener.postMessage('peak_opened', '*');
     }
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
-
-  checkLoginStatus() {
-    if (!this.authState.isLoggedIn()) {
-      // store url user attempted to go to before logging in
-      if (window.location.pathname != '/peak/login'){
-        this.authState.setRedirectUrl(window.location.pathname);
-      }
-      
-
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['login']);
-      });
-    }
-  }
-
 
   performSessionSetup() {
+    // setup vars from session
+    this.loggedInUserData = this.sessionStorage.getItem<LoggedInUserData>('tenantInformation');
+    this.tenantDetails = this.sessionStorage.getItem<TenantMini>('tenantDetails');
+
     this.settingsState.performSessionSetup();
 
     // setup bookmarks map
-    this.bookmarksService
-      .setInitialBookmarksState()
-      .pipe(
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe();
+    this.bookmarksService.setInitialBookmarksState().pipe(takeUntil(this.destroy$)).subscribe();
+
+    // setup org details
+    this.organizationService.getOrganizationDetails(this.loggedInUserData?.orgID).subscribe({
+      next: (orgInfo: OrganizationInfo) => {
+        this.sessionStorage.setItem('orgDetails', orgInfo);
+        this.setupTheme();
+      },
+      error: (err) => {
+        console.log('Error getting org details: ', err);
+      },
+    });
   }
 
+  private setupTheme(): void {
+    this.store.dispatch(new ThemeActions.GetThemes());
 
-  onRouteActivated(ev: any) {
-    this.checkLoginStatus();
+    this.backgroundImage$.pipe(takeUntil(this.destroy$)).subscribe((backgroundImage) => {
+      if (backgroundImage && backgroundImage.toString().trim() != '') {
+        this.backgroundImage = backgroundImage;
+      }
+    });
   }
-
-
 
   isExternalUser() {
     return false;
   }
 
   private canAcceptMessage(host: string): boolean {
-    if (host == "localhost:4200" ||
-      host == "http://localhost:4200" ||
-      host == "http://localhost:4201" ||
-      host == "http://localhost:4202" ||
-      host == "https://prodgenbrowser-pw.azurewebsites.net" ||
-      host == "https://portal.pinnacleseries.com" ||
-      host == "https://portalbeta.pinnacleseries.com" ||
-      host == "https://productivitynow.imaginit.com" ||
-      host == "https://productivitynow.ascented.com" ||
-      host == "https://productivitynow.rand3d.com") {
-
-      if (host == "https://productivitynow.imaginit.com" ||
-        host == "https://productivitynow.ascented.com" ||
-        host == "https://productivitynow.rand3d.com") {
-        window.document.title = "ProductivityNOW";
+    if (
+      host == 'localhost:4200' ||
+      host == 'http://localhost:4200' ||
+      host == 'http://localhost:4201' ||
+      host == 'http://localhost:4202' ||
+      host == 'https://prodgenbrowser-pw.azurewebsites.net' ||
+      host == 'https://portal.pinnacleseries.com' ||
+      host == 'https://portalbeta.pinnacleseries.com' ||
+      host == 'https://productivitynow.imaginit.com' ||
+      host == 'https://productivitynow.ascented.com' ||
+      host == 'https://productivitynow.rand3d.com'
+    ) {
+      if (
+        host == 'https://productivitynow.imaginit.com' ||
+        host == 'https://productivitynow.ascented.com' ||
+        host == 'https://productivitynow.rand3d.com'
+      ) {
+        window.document.title = 'ProductivityNOW';
       }
 
       return true;

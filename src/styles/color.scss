@@ -1,12 +1,12 @@
 /* TEXT COLORS */
 .color-subtext {
-    color: #87919F;
+  color: #87919f;
 }
 
 /* TEXT HIGHLIGHTS */
 .search-highlight-text {
-    background-color: #1F283A;
-    color: white;
+  background-color: var(--active-nav-item-background);
+  color: white;
 }
 
 .results-card-highlight {

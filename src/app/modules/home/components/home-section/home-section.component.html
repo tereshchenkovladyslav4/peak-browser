@@ -3,43 +3,28 @@
     <h2 class="title">{{ sectionTitle }}</h2>
     <div class="subtitle">
       <ng-container [ngSwitch]="section">
-        <ng-container *ngSwitchCase="HomeSection.ASSIGNMENTS"
-          >You have {{ items?.length }} Assignments</ng-container
-        >
-        <ng-container *ngSwitchCase="HomeSection.LIBRARIES"
-          >Explore your libraries</ng-container
-        >
+        <ng-container *ngSwitchCase="HomeSection.ASSIGNMENTS">{{ "home-section.subtitle-part-1" | Translate }}
+          <span style="color: var(--secondary-color); font-weight: 700">{{ items?.length }} {{
+            "home-section.subtitle-part-2" | Translate }}</span></ng-container>
+        <ng-container *ngSwitchCase="HomeSection.LIBRARIES">{{
+          "home-section.libraries-title" | Translate
+          }}</ng-container>
       </ng-container>
     </div>
   </div>
 
-  <button
-    *ngIf="items?.length > numVisible"
-    ep-button
-    buttonShape="pill"
-    [routerLink]="link"
-  >
-    View All
+  <button *ngIf="items?.length > numVisible" ep-button buttonShape="pill" [routerLink]="link">
+    {{ "home-section.view-all" | Translate }}
   </button>
 </div>
 
 <div class="library-carousel-content-container">
   <ng-container *ngIf="items?.length; else noData">
-    <p-carousel
-      [value]="items?.slice(0, MAX_ITEMS)"
-      [numVisible]="numVisible"
-      [numScroll]="numScroll"
-    >
+    <p-carousel [value]="items?.slice(0, MAX_ITEMS)" [numVisible]="numVisible" [numScroll]="numScroll">
       <ng-template let-item pTemplate="item">
         <ng-container [ngSwitch]="section">
-          <ep-library-card
-            *ngSwitchCase="HomeSection.LIBRARIES"
-            [library]="item"
-          ></ep-library-card>
-          <ep-assignment-card
-            *ngSwitchCase="HomeSection.ASSIGNMENTS"
-            [assignment]="item"
-          ></ep-assignment-card>
+          <ep-library-card *ngSwitchCase="HomeSection.LIBRARIES" [library]="item"></ep-library-card>
+          <ep-assignment-card *ngSwitchCase="HomeSection.ASSIGNMENTS" [assignment]="item"></ep-assignment-card>
         </ng-container>
       </ng-template>
     </p-carousel>
@@ -48,19 +33,16 @@
 
 <ng-template #noData>
   <div *ngIf="section === HomeSection.LIBRARIES" class="no-results">
-    <span class="no-results-title">Uh-oh, No Libraries In Sight!</span>
+    <span class="no-results-title">{{ "home-section.no-results-title" | Translate }}</span>
     <span class="no-results-subtitle">
-      If the shelves are bare, reach out to our support team or your system
-      admin for help.
+      {{ "home-section.no-results-subtitle" | Translate }}
     </span>
-    <button
-      ep-button
-      buttonShape="pill"
-      style="margin-top: 1.5rem; width: fit-content"
-      (click)="onContactSupport()"
-    >
-      <img src="assets/images/question.svg" style="margin-right: 0.5rem" />
-      Contact Support
+    <button ep-button [gap]="0" buttonShape="pill" style="margin-top: 1.5rem; width: fit-content;"
+      (click)="onContactSupport()">
+      <img src="assets/images/question.svg" style="margin-right: 0.5rem;" />
+      <span class="contact-support-text">
+        {{ "home-section.contact-support" | Translate }}
+      </span>
     </button>
   </div>
 </ng-template>

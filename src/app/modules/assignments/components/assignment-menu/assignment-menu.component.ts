@@ -6,13 +6,15 @@ import { ToastrService } from 'ngx-toastr';
 import { DialogConfig } from 'src/app/components/dialog/dialog-base/dialog-base.component';
 import { NAVIGATION_ROUTES } from 'src/app/resources/constants/app-routes';
 import { WithDropdownItemsTempCache } from 'src/app/resources/mixins/dropdown-items-temp-cache.mixin';
-import { Assignment } from 'src/app/resources/models/assignment';
+import { Assignment, AssignmentCompletionStatus } from 'src/app/resources/models/assignment';
 import { DialogService } from 'src/app/services/dialog/dialog.service';
 import { DropdownMenuService } from 'src/app/services/dropdown-menu.service';
 import { TranslationService } from 'src/app/services/translation.service';
 import { AssignmentsActions } from 'src/app/state/assignments/assignments.actions';
 import { BookmarksStateService } from 'src/app/state/bookmarks/bookmarks-state.service';
 import { ConfirmDialogComponent } from 'src/app/components/dialog/confirm-dialog/confirm-dialog.component';
+import { AssignmentsService } from '../../../../services/assignments/assignments.service';
+import { concatMap, filter } from 'rxjs';
 import { ChangeDueDateComponent } from '../change-due-date/change-due-date.component';
 
 @Component({
@@ -28,6 +30,8 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
   @Output() statusEmitter: EventEmitter<any> = new EventEmitter<any>();
   dropdownItems: any = [];
 
+  markAsCompletedAction: Function;
+
   constructor(
     private router: Router,
     private dropdownMenuService: DropdownMenuService,
@@ -36,6 +40,7 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
     private translationService: TranslationService,
     private toastr: ToastrService,
     private store: Store,
+    private assignmentService: AssignmentsService,
   ) {
     super();
   }
@@ -45,22 +50,29 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
   }
 
   protected override constructDropdownItems() {
-    const id: string = this.assignment?.learningPath?.id || '';
-    return this.dropdownMenuService
-      .addResume({ action: () => this.resume() })
-      .addViewDetails({ action: () => this.goToLearningPath() })
-      .addMarkAsCompleted({ action: () => this.openCompleteDialog() })
-      .addChangeDueDate({ action: () => this.openChangeDueDateDialog() })
-      .addBookmarkItem(this.bookmarksStateService.isContentBookmarked(id), id)
-      .addDivider()
-      .addShareNotification({})
-      .addShareWorkGroup({})
-      .addCopyLinkFormatted({})
-      .addCopyLinkUnformatted({})
-      .addDivider()
-      .addDropCourse({ action: () => this.openDropCourseDialog() })
-      .addDropLearningPath({ action: () => this.openDropLPDialog() })
-      .getItems();
+    const id: string = this.assignment?.course?.id || '';
+    const userId: string = this.assignment?.user?.userId || '';
+    const selfAssigned = this.assignment?.assignors.findIndex((assignor) => assignor.userId === userId) > -1;
+    const hasStartedAssignment = this.assignment?.progress > 0;
+
+    return (
+      this.dropdownMenuService
+        .addStart({ action: () => this.resume(), visible: !hasStartedAssignment })
+        .addResume({ action: () => this.resume(), visible: hasStartedAssignment })
+        .addViewDetails({ action: () => this.goToLearningPath() })
+        .addMarkAsCompleted({ action: () => this.openCompleteDialog() })
+        .addChangeDueDate({ visible: selfAssigned, action: () => this.openChangeDueDateDialog() })
+        .addBookmarkItem(this.bookmarksStateService.isContentBookmarked(id), id)
+        .addDivider()
+        //.addShareNotification({})
+        //.addShareWorkGroup({})
+        .addCopyLinkFormatted({})
+        .addCopyLinkUnformatted({})
+        .addDivider()
+        .addDropCourse({ action: () => this.openDropCourseDialog() })
+        .addDropLearningPath({ action: () => this.openDropLPDialog() })
+        .getItems()
+    );
   }
 
   resume() {
@@ -76,40 +88,72 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
   }
 
   openCompleteDialog() {
-    const isDone = this.assignment.progress === 100;
-    const dialogConfig: DialogConfig = {
+    this.assignmentService
+      .canMarkAssignmentAsCompleted(this.assignment.enrollmentId)
+      .pipe(
+        filter((res) => res.completionStatus !== AssignmentCompletionStatus.Unexpected_Error),
+        concatMap((quizStatus) => this.setDialogConfig(quizStatus.completionStatus)),
+      )
+      .subscribe((complete) => {
+        if (complete) this.markAsCompletedAction();
+      });
+  }
+
+  //Sets title, description, and action of success btn for 'mark as completed' modal
+  setDialogConfig(assignmentStatus: AssignmentCompletionStatus) {
+    let title, content, positiveButton;
+    const isAssignmentComplete = this.assignment.progress === 100;
+
+    switch (assignmentStatus) {
+      case AssignmentCompletionStatus.Completed:
+        if (isAssignmentComplete) {
+          title = this.translationService.getTranslationFileData('assignments.mark-course-as-completed-title');
+          content = this.translationService
+            .getTranslationFileData('assignments.mark-course-as-completed-description')
+            .replace('[COURSE_NAME]', this.assignment.course.name);
+        } else {
+          title = this.translationService.getTranslationFileData('assignments.complete-without-certificate-title');
+          content = this.translationService
+            .getTranslationFileData('assignments.complete-without-certificate-description')
+            .replace('[PROGRESS]', this.assignment.progress);
+        }
+
+        positiveButton = this.translationService.getTranslationFileData('common.complete');
+        this.markAsCompletedAction = () => this.completeAssignment();
+        break;
+
+      case AssignmentCompletionStatus.Not_Viewed_Completely:
+      case AssignmentCompletionStatus.Failed_Quiz_No_Retakes:
+      case AssignmentCompletionStatus.Failed_Quiz_Retakes_Available:
+        title = this.translationService.getTranslationFileData('assignments.cannot-mark-course-as-complete-title');
+        content = this.translationService.getTranslationFileData(
+          'assignments.cannot-mark-course-as-complete-description',
+        );
+        positiveButton = this.translationService.getTranslationFileData('assignments.resume-content');
+        this.markAsCompletedAction = () => this.resume();
+        break;
+    }
+
+    const dialogConfig = {
       containerStyles: {
         width: '350px',
         height: 'unset',
+        'padding-top': '6px',
       },
-      title: this.translationService.getTranslationFileData(
-        isDone ? 'assignments.mark-course-as-completed-title' : 'assignments.complete-without-certificate-title',
-      ),
-      content: this.translationService
-        .getTranslationFileData(
-          isDone
-            ? 'assignments.mark-course-as-completed-description'
-            : 'assignments.complete-without-certificate-description',
-        )
-        ?.replace('[COURSE_NAME]', this.assignment.course.name)
-        ?.replace('[PROGRESS]', this.assignment.progress),
+      title,
+      content,
       buttonType: 'green',
       negativeButton: this.translationService.getTranslationFileData('common.cancel'),
-      positiveButton: this.translationService.getTranslationFileData('common.complete'),
+      positiveButton,
     };
 
-    this.dialogService
+    return this.dialogService
       .open(ConfirmDialogComponent, {
         data: {
           config: dialogConfig,
         },
       })
-      .afterClosed()
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.completeAssignment();
-        }
-      });
+      .afterClosed();
   }
 
   completeAssignment() {

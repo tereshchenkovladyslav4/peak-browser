@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Router } from '@angular/router';
 import { Observable, Subject, throwError } from 'rxjs';
 import { AppComponent } from '../../app.component';
 import { catchError, tap } from 'rxjs/operators';
-import { CONSTANTS } from '../../config/constants';
 import { SessionStorageService } from '../../services/storage/services/session-storage.service';
 import { APIV2AccessKey } from '../../services/apiService/classFiles/class.authorization';
 import { LocalStorageService } from '../../services/storage/services/local-storage.service';
@@ -34,23 +33,12 @@ export class AuthorizationService {
     return AppComponent.apiUrl;
   }
 
-  private get apiV1Url(): string {
-    return environment.apiUrlV1;
-  }
-
   constructor(
     private router: Router,
     private httpClient: HttpClient,
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
   ) {}
-
-  public getTenantHeader(): any {
-    return {
-      apiKey: environment.apiKey,
-      'Content-Type': 'application/json',
-    };
-  }
 
   public getHeaders(): any {
     const token = this.sessionStorage.getItem<any>('tenantInformation');
@@ -64,41 +52,6 @@ export class AuthorizationService {
     };
   }
 
-  // tslint:disable-next-line:max-line-length
-  public async login(username: string, password: string, language: string, tenantId: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const headers = this.getTenantHeader();
-      const body = {
-        email: username,
-        password,
-        language,
-        tenantId,
-        timeOffset: (new Date().getTimezoneOffset() / 60) * -1,
-        timezoneName: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        returnLongLivedToken: false,
-      };
-      const url = `${this.apiV1Url}/authorization/userToken`;
-      this.httpClient.post(url, body, { headers }).subscribe({
-        next: (res) => {
-          this.sessionStorage.setItem('tenantInformation', res);
-
-          // Clear the typed token because it will
-          // be recalculated the next time it is fetched.
-          // If it's not cleared, the cached version will
-          // be fetched and could be out of date if the
-          // user just switched tenants.
-          this.userToken = res;
-          this.typedToken = null;
-
-          this.loggedInSource.next(res ? true : false);
-
-          resolve(res ? true : false);
-        },
-        error: (err) => reject(err),
-      });
-    });
-  }
-
   public async logout(): Promise<any> {
     return new Promise((resolve, reject) => {
       // Clear stored tokens.
@@ -109,20 +62,6 @@ export class AuthorizationService {
 
       resolve(null);
     });
-  }
-
-  // tslint:disable-next-line:max-line-length
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
-    if (!this.userToken) {
-      this.sessionStorage.clear();
-      let url = window.location.protocol + '//' + window.location.host + '/login';
-      this.router.navigateByUrl(url);
-      return false;
-    }
-    return true;
   }
 
   getUserId(): string {
@@ -156,25 +95,19 @@ export class AuthorizationService {
     const headers = this.getHeaders();
     return this.httpClient.post<APIV2AccessKey>(`${this.apiUrl}/authorization/switch`, param, { headers }).pipe(
       tap((res) => {
-        this.sessionStorage.setItem('tenantInformation', res);
-        ProdGenApi.setAPIV2BearerToken(res);
-
-        this.localStorage.setItem('DefaultTenant', res.tenantid);
-        this.sessionStorage.setItem('currentTenant', res.tenantid);
-        this.localStorage.setItem('lastUsedTenant', res.tenantid);
-
-        // Clear the typed token because it will
-        // be recalculated the next time it is fetched.
-        // If it's not cleared, the cached version will
-        // be fetched and could be out of date if the
-        // user just switched tenants.
-        this.userToken = res;
-        this.typedToken = null;
-
-        this.loggedInSource.next(res ? true : false);
+        this.saveAuthData(res.tenantid, res);
+        this.loggedInSource.next(!!res);
       }),
       catchError(this.errorHandler.bind(this)),
     );
+  }
+
+  public saveAuthData(tenantId: string, apiV2AccessKey: APIV2AccessKey) {
+    this.localStorage.setItem('DefaultTenant', tenantId);
+    this.sessionStorage.setItem('currentTenant', tenantId);
+    this.localStorage.setItem('lastUsedTenant', tenantId);
+    ProdGenApi.setAPIV2BearerToken(apiV2AccessKey);
+    this.setUserToken(apiV2AccessKey);
   }
 
   // error handler

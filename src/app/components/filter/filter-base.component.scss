@@ -13,7 +13,7 @@
 .built-in-search-title {
   font-weight: 700;
   font-size: 1rem;
-  color: #2B3242;
+  color: #2b3242;
 }
 
 .global-search-container {
@@ -36,18 +36,18 @@
 .title {
   font-weight: 700;
   font-size: 1rem;
-  color: #2B3242;
+  color: #2b3242;
 }
 
 .clear-all {
   font-size: 14px;
   text-align: right;
-  color: #87919F;
+  color: #87919f;
   cursor: pointer;
 }
 
 .active-filters {
-  color: #6391FF;
+  color: var(--secondary-color);
 }
 
 .filter-title-container {
@@ -76,13 +76,12 @@
 }
 
 .extended-search-instructions {
-  font-family: Roboto, 'sans-serif';
   font-size: 20px;
   font-weight: 400;
   line-height: 28px;
   letter-spacing: 0;
   text-align: left;
-  color: #2B3242;
+  color: #2b3242;
 }
 
 .extended-search-button {

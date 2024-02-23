@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subject, combineLatest, map, startWith, takeUntil, tap } from 'rxjs';
 import { FinishCourseState, LearningPathStateService } from 'src/app/state/learning-path/learning-path-state.service';
 import { QuizActionsService } from 'src/app/state/quiz/actions/quiz-actions.service';
@@ -6,7 +6,7 @@ import { QuizStateService } from 'src/app/state/quiz/quiz-state.service';
 import { LearningPathActionsService } from 'src/app/state/learning-path/actions/learning-path-actions.service';
 import { AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
 import { QuizStatus } from 'src/app/resources/models/content/quiz';
-import { ButtonOptions, DropCourseBtn, FinishCourseBtn, NextBtn, NextQuestionButton, PreviousBtn, TakeQuizBtn, SubmitQuizBtn, RetakeQuizBtn } from 'src/app/resources/models/button/button';
+import { ButtonOptions, DropCourseBtn, FinishCourseBtn, NextBtn, PreviousBtn, TakeQuizBtn, RetakeQuizBtn } from 'src/app/resources/models/button/button';
 
 
 
@@ -17,8 +17,6 @@ import { ButtonOptions, DropCourseBtn, FinishCourseBtn, NextBtn, NextQuestionBut
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CourseNavButtonsComponent implements OnInit, OnDestroy {
-  // obs
-  isLoading$: Observable<boolean>;
   buttons$: Observable<ButtonOptions[]>;
 
   buttonMap: { [key: string]: Function };
@@ -39,6 +37,7 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
     this.setButtonMap();
   }
 
+  @HostListener('window:beforeunload', ['$event']) // Ensure this runs in all situations: https://wesleygrimes.com/angular/2019/03/29/making-upgrades-to-angular-ngondestroy
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
@@ -48,8 +47,6 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
     this.buttonMap = {
       [PreviousBtn.label]: () => this.learningPathActions.goToPreviousCourseContent(),
       [NextBtn.label]: () => this.handleNextBtnClick(),
-      [NextQuestionButton.label]: () => this.handleNextQuestionClick(),
-      [SubmitQuizBtn.label]: () => this.handleSubmitQuizBtnClick(),
       [RetakeQuizBtn.label]: () => this.handleRetakeQuizBtnClick(),
       [TakeQuizBtn.label]: () => this.handleRetakeQuizBtnClick(),
       [FinishCourseBtn.label]: () => this.handleFinishCourseBtnClick(),
@@ -73,8 +70,6 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
       ),
       this.learningPathState.activeEnrolledCourseContent$.pipe(startWith(null)),
       this.quizState.isQuizOpen$,
-      this.quizState.questionIndex$,
-      this.quizState.answerActivelySelected$,
       this.quizState.isQuizFinished$,
     ])
     .pipe(
@@ -88,9 +83,7 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
         activeEnrolledCourse,
         cachedContentAssignmentEnrollmentStatus,
         activeEnrolledCourseContent,
-        isQuizOpen, 
-        questionIndex,
-        answerActivelySelected,
+        isQuizOpen,
         isQuizFinished
       ]) => {
         if (isLoading) {
@@ -113,16 +106,7 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
         // QUIZ LOGIC
         if (isQuizOpen) {
           const { quiz, quizSession } = this.quizState.snapshot;
-          if (!isQuizFinished) {
-            // if user is on last question
-            if (questionIndex === quizSession?.questions?.length - 1) {
-              SubmitQuizBtn.disabled = !answerActivelySelected;
-              return [PreviousBtn, NextBtn, SubmitQuizBtn];
-            } else {
-              NextQuestionButton.disabled = !answerActivelySelected;
-              return [PreviousBtn, NextBtn, NextQuestionButton];
-            }
-          } else if (isQuizFinished) {
+          if (isQuizFinished) {
             const { mustViewContentInOrder, mustPassQuiz } = activeEnrolledCourse.settings;
             const { canQuizBeRetaken } = this.quizState;
 
@@ -139,6 +123,8 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
             if (failedMustPassCourseQuizInOrder) {
               return [PreviousBtn, DropCourseBtn];
             }
+          } else {
+            return [];
           }
         }
 
@@ -170,17 +156,6 @@ export class CourseNavButtonsComponent implements OnInit, OnDestroy {
 
   private handleNextBtnClick() {
     this.learningPathActions.goToNextCourseContent();
-  }
-
-  private handleNextQuestionClick() {
-    this.learningPathActions.submitQuizAnswer();
-    this.quizActions.submitAnswer();
-  }
-
-  private handleSubmitQuizBtnClick() {
-    this.learningPathActions.submitQuizAnswer();
-    this.quizActions.submitAnswer();
-    this.learningPathActions.markQuizCompleteAction();
   }
 
   private handleRetakeQuizBtnClick() {

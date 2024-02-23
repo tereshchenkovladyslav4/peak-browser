@@ -1,31 +1,43 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {BehaviorSubject, Observable, Subject, combineLatest, tap} from "rxjs";
-import {Tab} from "src/app/components/horizontal-tabs/horizontal-tabs.component";
-import {AssignmentEnrollmentStatus} from "src/app/resources/models/assignment";
-import {ContentDetails, LearningPath,} from "src/app/resources/models/content";
-import {DropdownItem} from "src/app/resources/models/dropdown-item";
-import {DropdownMenuService} from "src/app/services/dropdown-menu.service";
-import {TranslationService} from "src/app/services/translation.service";
-import {LearningPathActionsService} from "src/app/state/learning-path/actions/learning-path-actions.service";
-import {LearningPathStateService} from "src/app/state/learning-path/learning-path-state.service";
-import {DialogService} from "../../../../../services/dialog/dialog.service";
-import {CourseViewData, getContentIndexToResume} from "../models/course-view-data";
-import {Location} from "@angular/common";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject, combineLatest, tap } from 'rxjs';
+import { Tab } from 'src/app/components/horizontal-tabs/horizontal-tabs.component';
+import { AssignmentEnrollmentStatus } from 'src/app/resources/models/assignment';
+import { ContentDetails, LearningPath } from 'src/app/resources/models/content';
+import { DropdownItem } from 'src/app/resources/models/dropdown-item';
+import { DropdownMenuService } from 'src/app/services/dropdown-menu.service';
+import { TranslationService } from 'src/app/services/translation.service';
+import { LearningPathActionsService } from 'src/app/state/learning-path/actions/learning-path-actions.service';
+import { LearningPathStateService } from 'src/app/state/learning-path/learning-path-state.service';
+import { DialogService } from '../../../../../services/dialog/dialog.service';
+import { CourseViewData, getContentIndexToResume } from '../models/course-view-data';
+import { Location } from '@angular/common';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { EnrollAllComponent } from '../../../../../components/dialog/enroll-all/enroll-all.component';
-import { EnrollSingleContentComponent } from "src/app/components/dialog/enroll-single-content/enroll-single-content.component";
+import { EnrollSingleContentComponent } from 'src/app/components/dialog/enroll-single-content/enroll-single-content.component';
 import { ToastrService } from 'ngx-toastr';
 import { FlexibleFrictionComponent } from '../../../../../components/dialog/flexible-friction/flexible-friction.component';
 import { DialogConfig } from '../../../../../components/dialog/dialog-base/dialog-base.component';
-import { Select, Store } from "@ngxs/store";
-import { CourseState } from "src/app/state/courses/courses.state";
-import { CourseActions } from "src/app/state/courses/courses.actions";
+import { Select, Store } from '@ngxs/store';
+import { CourseState } from 'src/app/state/courses/courses.state';
+import { CourseActions } from 'src/app/state/courses/courses.actions';
 
 @Component({
   selector: 'ep-learning-path-view',
   templateUrl: './learning-path-view.component.html',
-  styleUrls: ['./learning-path-view.component.scss']
+  styleUrls: ['./learning-path-view.component.scss'],
 })
 export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly AssignmentEnrollmentStatus = AssignmentEnrollmentStatus;
@@ -65,9 +77,7 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
     private toastr: ToastrService,
     private renderer: Renderer2,
     private store: Store
-  ) {
-    
-  }
+  ) {}
 
   ngOnInit(): void {
     if (!this.evaluateBackActionAndSkipLoad()) {
@@ -90,25 +100,32 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private setCourses(): void {
-    this.courses$.pipe(
-      tap((courses: CourseViewData[]) => {
-        if (courses) {
-          courses.forEach(c => this.setTabs(c));
-          this.notEnrolledCourses = courses.filter(c => !c.isEnrolled || c.status === AssignmentEnrollmentStatus.Completed || c.status === AssignmentEnrollmentStatus.Dropped);
-          const courseToExpandId = this.route.snapshot.queryParamMap.get('courseId');
-          const expandedCourses = courses.map(course => {
-            if (course?.courseId === courseToExpandId) {
-              // course list should be expanded when a course is expanded
-              this.courseListCollapsed = false;
-              return true;
-            }
-            return false;
-          })
-          this.expandedCourses$.next(expandedCourses);
-        }
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe();
+    this.courses$
+      .pipe(
+        tap((courses: CourseViewData[]) => {
+          if (courses) {
+            courses.forEach((c) => this.setTabs(c));
+            this.notEnrolledCourses = courses.filter(
+              (c) =>
+                !c.isEnrolled ||
+                c.status === AssignmentEnrollmentStatus.Completed ||
+                c.status === AssignmentEnrollmentStatus.Dropped
+            );
+            const courseToExpandId = this.route.snapshot.queryParamMap.get('courseId');
+            const expandedCourses = courses.map((course) => {
+              if (course?.courseId === courseToExpandId) {
+                // course list should be expanded when a course is expanded
+                this.courseListCollapsed = false;
+                return true;
+              }
+              return false;
+            });
+            this.expandedCourses$.next(expandedCourses);
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private setTabs(course: CourseViewData): void {
@@ -116,22 +133,22 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
     const courseContentText = this.translationService.getTranslationFileData('learning-path-view.course-content');
     const detailsText = this.translationService.getTranslationFileData('learning-path-view.details');
 
-    let tabs: Tab[] = [{key: 'Course Content', label: courseContentText}];
+    let tabs: Tab[] = [{ key: 'Course Content', label: courseContentText }];
     if (course?.htmlDesc?.length || course?.plainDesc?.length) {
-      tabs = [{key: 'Details', label: detailsText}, ...tabs];
+      tabs = [{ key: 'Details', label: detailsText }, ...tabs];
     }
 
     // setup map; key: course id -> value: tab name as string
     this.courseTabsMap = {
       ...this.courseTabsMap,
-      [course?.courseId]: tabs
-    }
+      [course?.courseId]: tabs,
+    };
 
     if (tabs?.length > 0) {
       // setup map; key: course id -> value: active tab name as string
       this.activeCourseTabsMap = {
         ...this.activeCourseTabsMap,
-        [course?.courseId]: tabs[0]?.key
+        [course?.courseId]: tabs[0]?.key,
       };
     }
   }
@@ -139,15 +156,17 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
   private evaluateResumeAction() {
     const params = this.route.snapshot.queryParams;
 
-    this.courses$.pipe(
-      filter(data => !!data),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      // resume
-      if (params?.['r']) {
-        this.updateUrlAndOpenCourse();
-      }
-    });
+    this.courses$
+      .pipe(
+        filter((data) => !!data),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        // resume
+        if (params?.['r']) {
+          this.updateUrlAndOpenCourse();
+        }
+      });
   }
 
   private buildDropdownMenu(): void {
@@ -160,26 +179,26 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
 
   private setExpandedCourses() {
     this.expandedCourses$
-        .pipe(
-          tap(expandedCourses => this.expandedCourses = expandedCourses),
-          takeUntil(this.destroy$)
-        ).subscribe()
+      .pipe(
+        tap((expandedCourses) => (this.expandedCourses = expandedCourses)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   private handleScrollToCourseOnPageLoad() {
-    combineLatest([
-      this.expandedCourses$,
-      this.courseScrollTargets.changes
-    ]).pipe(
-      tap(([expandedCourses, queryList]) => {
-        const activeIndex = expandedCourses.findIndex(ec => !!ec);
-        if (activeIndex > -1) {
-          const courseScrollTargetEl = queryList.get(activeIndex)?.nativeElement;
-          this.updateCourseContainerScrollTop(courseScrollTargetEl.offsetTop);
-        }
-      }),
-      take(1) // only needs to occur once after page and relevant observables are all 'loaded'
-    ).subscribe();
+    combineLatest([this.expandedCourses$, this.courseScrollTargets.changes])
+      .pipe(
+        tap(([expandedCourses, queryList]) => {
+          const activeIndex = expandedCourses.findIndex((ec) => !!ec);
+          if (activeIndex > -1) {
+            const courseScrollTargetEl = queryList.get(activeIndex)?.nativeElement;
+            this.updateCourseContainerScrollTop(courseScrollTargetEl.offsetTop);
+          }
+        }),
+        take(1) // only needs to occur once after page and relevant observables are all 'loaded'
+      )
+      .subscribe();
   }
 
   enrollInAll(): void {
@@ -191,18 +210,20 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
           config: { width: '100%', height: '100%' },
           courses: this.notEnrolledCourses,
           learningPath: this.learningPathContent,
-        }
+        },
       })
       .afterClosed()
-      .pipe(
-        takeUntil(this.destroy$)
-      )
-      .subscribe()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   resume(): void {
     // open LP fullscreen with the FIRST enrolled course that isn't completed
-    const courseIndex = this.learningPathState.snapshot.courses?.findIndex(c => !!c?.enrollmentId && (c.status === AssignmentEnrollmentStatus.Not_Started || c.status === AssignmentEnrollmentStatus.In_Progress));
+    const courseIndex = this.learningPathState.snapshot.courses?.findIndex(
+      (c) =>
+        !!c?.enrollmentId &&
+        (c.status === AssignmentEnrollmentStatus.Not_Started || c.status === AssignmentEnrollmentStatus.In_Progress)
+    );
     if (courseIndex > -1) {
       const course = this.learningPathState.snapshot.courses[courseIndex];
       this.openCourse(courseIndex, course);
@@ -210,11 +231,14 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   courseActionBtnClicked(courseIndex: number, course: CourseViewData): void {
-    const isEnrolled = course.status === AssignmentEnrollmentStatus.Not_Started || course.status === AssignmentEnrollmentStatus.In_Progress;
-    const isNotEnrolled = course.status === AssignmentEnrollmentStatus.Completed 
-      || course.status === AssignmentEnrollmentStatus.Dropped
-      || course.status === undefined 
-      || course.status === null;
+    const isEnrolled =
+      course.status === AssignmentEnrollmentStatus.Not_Started ||
+      course.status === AssignmentEnrollmentStatus.In_Progress;
+    const isNotEnrolled =
+      course.status === AssignmentEnrollmentStatus.Completed ||
+      course.status === AssignmentEnrollmentStatus.Dropped ||
+      course.status === undefined ||
+      course.status === null;
     if (isEnrolled) {
       this.openCourse(courseIndex, course);
     } else if (isNotEnrolled) {
@@ -229,24 +253,30 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
         height: 'unset',
       },
       title: this.translationService.getTranslationFileData('content-container.drop-course-friction-title'),
-      content: this.translationService.getTranslationFileData('content-container.drop-course-friction-body')?.replace('[COURSE_NAME]', course.name),
+      content: this.translationService
+        .getTranslationFileData('content-container.drop-course-friction-body')
+        ?.replace('[COURSE_NAME]', course.name),
       buttonType: 'danger',
       negativeButton: this.translationService.getTranslationFileData('common.cancel'),
-      positiveButton: this.translationService.getTranslationFileData('common.drop')
-    }
+      positiveButton: this.translationService.getTranslationFileData('common.drop'),
+    };
 
-    this.dialogService.open(FlexibleFrictionComponent, {
-      data: {
-        config: dialogConfig
-      }
-    }).afterClosed().pipe(
-      map(result => !!result),
-      take(1)
-    ).subscribe((confirmed) => {
-      if(confirmed) {
-        this.store.dispatch(new CourseActions.DropCourse(course));
-      }
-    });
+    this.dialogService
+      .open(FlexibleFrictionComponent, {
+        data: {
+          config: dialogConfig,
+        },
+      })
+      .afterClosed()
+      .pipe(
+        map((result) => !!result),
+        take(1)
+      )
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.store.dispatch(new CourseActions.DropCourse(course));
+        }
+      });
   }
 
   private enrollInSingleCourse(course: CourseViewData) {
@@ -254,13 +284,13 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
       .open(EnrollSingleContentComponent, {
         data: {
           config: { width: 'auto', height: 'auto' },
-          course: course
-        }
+          learningPathId: course?.learningPathId,
+          courseId: course?.courseId,
+          courseName: course?.name,
+        },
       })
       .afterClosed()
-      .pipe(
-        takeUntil(this.destroy$)
-      )
+      .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
 
@@ -268,7 +298,7 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
     // get the first uncompleted content
     const contentIndex = getContentIndexToResume(course);
     this.learningPathActions.openLearningPathFromOverviewAction(courseIndex, contentIndex);
-    this.router.navigate(['/content/learning-path', this.content.id])
+    this.router.navigate(['/content/learning-path', this.content.id]);
   }
 
   toggleCourse(scrollTargetEl: HTMLElement, extendedDetailsEl: HTMLElement, courseIndex: number): void {
@@ -285,7 +315,7 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
       this.renderer.listen(extendedDetailsEl, 'transitionend', () => {
         this.updateCourseContainerScrollTop(scrollTargetEl.offsetTop);
         extendedDetailsEl.removeAllListeners('transitionend');
-      })
+      });
     }
   }
 
@@ -310,7 +340,7 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
 
     // set the top & left values for the dropdown menu to open
     // Note: this implementation only works while we have ONLY 1 course content dropdown menu open at a time
-    const {top, left} = shareIcon.getBoundingClientRect();
+    const { top, left } = shareIcon.getBoundingClientRect();
     this.openCourseDropdownTopPos = top + 25;
     this.openCourseDropdownLeftPos = left - 230;
   }
@@ -358,6 +388,6 @@ export class LearningPathViewComponent implements OnInit, OnDestroy, AfterViewIn
 
   private updateQueryParams(arg: string) {
     // this changes query params to trigger logic in evaluate query params when user navs with browser back/fwd
-    this.location.replaceState(`${this.router.url.substring(0, this.router.url.indexOf("?"))}?${arg}=true`);
+    this.location.replaceState(`${this.router.url.substring(0, this.router.url.indexOf('?'))}?${arg}=true`);
   }
 }

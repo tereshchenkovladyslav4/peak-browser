@@ -17,16 +17,18 @@
     </ng-container>
     <ng-container content>
       <ng-container [ngSwitch]="content.type">
-        <ep-document-view *ngSwitchCase="contentType.Document" [content]="content"
-                          [customStyles]="documentStyles"></ep-document-view>
-        <ep-video-view *ngSwitchCase="contentType.Video" [videoContent]="content | as : Video"
-                       [customStyles]="videoStyles"></ep-video-view>
-        <ng-container *ngSwitchCase="contentType.Course">
-          <div *ngIf="content?.description?.length; else plainDescription" [modalHTML]="content?.description" class="course-desc"></div>
-          <ng-template #plainDescription>
-            <div class="course-desc">{{content?.plainDescription}}</div>
-          </ng-template>
-        </ng-container>
+        <div class="content-wrap">
+          <ep-document-view *ngSwitchCase="contentType.Document" [content]="content"
+                            [customStyles]="documentStyles"></ep-document-view>
+          <ep-video-view *ngSwitchCase="contentType.Video" [videoContent]="content | as : Video"
+                         [customStyles]="videoStyles"></ep-video-view>
+          <ng-container *ngSwitchCase="contentType.Course">
+            <div *ngIf="content?.description?.length; else plainDescription" [modalHTML]="content?.description" class="course-desc"></div>
+            <ng-template #plainDescription>
+              <div class="course-desc">{{content?.plainDescription}}</div>
+            </ng-template>
+          </ng-container>
+        </div>
       </ng-container>
     </ng-container>
     <ng-container actions>

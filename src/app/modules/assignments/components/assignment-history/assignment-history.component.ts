@@ -28,12 +28,14 @@ import { DialogConfig } from 'src/app/components/dialog/dialog-base/dialog-base.
 import { EnrollmentDetailsComponent } from '../enrollment-details/enrollment-details.component';
 import { formatDurationShort } from '../../../../resources/functions/content/content';
 import { AssignmentBookmarkComponent } from '../assignment-bookmark/assignment-bookmark.component';
-
-const HISTORICAL_STATUSES = [
-  AssignmentEnrollmentStatus.Expired,
-  AssignmentEnrollmentStatus.Dropped,
-  AssignmentEnrollmentStatus.Completed,
-];
+import { EnrollmentService } from '../../../../services/enrollment.service';
+import { CertificateUnavailableReason } from '../../../../resources/models/certificate';
+import { ConfirmDialogComponent } from '../../../../components/dialog/confirm-dialog/confirm-dialog.component';
+import { TranslationService } from '../../../../services/translation.service';
+import { InformationDialogComponent } from '../../../../components/dialog/information-dialog/information-dialog.component';
+import { EnrollSingleContentComponent } from '../../../../components/dialog/enroll-single-content/enroll-single-content.component';
+import { BookmarksStateService } from 'src/app/state/bookmarks/bookmarks-state.service';
+import { HISTORICAL_STATUSES } from 'src/app/resources/models/assignment';
 
 const DEFAULT_SORT = {
   name: {
@@ -88,6 +90,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     { header: 'assignments.status-date', field: 'statusDate', sortable: true },
   ];
   sortBy$ = new BehaviorSubject<SortMeta>({ field: this.DEFAULT_SORT_FIELD, order: this.DEFAULT_SORT_ORDER });
+  mostRecentAssignmentMap: { [key: string]: Assignment }; // key: courseId -> value: most recent Assignment for courseId
 
   constructor(
     private contentTypesService: ContentTypesService,
@@ -97,6 +100,9 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     private dropdownMenuService: DropdownMenuService,
     private router: Router,
     private dialogService: DialogService,
+    private enrollmentService: EnrollmentService,
+    private translationService: TranslationService,
+    private bookmarksStateService: BookmarksStateService,
   ) {
     super();
   }
@@ -118,6 +124,19 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     this.filteredData$ = combineLatest([this.filterState.selectFilteredData(), this.formFilter$]).pipe(
       map(([assignments]) => assignments),
     );
+
+    // set isCourseInProgress map based on filtered data
+    // this comes before the creation of the dropdown items since they are dependent on this data
+    this.filteredData$.pipe(takeUntil(this.unsubscribeAll$)).subscribe((assignments: Assignment[]) => {
+      this.mostRecentAssignmentMap = assignments.reduce((map, assignment) => {
+        const key = assignment?.course?.id;
+        const assignedDate = Date.parse(assignment?.assignedDate);
+        const currAssignedDate = isNaN(Date.parse(map[key]?.assignedDate)) ? -1 : Date.parse(map[key]?.assignedDate);
+        map[key] = assignedDate > currAssignedDate ? assignment : map[key];
+        return map;
+      }, {});
+    });
+
     this.tableData$ = this.filteredData$.pipe(
       filter((data) => !!data),
       map((data) =>
@@ -221,6 +240,10 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   }
 
   private createDropdownMenu(assignmentHistory: AssignmentHistory): DropdownItem[] {
+    const courseId = assignmentHistory.courseId;
+    const isUserEnrolledInAssignment = !HISTORICAL_STATUSES.includes(
+      this.mostRecentAssignmentMap[courseId].status as unknown as AssignmentEnrollmentStatus,
+    );
     return this.dropdownMenuService
       .addViewEnrollmentDetails({
         action: () => this.openEnrollmentDetails(assignmentHistory),
@@ -228,8 +251,19 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
       .addViewDetails({
         action: () => {
           this.goToLearningPath(assignmentHistory);
-        }
-        })
+        },
+      })
+      .addReEnroll({
+        visible: !isUserEnrolledInAssignment,
+        action: () => {
+          if (!assignmentHistory) {
+            return;
+          }
+
+          this.reenrollInCourse(assignmentHistory);
+        },
+      })
+      .addBookmarkItem(this.bookmarksStateService.isContentBookmarked(courseId), courseId)
       .addDivider()
       .addViewCertificate({
         action: () => {
@@ -246,7 +280,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   private openEnrollmentDetails(assignmentHistory: AssignmentHistory) {
     const enrollmentDetailsConfig: DialogConfig = {
       containerStyles: {
-        width: '620px',
+        width: '624px',
       },
       actionsStyles: {
         marginTop: '20px',
@@ -264,6 +298,135 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   }
 
   private openCertificate(assignmentHistory: AssignmentHistory) {
+    if (assignmentHistory.status === AssignmentEnrollmentStatus.Dropped) {
+      this.showNoCertificateCourseDroppedDialog(assignmentHistory);
+    } else {
+      this.enrollmentService
+        .getCertificateAvailable(assignmentHistory.id, assignmentHistory.courseId)
+        .pipe(take(1))
+        .subscribe((result) => {
+          const certificate = result;
+
+          if (!certificate) {
+            this.showNoCertificateDialog();
+          } else if (
+            certificate.reasonUnavailable === CertificateUnavailableReason.NOT_COMPLETE ||
+            certificate.reasonUnavailable === CertificateUnavailableReason.FAILED_QUIZ
+          ) {
+            this.showNoCertificateCourseIncompleteDialog(assignmentHistory);
+          } else if (!certificate.useAsDefault) {
+            this.showNoCertificateDialog();
+          } else if (certificate.useAsDefault) {
+            this.showCertificateDialog(assignmentHistory);
+          }
+        });
+    }
+  }
+
+  private showNoCertificateDialog() {
+    const dialogConfig: DialogConfig = {
+      containerStyles: {
+        width: '350px',
+        height: 'unset',
+      },
+      title: this.translationService.getTranslationFileData('assignments.certificate-not-available-friction-title'),
+      content: this.translationService.getTranslationFileData('assignments.certificate-not-available-friction-body'),
+      buttonType: 'normal',
+      positiveButton: this.translationService.getTranslationFileData('common.close'),
+    };
+
+    this.dialogService
+      .open(InformationDialogComponent, {
+        data: {
+          config: dialogConfig,
+        },
+      })
+      .afterClosed()
+      .subscribe(() => {
+        // Do nothing.
+      });
+  }
+
+  private showNoCertificateCourseDroppedDialog(assignmentHistory: AssignmentHistory) {
+    const dialogConfig: DialogConfig = {
+      containerStyles: {
+        width: '350px',
+        height: 'unset',
+      },
+      title: this.translationService.getTranslationFileData('assignments.certificate-not-available-friction-title'),
+      content: this.translationService.getTranslationFileData(
+        'assignments.certificate-not-available-course-dropped-friction-body',
+      ),
+      buttonType: 'primary',
+      negativeButton: this.translationService.getTranslationFileData('common.cancel'),
+      positiveButton: this.translationService.getTranslationFileData('assignments.re-enroll-in-course'),
+    };
+
+    this.dialogService
+      .open(ConfirmDialogComponent, {
+        data: {
+          config: dialogConfig,
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.reenrollInCourse(assignmentHistory);
+        }
+      });
+  }
+
+  private showNoCertificateCourseIncompleteDialog(assignmentHistory: AssignmentHistory) {
+    const dialogConfig: DialogConfig = {
+      containerStyles: {
+        width: '350px',
+        height: 'unset',
+      },
+      title: this.translationService.getTranslationFileData('assignments.certificate-not-available-friction-title'),
+      content: this.translationService.getTranslationFileData(
+        'assignments.certificate-not-available-course-incomplete-friction-body',
+      ),
+      buttonType: 'primary',
+      negativeButton: this.translationService.getTranslationFileData('common.cancel'),
+      positiveButton: this.translationService.getTranslationFileData('assignments.re-enroll-in-course'),
+    };
+
+    this.dialogService
+      .open(ConfirmDialogComponent, {
+        data: {
+          config: dialogConfig,
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.reenrollInCourse(assignmentHistory);
+        }
+      });
+  }
+
+  private reenrollInCourse(assignmentHistory: AssignmentHistory) {
+    const { learningPathId, courseId, name: courseName } = assignmentHistory;
+    this.openEnrollSingle(learningPathId, courseId, courseName).subscribe({
+      next: (success) => {
+        if (!success) {
+          return;
+        }
+
+        // update newly enrolled courses map value to true so re-enroll does not show up anymore
+        this.mostRecentAssignmentMap[courseId].status =
+          AssignmentEnrollmentStatus[AssignmentEnrollmentStatus.Not_Started];
+
+        // refresh this dropdown menu
+        this.dropdownMenusMap.set(assignmentHistory.id, this.createDropdownMenu(assignmentHistory));
+      },
+      error: (err) => {
+        console.error('reenrollInCourse error: ', err);
+      },
+    });
+  }
+
+  private showCertificateDialog(assignmentHistory: AssignmentHistory) {
     const config: DialogConfig = {
       containerStyles: {
         width: '519px',
@@ -288,21 +451,25 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     });
   }
 
-  private navigateToLearningPath(learningPathId: string, courseId: string) {
-    this.router.navigate([NAVIGATION_ROUTES.content, learningPathId], {
-      queryParams: {
-        courseId: courseId,
-      },
-    });
+  private openEnrollSingle(learningPathId: string, courseId: string, courseName: string): Observable<any> {
+    return this.dialogService
+      .open(EnrollSingleContentComponent, {
+        data: {
+          config: { width: 'auto', height: 'auto' },
+          learningPathId,
+          courseId,
+          courseName,
+        },
+      })
+      .afterClosed();
   }
 
   private rowFactory(assignment: Assignment): any {
-    const that = this;
     const type: 'course' | 'assessment' =
       assignment.assessment && Object.keys(assignment.assessment)?.length ? 'assessment' : 'course';
     const factoryMap = {
-      course: () => that.constructCourseRow(assignment),
-      assessment: () => that.constructAssessmentRow(assignment),
+      course: () => this.constructCourseRow(assignment),
+      assessment: () => this.constructAssessmentRow(assignment),
     };
 
     return factoryMap[type]() || new Error('type not implemented');

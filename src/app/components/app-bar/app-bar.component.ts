@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, ActivatedRoute } from '@angular/router';
 import { APP_ROUTES, NAVIGATION_ROUTES, ROUTE_TITLE_MAP } from '../../resources/constants/app-routes';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { combineLatest, concatMap, filter, iif, Observable, of, startWith, tap } from 'rxjs';
@@ -24,6 +24,8 @@ import { FlexibleFrictionComponent } from '../dialog/flexible-friction/flexible-
 import { DialogService } from '../../services/dialog/dialog.service';
 import { Tenant } from '../../services/apiService/classFiles/v2-tenants';
 import { UserStateService } from '../../state/user/user-state.service';
+import { Store } from '@ngxs/store';
+import { ThemeActions } from 'src/app/state/themes/themes.actions';
 
 @Component({
   selector: 'ep-app-bar',
@@ -63,6 +65,8 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
     private apiv2Service: Apiv2Service,
     private tenantService: TenantService,
     private dialogService: DialogService,
+    private store: Store,
+    private route: ActivatedRoute
   ) {
     super();
   }
@@ -75,6 +79,12 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
     this.setClearSearchInput();
     this.searchService.reset$.pipe(filter((r) => r?.appBarSearch)).subscribe(() => this.clearSearchInput());
     this.manageLayout();
+    this.route.queryParams.subscribe((params) => {
+      const searchTerms = params['searchTerms'];
+      if (searchTerms) {
+        this.form.get('search').setValue(searchTerms);
+      }
+    })
   }
 
   onSearch() {
@@ -87,7 +97,7 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
 
   private setTitle() {
     this.title$ = combineLatest([this.getUrl().pipe(startWith('')), this.getUserDisplayName()]).pipe(
-      map(([url, userDisplayName]: [string, string]) => this.deriveTitle(url, userDisplayName)),
+      map(([url, userDisplayName]: [string, string]) => this.deriveTitle(url, userDisplayName))
     );
   }
 
@@ -98,7 +108,7 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
   private getUrl(): Observable<string> {
     return this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
-      map((event: NavigationEnd) => event.urlAfterRedirects),
+      map((event: NavigationEnd) => event.urlAfterRedirects)
     );
   }
 
@@ -133,7 +143,7 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
       ([isFullScreen, fullScreenText]) => {
         this.isFullScreen = isFullScreen;
         this.fullScreenText = fullScreenText;
-      },
+      }
     );
   }
 
@@ -172,7 +182,7 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
             this.router.navigateByUrl(`/${APP_ROUTES.home}`).then(() => window.location.reload());
           }
         }),
-        take(1),
+        take(1)
       )
       .subscribe();
   }
@@ -195,6 +205,7 @@ export class AppBarComponent extends WithDropdownItemsTempCache() implements OnI
         this.prodGenApi.EndSession();
         this.authenticationService.resetLoginState();
         this.router.navigate([NAVIGATION_ROUTES.login]);
+        this.store.dispatch(new ThemeActions.ResetThemeDefaults()); // reset theme defaults on sign out
         window.opener = null;
       }
     });

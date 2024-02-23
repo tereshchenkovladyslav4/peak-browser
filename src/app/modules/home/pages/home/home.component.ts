@@ -1,15 +1,11 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Assignment } from '../../../../resources/models/assignment';
 import { Library } from '../../../../resources/models/library';
-import { LibrariesService } from '../../../../services/libraries/libraries.service';
 import { HomeSection } from '../../../../resources/enums/home-section.enum';
 import { APP_ROUTES } from '../../../../resources/constants/app-routes';
-import { SessionStorageService } from '../../../../services/storage/services/session-storage.service';
-import { TenantService } from '../../../../services/tenant/tenant.service';
-import { APIV2AccessKey } from '../../../../services/apiService/classFiles/class.authorization';
 import { AssignmentsState } from 'src/app/state/assignments/assignments.state';
 import { AssignmentsActions } from 'src/app/state/assignments/assignments.actions';
-import { catchError, combineLatest, debounceTime, defaultIfEmpty, forkJoin, map, Observable, of, skip, Subject, take, tap, timeout } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { Select, Store } from '@ngxs/store';
 import { LibraryState } from '../../../../state/library/library.state';
 import { LibraryActions } from '../../../../state/library/library.actions';
@@ -24,25 +20,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   readonly APP_ROUTES = APP_ROUTES;
   readonly unsubscribeAll$ = new Subject<void>();
   isLoading = false;
-  @Select(AssignmentsState.getAssignmentsList) assignments$: Observable<Assignment[]>;
+  @Select(AssignmentsState.getStackedActiveAssignments) stackedActiveAssignments$: Observable<Assignment[]>;
   @Select(LibraryState) libraryState$: Observable<LibraryState>;
   assignments: Assignment[];
   libraries: Library[];
 
   constructor(
     private store: Store,
-    private sessionService: SessionStorageService,
-    private tenantService: TenantService
   ) {}
 
   ngOnInit() {
-    //If we haven't yet stored tenant details, do it here.
-    //This prevents us from calling the api every time we go to the home page
-    //*Do note that this is a workaround until the login page code is completed*
-    if (!this.sessionService.getItem('tenantDetails')) {
-      const tenantInfo: APIV2AccessKey = this.sessionService.getItem('tenantInformation');
-      this.tenantService.getTenantDetails(tenantInfo.orgID, tenantInfo.tenantid).subscribe();
-    }
     this.isLoading = true;
 
     //get assignments and libraries from store
@@ -50,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       new LibraryActions.CurrentLibrariesFromApi])
 
     combineLatest([
-      this.assignments$,
+      this.stackedActiveAssignments$,
       this.libraryState$
     ]).subscribe(([assignments, libraryState]: [Assignment[], LibraryState]) => {
         this.assignments = this.defaultSortAssignments(assignments);
