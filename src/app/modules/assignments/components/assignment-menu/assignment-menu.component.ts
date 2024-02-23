@@ -52,7 +52,7 @@ export class AssignmentMenuComponent extends WithDropdownItemsTempCache() implem
   protected override constructDropdownItems() {
     const id: string = this.assignment?.course?.id || '';
     const userId: string = this.assignment?.user?.userId || '';
-    const selfAssigned = this.assignment?.assignors.findIndex((assignor) => assignor.userId === userId) > -1;
+    const selfAssigned = this.assignment?.assignors?.findIndex((assignor) => assignor.userId === userId) > -1;
     const hasStartedAssignment = this.assignment?.progress > 0;
 
     return (
