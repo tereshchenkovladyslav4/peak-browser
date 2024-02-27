@@ -7,7 +7,6 @@ import { DropdownMenuContainerComponent } from '../../../../components/dropdown-
 import { TableModule } from 'primeng/table';
 import { EpDatePipe } from 'src/app/pipes/ep-date.pipe';
 import { DESC, SORT_BY_TOKEN, SortableService } from '../../../../services/sortable/sortable.service';
-import { AssignmentHistoryService } from '../../../../services/assignment-history/assignment-history.service';
 import { FilterStateService } from '../../../../state/filter/filter-state';
 import { APP_ROUTES, NAVIGATION_ROUTES } from '../../../../resources/constants/app-routes';
 import { LoadingComponent } from '../../../../components/loading/loading.component';
@@ -36,6 +35,7 @@ import { InformationDialogComponent } from '../../../../components/dialog/inform
 import { EnrollSingleContentComponent } from '../../../../components/dialog/enroll-single-content/enroll-single-content.component';
 import { BookmarksStateService } from 'src/app/state/bookmarks/bookmarks-state.service';
 import { HISTORICAL_STATUSES } from 'src/app/resources/models/assignment';
+import { AssignmentHistoryStateService } from '../../../../state/assignment-history/assignment-history-state.service';
 
 const DEFAULT_SORT = {
   name: {
@@ -96,7 +96,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     private contentTypesService: ContentTypesService,
     protected sortable: SortableService<AssignmentHistory>,
     private filterState: FilterStateService,
-    private assignmentHistoryService: AssignmentHistoryService,
+    private assignmentHistoryStateService: AssignmentHistoryStateService,
     private dropdownMenuService: DropdownMenuService,
     private router: Router,
     private dialogService: DialogService,
@@ -108,13 +108,15 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   }
 
   ngOnInit() {
-    this.isNoFilteredDataResults$ = this.filterState.selectIsNoFilteredDataResults();
-    this.isNoDataResults$ = this.filterState.selectIsNoDataResults();
-    this.setIsLoaded(this.assignmentHistoryService);
-    this.assignmentHistoryService.getHistoricalAssignments().pipe(take(1)).subscribe();
+    this.isNoFilteredDataResults$ = this.filterState
+      .selectIsNoFilteredDataResults()
+      .pipe(takeUntil(this.unsubscribeAll$));
+    this.isNoDataResults$ = this.filterState.selectIsNoDataResults().pipe(takeUntil(this.unsubscribeAll$));
+    this.setIsLoaded(this.assignmentHistoryStateService);
+    this.assignmentHistoryStateService.getHistoricalAssignments().pipe(takeUntil(this.unsubscribeAll$)).subscribe();
 
     this.formFilter$.pipe(takeUntil(this.unsubscribeAll$)).subscribe((value) => this.onBuiltInSearch(value));
-    this.assignmentHistoryService.reset$
+    this.assignmentHistoryStateService.reset$
       .pipe(
         takeUntil(this.unsubscribeAll$),
         filter((r) => r?.filters),
@@ -138,6 +140,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     });
 
     this.tableData$ = this.filteredData$.pipe(
+      takeUntil(this.unsubscribeAll$),
       filter((data) => !!data),
       map((data) =>
         data.filter(
@@ -153,6 +156,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     );
 
     this.tableData$ = combineLatest([this.tableData$, this.sortBy$]).pipe(
+      takeUntil(this.unsubscribeAll$),
       map(([assignments, sortBy]) => {
         if (assignments?.length && sortBy?.field && sortBy?.order) {
           return this.defaultSort(assignments, sortBy);
@@ -165,6 +169,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
     // create dropdownItems foreach row in table
     this.tableData$
       .pipe(
+        takeUntil(this.unsubscribeAll$),
         tap((assignmentsHistory) => {
           const menuItemMaps: [k: string, v: DropdownItem[]][] = assignmentsHistory.map((assignmentHistory) => [
             assignmentHistory.id as string,
@@ -223,7 +228,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   }
 
   clearFilters() {
-    this.assignmentHistoryService.removeAllFilters();
+    this.assignmentHistoryStateService.removeAllFilters();
     this.onBuiltInSearch();
   }
 
@@ -232,7 +237,7 @@ export class AssignmentHistoryComponent extends WithIsLoaded() implements OnInit
   }
 
   onFilter(filterValues: any, filterType: FilterType) {
-    this.assignmentHistoryService.onFilter(filterValues, filterType);
+    this.assignmentHistoryStateService.onFilter(filterValues, filterType);
   }
 
   onRowSelect(event) {
