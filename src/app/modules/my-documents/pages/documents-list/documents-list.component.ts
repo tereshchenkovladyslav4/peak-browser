@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MyDocumentsService } from '../../../../services/my-documents/my-documents.service';
 import { WithIsLoaded } from '../../../../resources/mixins/is-loaded.mixin';
 import { take } from 'rxjs/operators';
 import { map, Observable } from 'rxjs';
@@ -12,6 +11,7 @@ import { EpDatePipe } from '../../../../pipes/ep-date.pipe';
 import { SharedModule } from '../../../shared/shared.module';
 import { MyDocumentMenuComponent } from '../../components/my-document-menu/my-document-menu.component';
 import { LoadingComponent } from '../../../../components/loading/loading.component';
+import { MyDocumentsStateService } from '../../../../state/my-documents-state/my-documents-state.service';
 
 @Component({
   selector: 'ep-documents-list',
@@ -27,15 +27,15 @@ export class DocumentsListComponent extends WithIsLoaded() implements OnInit {
 
   constructor(
     private filterState: FilterStateService,
-    private myDocumentsService: MyDocumentsService,
+    private myDocumentsStateService: MyDocumentsStateService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.myDocumentsService.getMyDocuments().pipe(take(1)).subscribe();
+    this.myDocumentsStateService.getMyDocuments().pipe(take(1)).subscribe();
     this.isNoDataResults$ = this.filterState.selectIsNoDataResults();
-    this.setIsLoaded(this.myDocumentsService);
+    this.setIsLoaded(this.myDocumentsStateService);
 
     this.filteredData$ = this.filterState.selectFilteredData().pipe(
       map((items: Document[]) => {
