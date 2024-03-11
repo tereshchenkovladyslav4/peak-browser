@@ -4,11 +4,14 @@ import { NAVIGATION_ROUTES } from '../../../../resources/constants/app-routes';
 import { DropdownMenuService } from '../../../../services/dropdown-menu.service';
 import { Document } from '../../../../resources/models/content';
 import { WithDropdownItemsTempCache } from '../../../../resources/mixins/dropdown-items-temp-cache.mixin';
+import { DropdownMenuContainerComponent } from '../../../../components/dropdown-menu-container/dropdown-menu-container.component';
 
 @Component({
   selector: 'ep-my-document-menu',
   templateUrl: './my-document-menu.component.html',
   styleUrls: ['./my-document-menu.component.scss'],
+  standalone: true,
+  imports: [DropdownMenuContainerComponent],
 })
 export class MyDocumentMenuComponent extends WithDropdownItemsTempCache() implements OnInit {
   @Input() document: Document;
