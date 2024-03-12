@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {Library} from "../../../../resources/models/library";
-import {NgIf} from "@angular/common";
-import {Router} from "@angular/router";
-import {NAVIGATION_ROUTES} from "../../../../resources/constants/app-routes";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Library } from '../../../../resources/models/library';
+import { NgIf } from '@angular/common';
+import { Router } from '@angular/router';
+import { NAVIGATION_ROUTES } from '../../../../resources/constants/app-routes';
 import { TextTruncateDirective } from 'src/app/directives/text-truncate.directive';
 
 @Component({
@@ -10,22 +10,18 @@ import { TextTruncateDirective } from 'src/app/directives/text-truncate.directiv
   templateUrl: './library-card.component.html',
   styleUrls: ['./library-card.component.scss'],
   standalone: true,
-  imports: [
-    NgIf,
-    TextTruncateDirective,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [NgIf, TextTruncateDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LibraryCardComponent implements OnInit {
   @Input() library: Library;
   isNew = false;
 
-  constructor(private router: Router) {
-  }
+  constructor(private router: Router) {}
 
   ngOnInit() {
     const thirtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 30));
-    this.isNew = new Date(this.library.publishDate) > thirtyDaysAgo;
+    this.isNew = new Date(this.library?.publishDate) > thirtyDaysAgo;
   }
 
   onLibraryClick() {
